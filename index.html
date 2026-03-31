@@ -328,9 +328,10 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
     <button class="btn btn-teal" onclick="exportPDF()">⬇ Export PDF</button>
     <button class="btn btn-gold" onclick="exportSlides()">📑 Export Slides</button>
     <button class="btn btn-outline" onclick="exportXLSX()">📥 Excel Data</button>
-    <div id="live-status" style="font-size:10px;display:flex;align-items:center;gap:4px;" title="Real-time data status">
+    <div id="live-status" style="font-size:10px;display:flex;align-items:center;gap:6px;" title="Real-time data status">
       <span id="live-dot" style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;"></span>
       <span id="live-label" style="color:var(--gray-200);">Static Data</span>
+      <span id="live-time" style="color:var(--gray-300);font-family:var(--font-mono);font-size:9px;"></span>
     </div>
   </div>
 </header>
@@ -5381,17 +5382,23 @@ function fmtPct(v) {
 function setLiveStatus(connected, source) {
   var dot = document.getElementById('live-dot');
   var label = document.getElementById('live-label');
+  var timeEl = document.getElementById('live-time');
   if (!dot || !label) return;
+  var now = new Date();
+  var timeStr = now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true });
+  var dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric' });
   if (connected) {
     dot.style.background = '#00d084';
     dot.style.boxShadow = '0 0 6px rgba(0,208,132,0.6)';
-    label.textContent = 'Live \u00b7 ' + source;
+    label.textContent = 'Live';
     label.style.color = 'var(--green)';
+    if (timeEl) { timeEl.textContent = dateStr + ' ' + timeStr; timeEl.style.color = 'var(--gray-300)'; }
   } else {
     dot.style.background = 'var(--teal)';
     dot.style.boxShadow = 'none';
     label.textContent = 'Static Data';
     label.style.color = 'var(--gray-200)';
+    if (timeEl) timeEl.textContent = '';
   }
 }
 
@@ -5678,9 +5685,9 @@ function applyLiveQuote(q) {
   if (mktcap && q.marketCap) mktcap.textContent = fmt$(q.marketCap);
 
   const mktcapSub = document.getElementById('live-mktcap-sub');
-  if (mktcapSub && q.timestamp) {
-    const ts = new Date(q.timestamp);
-    mktcapSub.textContent = 'as of ' + ts.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  if (mktcapSub) {
+    var ts = q.timestamp ? new Date(q.timestamp) : new Date();
+    mktcapSub.textContent = 'as of ' + ts.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' ' + ts.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
   }
 
   const fwdPe = document.getElementById('live-fwd-pe');
