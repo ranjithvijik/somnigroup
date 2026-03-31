@@ -5552,9 +5552,30 @@ function computeTechnicals(history) {
   };
 }
 
-// ─── Main orchestrator: 4-tier fallback ───────────────────────────
+// --- Main orchestrator: 5-tier fallback ---
+//  Tier 1: Python backend (localhost, if running)
+//  Tier 2: Yahoo Finance via CORS proxies (real-time, free)
+//  Tier 3: Alpha Vantage (CORS-native, 25 req/day free)
+//  Tier 4: Last successful fetch (cached in memory)
+//  Tier 5: Static data (hardcoded in HTML)
+var LAST_GOOD_DATA = null;
+var LAST_GOOD_TIME = null;
+
+function applyData(data, source) {
+  LIVE_CONNECTED = true;
+  LIVE_DATA = data;
+  setLiveStatus(true, source);
+  if (data.quote) applyLiveQuote(data.quote);
+  if (data.history) applyLiveHistory(data.history);
+  if (data.peers && Object.keys(data.peers).length > 0) applyLivePeers(data.peers);
+  if (data.technicals) applyLiveTechnicals(data.technicals);
+  LAST_GOOD_DATA = data;
+  LAST_GOOD_TIME = new Date();
+  console.log('[LiveData] Applied from: ' + source);
+}
+
 async function fetchLiveData() {
-  console.log('[LiveData] Starting fetch cascade...');
+  console.log('[LiveData] Starting 5-tier fetch cascade...');
 
   // TIER 1: Python backend (if running locally)
   try {
@@ -5562,21 +5583,14 @@ async function fetchLiveData() {
       signal: AbortSignal.timeout(LIVE_CONFIG.backendTimeout)
     });
     if (resp.ok) {
-      LIVE_DATA = await resp.json();
-      LIVE_CONNECTED = true;
-      setLiveStatus(true, 'yfinance (backend)');
-      applyLiveQuote(LIVE_DATA.quote);
-      if (LIVE_DATA.history) applyLiveHistory(LIVE_DATA.history);
-      if (LIVE_DATA.peers) applyLivePeers(LIVE_DATA.peers);
-      if (LIVE_DATA.technicals) applyLiveTechnicals(LIVE_DATA.technicals);
-      console.log('[LiveData] Tier 1 success: backend');
+      applyData(await resp.json(), 'yfinance (backend)');
       return LIVE_DATA;
     }
   } catch(e) {
     console.log('[LiveData] Tier 1 skip: backend offline');
   }
 
-  // TIER 2: Yahoo Finance via CORS proxies
+  // TIER 2: Yahoo Finance via CORS proxies (free, real-time)
   var quote = null, history = null, peers = {};
   try {
     var results = await Promise.allSettled([
@@ -5587,39 +5601,46 @@ async function fetchLiveData() {
     quote = results[0].status === 'fulfilled' ? results[0].value : null;
     history = results[1].status === 'fulfilled' ? results[1].value : null;
     peers = results[2].status === 'fulfilled' ? results[2].value : {};
-    if (quote) console.log('[LiveData] Tier 2 success: Yahoo Finance');
+    if (quote) console.log('[LiveData] Tier 2: Yahoo quote OK');
+    if (history) console.log('[LiveData] Tier 2: Yahoo history OK (' + history.length + ' pts)');
   } catch(e) {
     console.log('[LiveData] Tier 2 skip: Yahoo CORS proxies failed');
   }
 
-  // TIER 3: Alpha Vantage (guaranteed CORS)
-  if (!quote) {
-    console.log('[LiveData] Trying Tier 3: Alpha Vantage...');
-    quote = await fetchAlphaVantageQuote('SGI');
-    if (quote) console.log('[LiveData] Tier 3 success: Alpha Vantage quote');
-  }
-  if (!history) {
-    history = await fetchAlphaVantageHistory('SGI');
-    if (history) console.log('[LiveData] Tier 3 success: Alpha Vantage history');
-  }
-
-  // Apply whatever we received
   if (quote || history) {
-    LIVE_CONNECTED = true;
     var technicals = computeTechnicals(history);
-    LIVE_DATA = { quote: quote, history: history, peers: peers, technicals: technicals };
-    var src = quote ? quote.source : 'Market Data';
-    setLiveStatus(true, src);
-    if (quote) applyLiveQuote(quote);
-    if (history) applyLiveHistory(history);
-    if (Object.keys(peers).length > 0) applyLivePeers(peers);
-    if (technicals) applyLiveTechnicals(technicals);
-    console.log('[LiveData] Applied. Peers:', Object.keys(peers).length);
+    applyData({ quote: quote, history: history, peers: peers, technicals: technicals },
+      quote ? 'Yahoo Finance' : 'Yahoo Finance (history)');
     return LIVE_DATA;
   }
 
-  // TIER 4: Static (HTML already has all data)
-  console.log('[LiveData] All APIs unreachable. Static data is fully functional.');
+  // TIER 3: Alpha Vantage (CORS-native, works from any domain)
+  if (LIVE_CONFIG.alphaVantageKey && LIVE_CONFIG.alphaVantageKey !== '__AV_API_KEY__') {
+    console.log('[LiveData] Trying Tier 3: Alpha Vantage...');
+    quote = await fetchAlphaVantageQuote('SGI');
+    if (!history) history = await fetchAlphaVantageHistory('SGI');
+    if (quote || history) {
+      var technicals = computeTechnicals(history);
+      applyData({ quote: quote, history: history, peers: peers, technicals: technicals },
+        quote ? 'Alpha Vantage' : 'Alpha Vantage (history)');
+      return LIVE_DATA;
+    }
+    console.log('[LiveData] Tier 3 skip: Alpha Vantage exhausted or unavailable');
+  } else {
+    console.log('[LiveData] Tier 3 skip: AV key not configured');
+  }
+
+  // TIER 4: Last known good data (from previous successful fetch this session)
+  if (LAST_GOOD_DATA) {
+    var ageMin = Math.round((new Date() - LAST_GOOD_TIME) / 60000);
+    console.log('[LiveData] Tier 4: Using cached data from ' + ageMin + ' min ago');
+    LIVE_CONNECTED = true;
+    setLiveStatus(true, 'Cached (' + ageMin + 'm ago)');
+    return LAST_GOOD_DATA;
+  }
+
+  // TIER 5: Static data (hardcoded in HTML)
+  console.log('[LiveData] Tier 5: All live sources unavailable. Static data displayed.');
   LIVE_CONNECTED = false;
   setLiveStatus(false, '');
   return null;
