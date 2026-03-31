@@ -4698,9 +4698,9 @@ async function exportPDF() {
       { label: 'FCF CAGR FY2025-2028E',           value: '21.1%',  color: teal  },
       { label: 'Annualized Volatility',            value: '31.3%',  color: gold  },
     ];
-    const kpiW = (W - 24) / 4;
+    const mlKpiW = (W - 24) / 4;
     mlKpis.forEach((k, i) => {
-      kpiBox(10 + i * (kpiW + 2), y, kpiW, 22, k.label, k.value, k.color);
+      kpiBox(10 + i * (mlKpiW + 2), y, mlKpiW, 22, k.label, k.value, k.color);
     });
     y += 28;
 
