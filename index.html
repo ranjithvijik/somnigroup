@@ -5357,7 +5357,7 @@ const LIVE_CONFIG = {
     function(url) { return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url); },
   ],
   yahooBase: 'https://query1.finance.yahoo.com/v8/finance/chart',
-  alphaVantageKey: '__AV_API_KEY__',  // Replaced at build time by GitHub Actions from repository secret
+  alphaVantageKey: '__AV_API_KEY__',  // Replaced at build time via amplify.yml or GitHub Actions
   alphaVantageBase: 'https://www.alphavantage.co/query',
   backendBase: 'http://localhost:5001',
   refreshMs: 300000,
