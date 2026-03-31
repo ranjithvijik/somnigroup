@@ -346,7 +346,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="pt-display">
         <div class="pt-item"><div class="pt-label">Current Price</div><div class="pt-value teal" id="live-hero-price">$69.37</div></div>
         <div class="pt-item"><div class="pt-label">12-Month Target</div><div class="pt-value">$100</div></div>
-        <div class="pt-item"><div class="pt-label">Upside</div><div class="pt-value" style="color:var(--green);">+44%</div></div>
+        <div class="pt-item"><div class="pt-label">Upside</div><div class="pt-value" style="color:var(--green);" data-live-upside>+44%</div></div>
         <div class="pt-item"><div class="pt-label">Rating</div><div class="pt-value" style="color:var(--green);font-size:20px;">LONG</div></div>
       </div>
       <div class="kpi-grid">
@@ -891,7 +891,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
     </div>
     <div class="chart-card">
       <div class="chart-title">Football Field Valuation</div>
-      <div class="chart-subtitle">Implied price range by methodology — Gold line = current price $69.37</div>
+      <div class="chart-subtitle">Implied price range by methodology — Gold line = current price <span data-live-price>$69.37</span></div>
       <div id="footballField" style="padding:16px 0;">
         <!-- Rendered via JS -->
       </div>
@@ -1175,7 +1175,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   </div>
 
   <div class="grid-4" style="margin-bottom:24px;">
-    <div class="kpi-card card"><div class="kpi-label">Avg Price Target</div><div class="kpi-val" style="color:var(--gold);">$99.67</div><div class="kpi-sub">+43.6% from $69.37</div></div>
+    <div class="kpi-card card"><div class="kpi-label">Avg Price Target</div><div class="kpi-val" style="color:var(--gold);">$99.67</div><div class="kpi-sub"><span data-live-analyst-sub>+43.6% from $69.37</span></div></div>
     <div class="kpi-card card"><div class="kpi-label">High Target</div><div class="kpi-val" style="color:var(--green);">$115</div><div class="kpi-sub">Truist · UBS</div></div>
     <div class="kpi-card card"><div class="kpi-label">Low Target</div><div class="kpi-val" style="color:var(--orange);">$83</div><div class="kpi-sub">Goldman Sachs (Neutral)</div></div>
     <div class="kpi-card card"><div class="kpi-label">Consensus</div><div class="kpi-val" style="color:var(--green);">Strong Buy</div><div class="kpi-sub">83% bullish (5/6)</div></div>
@@ -1217,7 +1217,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="badge badge-long" style="font-size:16px;padding:10px 24px;">RECOMMENDATION: LONG</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;">
-      <div><div style="font-size:10px;color:var(--gray-300);letter-spacing:0.1em;text-transform:uppercase;">Current Price</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--teal);margin-top:4px;">$69.37</div></div>
+      <div><div style="font-size:10px;color:var(--gray-300);letter-spacing:0.1em;text-transform:uppercase;">Current Price</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--teal);margin-top:4px;" data-live-price>$69.37</div></div>
       <div><div style="font-size:10px;color:var(--gray-300);letter-spacing:0.1em;text-transform:uppercase;">Price Target</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--gold);margin-top:4px;">$100.00</div></div>
       <div><div style="font-size:10px;color:var(--gray-300);letter-spacing:0.1em;text-transform:uppercase;">Potential Upside</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--green);margin-top:4px;">+44.1%</div></div>
       <div><div style="font-size:10px;color:var(--gray-300);letter-spacing:0.1em;text-transform:uppercase;">Time Horizon</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--white);margin-top:4px;">12 Months</div></div>
@@ -1587,7 +1587,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <!-- Valuation Bridge Chart -->
   <div class="chart-card" style="margin-bottom:24px;">
     <div class="chart-title">Valuation Method Reconciliation</div>
-    <div class="chart-subtitle">All methods vs. current price ($69.37) · Gold line = current price</div>
+    <div class="chart-subtitle">All methods vs. current price (<span data-live-price>$69.37</span>) · Gold line = current price</div>
     <div class="chart-wrap h-320"><canvas id="valuationBridgeChart"></canvas></div>
     <div class="chart-source">Source: Internal models · Analyst consensus · Bloomberg</div>
   </div>
@@ -1607,7 +1607,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
             <tr><td>75th Percentile</td><td class="pos">$115</td></tr>
             <tr><td>95th Percentile</td><td class="pos">$142</td></tr>
             <tr><td>Mean</td><td class="pos">$94</td></tr>
-            <tr style="background:rgba(0,208,132,0.07);"><td>Prob. &gt; $69.37 (current)</td><td class="pos">68%</td></tr>
+            <tr style="background:rgba(0,208,132,0.07);"><td>Prob. &gt; current price</td><td class="pos" data-live-mc-prob>68%</td></tr>
             <tr style="background:rgba(0,208,132,0.07);"><td>Prob. &gt; $100 (target)</td><td class="pos">42%</td></tr>
           </tbody>
         </table>
@@ -1819,7 +1819,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="chart-title">Sensitivity Analysis &mdash; Revenue Growth vs. Price</div>
       <div class="chart-subtitle">Three model outputs across revenue growth scenarios &middot; Dashed lines = current price &amp; target</div>
       <div class="chart-wrap h-300"><canvas id="mlSensitivityChart"></canvas></div>
-      <div class="chart-source">Source: ML simulation &middot; Current price $69.37 &middot; Target $100</div>
+      <div class="chart-source">Source: ML simulation &middot; Current price <span data-live-price>$69.37</span> &middot; Target $100</div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Feature Importance &mdash; Random Forest</div>
@@ -5858,6 +5858,153 @@ function applyLiveTechnicals(tech) {
     console.log('[LiveData] Return distribution chart rebuilt with', returns.length, 'months');
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// PROPAGATE LIVE PRICE — Updates ALL computed elements across the app
+// Called after every successful live data fetch
+// ═══════════════════════════════════════════════════════════════════
+
+function propagateLivePrice(price) {
+  if (!price || price <= 0) return;
+  var PT = 100;
+  var upside = ((PT / price - 1) * 100);
+  var fwdPE = price / 4.82; // FY2026E consensus EPS
+  var pegRatio = fwdPE / 24; // 24% EPS CAGR
+  var fcfYield = (633 / (price * 210)) * 100; // $633M FCF / (price * 210M shares)
+  var evEbitda = ((price * 210 + 8130) / 1040.5); // (mktcap + net debt) / EBITDA
+  var mktCapB = (price * 210) / 1000; // in $B
+
+  console.log('[Propagate] Price=$' + price.toFixed(2) + ' FwdPE=' + fwdPE.toFixed(1) + 'x Upside=' + upside.toFixed(1) + '%');
+
+  // --- Update all data-live-price elements ---
+  document.querySelectorAll('[data-live-price]').forEach(function(el) {
+    el.textContent = '$' + price.toFixed(2);
+  });
+
+  // --- Update upside percentage everywhere ---
+  document.querySelectorAll('[data-live-upside]').forEach(function(el) {
+    el.textContent = '+' + upside.toFixed(1) + '%';
+    el.style.color = upside > 0 ? 'var(--green)' : 'var(--red)';
+  });
+
+  // --- Valuation section: EV/EBITDA ---
+  var evEl = document.getElementById('live-ev-ebitda');
+  if (evEl) evEl.textContent = evEbitda.toFixed(1) + 'x';
+
+  // --- FCF Yield ---
+  var fcfEl = document.getElementById('live-fcf-yield');
+  if (fcfEl) fcfEl.textContent = fcfYield.toFixed(1) + '%';
+
+  // --- Football Field chart: update current price line ---
+  if (typeof renderFootballField === 'function') {
+    // Re-render with new price
+    var oldFn = renderFootballField;
+    var container = document.getElementById('footballField');
+    if (container && container.innerHTML) {
+      var ffCurrent = container.querySelectorAll('.ff-current');
+      var min_all = 50, max_all = 135;
+      var cursorLeft = (price - min_all) / (max_all - min_all) * 100;
+      ffCurrent.forEach(function(el) { el.style.left = cursorLeft + '%'; });
+      // Update the label
+      var ffLabel = container.querySelector('[data-ff-label]') || container.lastElementChild;
+      if (ffLabel && ffLabel.innerHTML && ffLabel.innerHTML.indexOf('current price') > -1) {
+        ffLabel.innerHTML = '<span style="font-size:10px;color:#a0adc8;">\u2190 <span style="color:#ffd700;">$' + price.toFixed(2) + '</span> = current price (gold line)</span>';
+      }
+    }
+  }
+
+  // --- DCF Sensitivity Heatmap: highlight current price cell ---
+  // (heatmap values are independent of current price, so no update needed)
+
+  // --- ML Prediction Simulator: update base price ---
+  if (typeof ML_BASE_PRICE !== 'undefined') {
+    window.ML_BASE_PRICE = price;
+    // Trigger recalculation if simulator is active
+    if (typeof updateMLPredictions === 'function') {
+      try { updateMLPredictions(); } catch(e) {}
+    }
+  }
+
+  // --- Valuation bridge chart: update current price reference line ---
+  var bridgeCanvas = document.getElementById('valuationBridgeChart');
+  if (bridgeCanvas) {
+    var bridgeChart = Chart.getChart(bridgeCanvas);
+    if (bridgeChart) {
+      // Find the current price dataset (dashed red/gold line)
+      bridgeChart.data.datasets.forEach(function(ds) {
+        if (ds.label && ds.label.indexOf('Current') > -1) {
+          ds.label = 'Current Price ($' + price.toFixed(2) + ')';
+          ds.data = ds.data.map(function() { return price; });
+        }
+      });
+      bridgeChart.update('none');
+    }
+  }
+
+  // --- ML sensitivity chart: update current price line ---
+  var sensCanvas = document.getElementById('sensitivityChart');
+  if (sensCanvas) {
+    var sensChart = Chart.getChart(sensCanvas);
+    if (sensChart) {
+      sensChart.data.datasets.forEach(function(ds) {
+        if (ds.label && ds.label.indexOf('Current Price') > -1) {
+          ds.label = 'Current Price ($' + price.toFixed(2) + ')';
+          ds.data = ds.data.map(function() { return price; });
+        }
+      });
+      sensChart.update('none');
+    }
+  }
+
+  // --- Scenario cards: update upside/downside percentages ---
+  var scenarios = [
+    { cls: '.scenario-card.bear', target: 59, label: 'Bear' },
+    { cls: '.scenario-card.base', target: 100, label: 'Base' },
+    { cls: '.scenario-card.bull', target: 117, label: 'Bull' }
+  ];
+  scenarios.forEach(function(s) {
+    var card = document.querySelector(s.cls);
+    if (card) {
+      var upsideEl = card.querySelector('.scenario-upside');
+      if (upsideEl) {
+        var pct = ((s.target / price - 1) * 100).toFixed(0);
+        upsideEl.textContent = (pct >= 0 ? '+' : '') + pct + '%';
+      }
+    }
+  });
+
+  // --- Analyst Consensus section: update "from $XX" text ---
+  var analystSub = document.querySelector('[data-live-analyst-sub]');
+  if (analystSub) analystSub.textContent = '+' + ((99.67 / price - 1) * 100).toFixed(1) + '% from $' + price.toFixed(2);
+
+  // --- Monte Carlo: update probability > current ---
+  var mcProb = document.querySelector('[data-live-mc-prob]');
+  if (mcProb) {
+    // Recalculate: assume normal dist with mean=$94, vol=35%
+    var zScore = (price - 94) / (94 * 0.35);
+    var probAbove = (1 - 0.5 * (1 + erf(zScore / Math.sqrt(2)))) * 100;
+    mcProb.textContent = Math.round(probAbove) + '%';
+  }
+}
+
+// Error function approximation for Monte Carlo probability
+function erf(x) {
+  var a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  var sign = x < 0 ? -1 : 1;
+  x = Math.abs(x);
+  var t = 1.0 / (1.0 + p * x);
+  var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t * Math.exp(-x*x);
+  return sign * y;
+}
+
+// --- Hook propagateLivePrice into applyData ---
+var _origApplyData = applyData;
+applyData = function(data, source) {
+  _origApplyData(data, source);
+  if (data && data.quote && data.quote.price) {
+    propagateLivePrice(data.quote.price);
+  }
+};
 
 // Auto-refresh every 5 minutes
 function startLiveRefresh() {
