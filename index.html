@@ -232,6 +232,53 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   .kpi-grid{grid-template-columns:repeat(2,1fr);}
   .scenario-grid{grid-template-columns:1fr;}
 }
+
+/* ===== TABLET (max-width: 1100px) ===== */
+@media(max-width:1100px) {
+  .grid-4,.grid-5 { grid-template-columns: repeat(2, 1fr); }
+  .hero-grid { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== MOBILE (max-width: 768px) ===== */
+@media(max-width:768px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; }
+  .top-bar { padding: 0 12px; flex-wrap: wrap; height: auto; min-height: var(--header-h); gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+  .top-bar-left { width: 100%; justify-content: center; }
+  .top-bar-right { width: 100%; justify-content: center; flex-wrap: wrap; gap: 6px; }
+  .section { padding: 20px 16px; }
+  .section-title { font-size: 20px; }
+  .grid-2,.grid-3,.grid-4,.grid-5,.grid-auto { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-grid { grid-template-columns: 1fr; }
+  .pt-display { flex-wrap: wrap; }
+  .chart-card { padding: 14px; }
+  .card { padding: 14px; }
+  table { font-size: 12px; }
+  .ff-row { flex-direction: column; gap: 4px; }
+  .ff-label { width: 100%; text-align: left; font-size: 11px; }
+  .ff-bar-wrap { height: 28px; }
+  .btn { font-size: 11px; padding: 5px 10px; }
+  .scenario-card { min-width: 0; }
+  .slider-group { flex-direction: column; }
+  #mobileMenuBtn { display: block !important; }
+  .sidebar.show-mobile { display: flex !important; position: fixed; z-index: 999; width: 260px; box-shadow: var(--shadow-lg); }
+}
+
+/* ===== SMALL MOBILE (max-width: 480px) ===== */
+@media(max-width:480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .price-display { font-size: 14px; }
+  .ticker-badge { font-size: 11px; }
+  .section-title { font-size: 18px; }
+  .hero-company { font-size: 22px; }
+  .pt-display { gap: 8px; }
+  .pt-value { font-size: 20px; }
+  #live-status { font-size: 8px; }
+}
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:var(--navy-800);}
@@ -304,7 +351,8 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-item" data-target="quant-risk" onclick="scrollToSection('quant-risk')"><span class="nav-icon">📐</span>Quant Risk Analytics<span class="nav-number">12</span></div>
   <div class="nav-item" data-target="advanced-valuation" onclick="scrollToSection('advanced-valuation')"><span class="nav-icon">🔬</span>Advanced Valuation<span class="nav-number">13</span></div>
   <div class="nav-item" data-target="ml-prediction" onclick="scrollToSection('ml-prediction')"><span class="nav-icon">🤖</span>ML Predictions<span class="nav-number">14</span></div>
-  <div class="nav-item" data-target="references" onclick="scrollToSection('references')"><span class="nav-icon">📚</span>References<span class="nav-number">15</span></div>
+  <div class="nav-item" data-target="modeling-lab" onclick="scrollToSection('modeling-lab')"><span class="nav-icon">🧲</span>Modeling Lab<span class="nav-number">16</span></div>
+  <div class="nav-item" data-target="references" onclick="scrollToSection('references')"><span class="nav-icon">📚</span>References<span class="nav-number">17</span></div>
   <div class="sidebar-footer">
     <div style="font-weight:600;color:var(--gray-200);margin-bottom:4px;">Investment Analysis</div>
     
@@ -316,6 +364,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 <!-- ===== TOP BAR ===== -->
 <header class="top-bar">
   <div class="top-bar-left">
+    <button id="mobileMenuBtn" onclick="document.getElementById('sidebar').classList.toggle('show-mobile')" style="display:none;background:none;border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--white);font-size:16px;cursor:pointer;">☰</button>
     <div class="ticker-badge">NYSE: SGI</div>
     <div class="price-display" id="live-price">$69.37</div>
     <div class="price-change" id="live-change">▼ 30% from 52W High</div>
@@ -1490,6 +1539,23 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="chart-source">Source: SGI financials · WACC derived from CAPM · FY2026E = consensus</div>
     </div>
   </div>
+
+  <!-- F. CROSS-ASSET CORRELATION MATRIX -->
+  <div class="chart-card" style="margin-top:24px;">
+    <div class="chart-title">F. Cross-Asset Correlation Matrix</div>
+    <div class="chart-subtitle">SGI correlation to housing, consumer, rates, and peers (52-week weekly returns)</div>
+    <div id="correlationMatrix" style="margin-top:16px;overflow-x:auto;"></div>
+    <div style="margin-top:16px;">
+      <div class="card-title" style="margin-bottom:8px;">Interpretation</div>
+      <ul style="font-size:12px;color:var(--gray-200);line-height:1.8;padding-left:18px;">
+        <li>SGI shows highest correlation to SNBR (0.71) — sector-specific risk dominates</li>
+        <li>Housing ETF correlation (0.58–0.62) confirms housing sensitivity</li>
+        <li>Negative TLT correlation (−0.31) suggests rate cuts are a tailwind</li>
+        <li>Moderate XLY correlation (0.45) — less pure-cyclical than market assumes</li>
+      </ul>
+    </div>
+    <div class="chart-source">Source: Calculated from 52-week weekly return data · Pearson correlation</div>
+  </div>
 </section>
 
 <!-- ===== SECTION 13: ADVANCED VALUATION MODELS ===== -->
@@ -1831,11 +1897,216 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   </div>
 </section>
 
+<!-- ===== SECTION 16: INTERACTIVE MODELING LAB ===== -->
+<section class="section" id="modeling-lab">
+  <div class="section-anchor" id="modeling-lab-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 16</div>
+    <div class="section-title">Interactive Modeling Lab</div>
+    <div class="section-subtitle">Adjust assumptions and see valuations, leverage paths, and deal impacts recompute in real time.</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('modeling-lab')">📄 Export Section</button></div>
+  </div>
+
+  <!-- MODULE A: INTERACTIVE DCF MODEL -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Module A — Interactive DCF Model</div>
+    <div class="chart-subtitle">Adjust assumptions to recompute implied equity value and share price in real time</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Assumptions</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Revenue Growth FY2026</label>
+            <input type="range" id="dcf-revgrowth-slider" min="0" max="15" step="0.1" value="6.4" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-revgrowth-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">6.4%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">EBITDA Margin</label>
+            <input type="range" id="dcf-ebitda-slider" min="12" max="25" step="0.1" value="18.6" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-ebitda-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">18.6%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">WACC</label>
+            <input type="range" id="dcf-wacc-slider" min="6" max="12" step="0.1" value="8.5" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-wacc-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">8.5%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Terminal Growth Rate</label>
+            <input type="range" id="dcf-tgr-slider" min="1" max="5" step="0.1" value="3.0" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-tgr-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">3.0%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Tax Rate</label>
+            <input type="range" id="dcf-tax-slider" min="20" max="30" step="1" value="25" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-tax-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">25%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">CapEx % of Revenue</label>
+            <input type="range" id="dcf-capex-slider" min="1" max="4" step="0.1" value="2.2" oninput="dcfUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="dcf-capex-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">2.2%</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Computed Outputs</div>
+        <div id="dcf-results" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+        <div id="dcf-implied-price-block" style="margin-top:16px;text-align:center;padding:16px;border-radius:8px;border:1px solid var(--border-accent);background:var(--surface);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE B: LEVERAGE SCENARIO SIMULATOR -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Module B — Leverage Scenario Simulator</div>
+    <div class="chart-subtitle">Model net debt paydown path and EPS accretion through FY2030</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Assumptions</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Annual FCF Growth</label>
+            <input type="range" id="lev-fcfgrowth" min="0" max="20" step="1" value="12" oninput="leverageUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="lev-fcfgrowth-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">12%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Debt Paydown % of FCF</label>
+            <input type="range" id="lev-debtpct" min="0" max="100" step="5" value="60" oninput="leverageUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="lev-debtpct-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">60%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Buyback % of FCF</label>
+            <input type="range" id="lev-buypct" min="0" max="50" step="5" value="15" oninput="leverageUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="lev-buypct-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">15%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Dividend % of FCF</label>
+            <input type="range" id="lev-divpct" min="0" max="30" step="5" value="15" oninput="leverageUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="lev-divpct-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">15%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Interest Rate on Debt</label>
+            <input type="range" id="lev-rate" min="4" max="8" step="0.1" value="5.5" oninput="leverageUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="lev-rate-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">5.5%</span>
+          </div>
+          <div id="lev-warning" style="display:none;background:rgba(255,77,109,0.15);border:1px solid var(--red);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--red);">⚠ FCF allocation exceeds 100% — reduce paydown, buyback, or dividend</div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Net Debt/EBITDA vs EPS Path</div>
+        <div class="chart-wrap h-260"><canvas id="leverageChart"></canvas></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;overflow-x:auto;">
+      <table class="data-table" id="leverageTable">
+        <thead><tr>
+          <th style="text-align:left;">Year</th>
+          <th>FCF ($M)</th>
+          <th>Debt Paydown ($M)</th>
+          <th>Net Debt ($M)</th>
+          <th>EBITDA ($M)</th>
+          <th>Net Debt/EBITDA</th>
+          <th>Shares (M)</th>
+          <th>EPS ($)</th>
+        </tr></thead>
+        <tbody id="leverageTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODULE C: ACQUISITION IMPACT MODELER -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Module C — Acquisition Impact Modeler</div>
+    <div class="chart-subtitle">Model accretion/dilution from a hypothetical Leggett &amp; Platt acquisition</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Deal Assumptions</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Acquisition Price ($B)</label>
+            <input type="range" id="acq-price" min="1.0" max="5.0" step="0.1" value="2.5" oninput="acquisitionUpdate()" style="flex:1;accent-color:var(--gold);">
+            <span id="acq-price-val" style="font-family:var(--font-mono);font-size:12px;color:var(--gold);width:42px;text-align:right;">$2.5B</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Cash Financing %</label>
+            <input type="range" id="acq-cash" min="0" max="100" step="5" value="70" oninput="acquisitionUpdate()" style="flex:1;accent-color:var(--gold);">
+            <span id="acq-cash-val" style="font-family:var(--font-mono);font-size:12px;color:var(--gold);width:42px;text-align:right;">70%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Target EBITDA ($M)</label>
+            <input type="range" id="acq-ebitda" min="100" max="500" step="10" value="300" oninput="acquisitionUpdate()" style="flex:1;accent-color:var(--gold);">
+            <span id="acq-ebitda-val" style="font-family:var(--font-mono);font-size:12px;color:var(--gold);width:42px;text-align:right;">$300M</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Cost Synergies ($M)</label>
+            <input type="range" id="acq-synergies" min="0" max="200" step="5" value="75" oninput="acquisitionUpdate()" style="flex:1;accent-color:var(--gold);">
+            <span id="acq-synergies-val" style="font-family:var(--font-mono);font-size:12px;color:var(--gold);width:42px;text-align:right;">$75M</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Integration Costs ($M)</label>
+            <input type="range" id="acq-intcosts" min="0" max="200" step="10" value="50" oninput="acquisitionUpdate()" style="flex:1;accent-color:var(--gold);">
+            <span id="acq-intcosts-val" style="font-family:var(--font-mono);font-size:12px;color:var(--gold);width:42px;text-align:right;">$50M</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Pro Forma Impact</div>
+        <div id="acq-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE D: REVERSE DCF -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Module D — Reverse DCF</div>
+    <div class="chart-subtitle">What FCF growth rate is the market pricing in at the current share price?</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Inputs</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Current Share Price ($)</label>
+            <input type="number" id="rdcf-price" value="69.37" step="0.01" min="1" oninput="reverseDCFUpdate()" style="width:80px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--white);font-family:var(--font-mono);font-size:13px;">
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">WACC</label>
+            <input type="range" id="rdcf-wacc" min="6" max="12" step="0.1" value="8.5" oninput="reverseDCFUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="rdcf-wacc-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">8.5%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Terminal Growth Rate</label>
+            <input type="range" id="rdcf-tgr" min="1" max="5" step="0.1" value="3.0" oninput="reverseDCFUpdate()" style="flex:1;accent-color:var(--teal);">
+            <span id="rdcf-tgr-val" style="font-family:var(--font-mono);font-size:12px;color:var(--teal);width:42px;text-align:right;">3.0%</span>
+          </div>
+          <div class="slider-group" style="display:flex;align-items:center;gap:10px;">
+            <label style="font-size:12px;color:var(--gray-200);width:200px;flex-shrink:0;">Current FCF ($M)</label>
+            <input type="number" id="rdcf-fcf" value="633" step="1" min="1" oninput="reverseDCFUpdate()" style="width:80px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--white);font-family:var(--font-mono);font-size:13px;">
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:12px;">Implied Market Pricing</div>
+        <div id="rdcf-results"></div>
+        <div style="margin-top:16px;">
+          <div style="font-size:11px;color:var(--gray-300);margin-bottom:6px;">Implied vs Management Target (21%)</div>
+          <div style="background:var(--navy-700);border-radius:6px;overflow:hidden;height:24px;position:relative;">
+            <div id="rdcf-gauge-implied" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-dim));transition:width 0.3s;width:0%;"></div>
+            <div id="rdcf-gauge-mgmt" style="position:absolute;top:0;bottom:0;width:2px;background:var(--gold);" title="Management target 21%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--gray-300);">
+            <span>0%</span><span id="rdcf-gauge-mgmt-label" style="color:var(--gold);">Mgmt 21%</span><span>50%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 17: REFERENCES (was 15) ===== -->
 <!-- ===== SECTION 15: REFERENCES ===== -->
 <section class="section" id="references">
   <div class="section-anchor" id="references-anchor" style="position:absolute;top:-60px;"></div>
   <div class="section-header">
-    <div class="section-label">Section 15</div>
+    <div class="section-label">Section 17</div>
     <div class="section-title">References</div>
     <div class="section-subtitle">APA 7th Edition formatted citations for all data sources used in this research report. In-text citations appear throughout as (Author, Year).</div>
   </div>
@@ -2790,6 +3061,10 @@ function renderHeatmap() {
   const waccs = [6.5, 7.0, 7.5, 7.95, 8.5, 9.0, 9.5];
   const tgrs = [1.5, 2.0, 2.5, 3.0, 3.5];
 
+  // Read from interactive DCF sliders if available
+  const liveWacc = document.getElementById('dcf-wacc-slider') ? parseFloat(document.getElementById('dcf-wacc-slider').value) : null;
+  const liveTgr = document.getElementById('dcf-tgr-slider') ? parseFloat(document.getElementById('dcf-tgr-slider').value) : null;
+
   // Simplified DCF: TV = FCF_2028 * (1+g) / (WACC - g), discount back 3 yrs
   function dcfPrice(wacc, tgr) {
     const fcf2026 = 745, fcf2027 = 915, fcf2028 = 1124;
@@ -2821,15 +3096,25 @@ function renderHeatmap() {
     ${tgrs.map(g => `<div style="flex:1;font-size:10px;text-align:center;color:#a0adc8;padding:4px;">${g}%</div>`).join('')}
   </div>`;
 
+  // Find closest cell to live slider values
+  let closestWaccIdx = null, closestTgrIdx = null;
+  if (liveWacc !== null && liveTgr !== null) {
+    closestWaccIdx = waccs.reduce((best, w, i) => Math.abs(w - liveWacc) < Math.abs(waccs[best] - liveWacc) ? i : best, 0);
+    closestTgrIdx = tgrs.reduce((best, g, i) => Math.abs(g - liveTgr) < Math.abs(tgrs[best] - liveTgr) ? i : best, 0);
+  }
+
   const rows = waccs.map((w, wi) => {
     const isBase = Math.abs(w - 7.95) < 0.1;
+    const isLiveWacc = closestWaccIdx === wi;
     return `<div style="display:flex;gap:3px;margin-bottom:3px;">
-      <div style="width:60px;font-size:10px;text-align:center;padding:6px 2px;color:${isBase ? '#00b4d8' : '#a0adc8'};font-weight:${isBase ? '700' : '400'};">${w}%${isBase ? ' ◄' : ''}</div>
+      <div style="width:60px;font-size:10px;text-align:center;padding:6px 2px;color:${isBase ? '#00b4d8' : (isLiveWacc ? '#ffd700' : '#a0adc8')};font-weight:${isBase || isLiveWacc ? '700' : '400'};">${w}%${isBase ? ' ◄' : ''}${isLiveWacc && !isBase ? ' ◄' : ''}</div>
       ${tgrs.map((g, gi) => {
         const price = prices[wi][gi];
         const { bg, txt } = getColor(price);
         const isBaseCell = isBase && gi === 2;
-        return `<div class="hm-cell" style="flex:1;background:${bg};color:${txt};${isBaseCell ? 'outline:2px solid #00b4d8;' : ''}" title="WACC ${w}%, TGR ${g}% → $${price.toFixed(0)}">$${price.toFixed(0)}</div>`;
+        const isLiveCell = closestWaccIdx === wi && closestTgrIdx === gi;
+        const outline = isLiveCell ? 'outline:2.5px solid #ffd700;outline-offset:-1px;' : (isBaseCell ? 'outline:2px solid #00b4d8;' : '');
+        return `<div class="hm-cell" style="flex:1;background:${bg};color:${txt};${outline}" title="WACC ${w}%, TGR ${g}% \u2192 $${price.toFixed(0)}">$${price.toFixed(0)}</div>`;
       }).join('')}
     </div>`;
   }).join('');
@@ -2892,7 +3177,7 @@ function sortTable(tableId, colIdx) {
 
 // ===== SCROLLSPY =====
 function initScrollspy() {
-  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','references'];
+  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','modeling-lab','references'];
   const navItems = document.querySelectorAll('.nav-item[data-target]');
 
   function getActive() {
@@ -4246,7 +4531,8 @@ const chartInits = {
   'quant-risk': [initReturnDistChart, initROICWaccChart],
   'advanced-valuation': [initValuationBridgeChart, initMonteCarloChart],
   'references': [],
-  'ml-prediction': [initSensitivityChart, initFeatureImportanceChart]
+  'ml-prediction': [initSensitivityChart, initFeatureImportanceChart],
+  'modeling-lab': []
 };
 const chartsInitialized = new Set();
 
@@ -4258,11 +4544,13 @@ function initSection(sectionId) {
   if (sectionId === 'valuation') { renderFootballField(); renderHeatmap(); }
   if (sectionId === 'analyst-consensus') { renderPTRange(); }
   if (sectionId === 'ml-prediction') { initMLSimulator(); }
+  if (sectionId === 'modeling-lab') { initModelingLab(); }
+  if (sectionId === 'quant-risk') { renderCorrelationMatrix(); }
 }
 
 // ===== INTERSECTION OBSERVER FOR LAZY INIT =====
 function setupLazyCharts() {
-  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','references'];
+  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','modeling-lab','references'];
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -6017,6 +6305,351 @@ applyData = function(data, source) {
 function startLiveRefresh() {
   fetchLiveData();
   liveRefreshInterval = setInterval(fetchLiveData, 300000); // 5 min
+}
+
+// ===== CORRELATION MATRIX =====
+function renderCorrelationMatrix() {
+  const container = document.getElementById('correlationMatrix');
+  if (!container) return;
+  const tickers = ['SGI','ITB','XHB','XLY','TLT','SNBR','LZB'];
+  const matrix = [
+    [1.00, 0.62, 0.58, 0.45, -0.31, 0.71, 0.54],
+    [0.62, 1.00, 0.94, 0.52, -0.48, 0.45, 0.38],
+    [0.58, 0.94, 1.00, 0.55, -0.45, 0.42, 0.41],
+    [0.45, 0.52, 0.55, 1.00, -0.38, 0.33, 0.47],
+    [-0.31,-0.48,-0.45,-0.38, 1.00,-0.22,-0.28],
+    [0.71, 0.45, 0.42, 0.33, -0.22, 1.00, 0.61],
+    [0.54, 0.38, 0.41, 0.47, -0.28, 0.61, 1.00]
+  ];
+
+  function corrColor(v) {
+    if (v === 1.00) return { bg: 'rgba(10,22,40,0.95)', txt: '#a0adc8' };
+    if (v > 0) {
+      const a = Math.min(v * 0.9, 0.85);
+      return { bg: `rgba(0,180,216,${a})`, txt: v > 0.5 ? '#001a2a' : '#f0f4ff' };
+    } else {
+      const a = Math.min(Math.abs(v) * 1.2, 0.85);
+      return { bg: `rgba(255,77,109,${a})`, txt: Math.abs(v) > 0.4 ? '#1a0007' : '#f0f4ff' };
+    }
+  }
+
+  const cellSize = 'min(52px, calc((100% - 80px) / 7))';
+  let html = `<div style="overflow-x:auto;">`;
+  html += `<div style="display:grid;grid-template-columns:70px repeat(7,${cellSize});gap:2px;min-width:420px;">`;
+  // Header row
+  html += `<div style="font-size:10px;color:var(--gray-300);display:flex;align-items:flex-end;padding:4px 2px;">↓ vs →</div>`;
+  tickers.forEach(t => {
+    html += `<div style="font-size:11px;font-weight:700;color:var(--teal);text-align:center;padding:4px 2px;font-family:var(--font-mono);">${t}</div>`;
+  });
+  // Data rows
+  tickers.forEach((rowTicker, ri) => {
+    html += `<div style="font-size:11px;font-weight:700;color:var(--teal);display:flex;align-items:center;padding:2px 4px;font-family:var(--font-mono);">${rowTicker}</div>`;
+    matrix[ri].forEach((v, ci) => {
+      const { bg, txt } = corrColor(v);
+      html += `<div style="background:${bg};color:${txt};text-align:center;padding:8px 4px;border-radius:4px;font-family:var(--font-mono);font-size:11px;font-weight:${v === 1.00 ? '600' : '500'};cursor:default;" title="${rowTicker} vs ${tickers[ci]}: ${v.toFixed(2)}">${v.toFixed(2)}</div>`;
+    });
+  });
+  html += `</div></div>`;
+  container.innerHTML = html;
+}
+
+// ===== INTERACTIVE MODELING LAB =====
+let leverageChartInst = null;
+
+function initModelingLab() {
+  renderCorrelationMatrix();
+  dcfUpdate();
+  leverageUpdate();
+  acquisitionUpdate();
+  reverseDCFUpdate();
+}
+
+// Module A: Interactive DCF
+function dcfUpdate() {
+  const revGrowth = parseFloat(document.getElementById('dcf-revgrowth-slider')?.value || 6.4) / 100;
+  const ebitdaMargin = parseFloat(document.getElementById('dcf-ebitda-slider')?.value || 18.6) / 100;
+  const wacc = parseFloat(document.getElementById('dcf-wacc-slider')?.value || 8.5) / 100;
+  const tgr = parseFloat(document.getElementById('dcf-tgr-slider')?.value || 3.0) / 100;
+  const taxRate = parseFloat(document.getElementById('dcf-tax-slider')?.value || 25) / 100;
+  const capexPct = parseFloat(document.getElementById('dcf-capex-slider')?.value || 2.2) / 100;
+
+  // Update span displays
+  const fmt = (id, v, suffix) => { const el = document.getElementById(id); if (el) el.textContent = v + suffix; };
+  fmt('dcf-revgrowth-val', (revGrowth*100).toFixed(1), '%');
+  fmt('dcf-ebitda-val', (ebitdaMargin*100).toFixed(1), '%');
+  fmt('dcf-wacc-val', (wacc*100).toFixed(1), '%');
+  fmt('dcf-tgr-val', (tgr*100).toFixed(1), '%');
+  fmt('dcf-tax-val', (taxRate*100).toFixed(0), '%');
+  fmt('dcf-capex-val', (capexPct*100).toFixed(1), '%');
+
+  // Constants
+  const baseRev = 7477; // FY2025 revenue $M
+  const da = 292; // D&A $M
+  const deltaWC = 50;
+  const netDebt = 8130;
+  const shares = 210;
+  const currentPrice = 69.37;
+
+  // FY2026 calcs
+  const rev26 = baseRev * (1 + revGrowth);
+  const ebitda26 = rev26 * ebitdaMargin;
+  const capex26 = rev26 * capexPct;
+  const fcf26 = ebitda26 * (1 - taxRate) + da - capex26 - deltaWC;
+
+  // FY2027, FY2028 (grow FCF at revGrowth)
+  const fcf27 = fcf26 * (1 + revGrowth);
+  const fcf28 = fcf27 * (1 + revGrowth);
+
+  // Terminal value
+  const tv = fcf28 * (1 + tgr) / (wacc - tgr);
+  const pvTV = tv / Math.pow(1 + wacc, 3);
+  const pvFCFs = fcf26 / Math.pow(1+wacc,1) + fcf27 / Math.pow(1+wacc,2) + fcf28 / Math.pow(1+wacc,3);
+  const ev = pvFCFs + pvTV;
+  const equity = ev - netDebt;
+  const impliedPrice = equity / shares;
+  const upside = (impliedPrice - currentPrice) / currentPrice * 100;
+
+  const r = document.getElementById('dcf-results');
+  if (!r) return;
+  const items = [
+    ['FY2026E Revenue', `$${(rev26/1000).toFixed(2)}B`],
+    ['FY2026E EBITDA', `$${ebitda26.toFixed(0)}M`],
+    ['FY2026E FCF', `$${fcf26.toFixed(0)}M`],
+    ['Terminal Value', `$${(tv/1000).toFixed(1)}B`],
+    ['PV of TV', `$${(pvTV/1000).toFixed(1)}B`],
+    ['PV of FCFs', `$${(pvFCFs/1000).toFixed(1)}B`],
+    ['Enterprise Value', `$${(ev/1000).toFixed(1)}B`],
+    ['Equity Value', `$${(equity/1000).toFixed(1)}B`],
+  ];
+  r.innerHTML = items.map(([k,v]) => `<div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;"><div style="font-size:10px;color:var(--gray-200);margin-bottom:2px;">${k}</div><div style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--white);">${v}</div></div>`).join('');
+
+  const priceBlock = document.getElementById('dcf-implied-price-block');
+  if (priceBlock) {
+    const color = impliedPrice >= currentPrice ? 'var(--green)' : 'var(--red)';
+    const arrow = impliedPrice >= currentPrice ? '▲' : '▼';
+    priceBlock.innerHTML = `<div style="font-size:11px;color:var(--gray-200);margin-bottom:4px;">Implied Share Price</div><div style="font-size:32px;font-weight:700;color:${color};font-family:var(--font-mono);">$${impliedPrice.toFixed(2)}</div><div style="font-size:13px;color:${color};margin-top:4px;">${arrow} ${Math.abs(upside).toFixed(1)}% ${upside >= 0 ? 'upside' : 'downside'} vs $${currentPrice}</div>`;
+  }
+
+  // Also update heatmap highlight if it's visible
+  const heatmap = document.getElementById('heatmapContainer');
+  if (heatmap && heatmap.children.length > 0) { renderHeatmap(); }
+}
+
+// Module B: Leverage Simulator
+function leverageUpdate() {
+  const fcfGrowth = parseFloat(document.getElementById('lev-fcfgrowth')?.value || 12) / 100;
+  const debtPct = parseFloat(document.getElementById('lev-debtpct')?.value || 60) / 100;
+  const buyPct = parseFloat(document.getElementById('lev-buypct')?.value || 15) / 100;
+  const divPct = parseFloat(document.getElementById('lev-divpct')?.value || 15) / 100;
+  const rate = parseFloat(document.getElementById('lev-rate')?.value || 5.5) / 100;
+
+  const fmt = (id, v, suffix) => { const el = document.getElementById(id); if (el) el.textContent = v + suffix; };
+  fmt('lev-fcfgrowth-val', (fcfGrowth*100).toFixed(0), '%');
+  fmt('lev-debtpct-val', (debtPct*100).toFixed(0), '%');
+  fmt('lev-buypct-val', (buyPct*100).toFixed(0), '%');
+  fmt('lev-divpct-val', (divPct*100).toFixed(0), '%');
+  fmt('lev-rate-val', (rate*100).toFixed(1), '%');
+
+  const totalPct = debtPct + buyPct + divPct;
+  const warning = document.getElementById('lev-warning');
+  if (warning) warning.style.display = totalPct > 1.0 ? 'block' : 'none';
+
+  // Baseline
+  let netDebt = 8130, ebitda = 1306, shares = 210, fcf = 633;
+  const currentPrice = 69.37;
+  const taxRate = 0.25;
+  const years = ['FY2025','FY2026E','FY2027E','FY2028E','FY2029E','FY2030E'];
+  const ndRatios = [netDebt / ebitda];
+  const epsArr = [2.70];
+  const tableRows = [];
+
+  for (let i = 0; i < 5; i++) {
+    fcf *= (1 + fcfGrowth);
+    const paydown = fcf * debtPct;
+    const buybackAmt = fcf * buyPct;
+    const newSharesRetired = buybackAmt / currentPrice;
+    netDebt = Math.max(0, netDebt - paydown);
+    ebitda *= (1 + fcfGrowth * 0.75);
+    shares = Math.max(1, shares - newSharesRetired);
+    const interest = netDebt * rate;
+    const eps = Math.max(0, (ebitda - interest) * (1 - taxRate) / shares);
+    const ratio = netDebt > 0 ? netDebt / ebitda : 0;
+    ndRatios.push(ratio);
+    epsArr.push(eps);
+    tableRows.push({ year: years[i+1], fcf, paydown, netDebt, ebitda, ratio, shares, eps });
+  }
+
+  // Update table
+  const tbody = document.getElementById('leverageTableBody');
+  if (tbody) {
+    tbody.innerHTML = tableRows.map(r => `<tr>
+      <td style="font-weight:600;">${r.year}</td>
+      <td>$${r.fcf.toFixed(0)}</td>
+      <td>$${r.paydown.toFixed(0)}</td>
+      <td>$${r.netDebt.toFixed(0)}</td>
+      <td>$${r.ebitda.toFixed(0)}</td>
+      <td style="color:${r.ratio < 3 ? 'var(--green)' : r.ratio < 5 ? 'var(--gold)' : 'var(--red)'}">${r.ratio.toFixed(2)}x</td>
+      <td>${r.shares.toFixed(1)}</td>
+      <td style="color:var(--green);">$${r.eps.toFixed(2)}</td>
+    </tr>`).join('');
+  }
+
+  // Update chart
+  const canvas = document.getElementById('leverageChart');
+  if (!canvas) return;
+
+  if (leverageChartInst) { leverageChartInst.destroy(); leverageChartInst = null; }
+  leverageChartInst = new Chart(canvas, {
+    data: {
+      labels: years,
+      datasets: [
+        {
+          type: 'line', label: 'Net Debt/EBITDA',
+          data: ndRatios, borderColor: '#00b4d8', backgroundColor: 'rgba(0,180,216,0.1)',
+          yAxisID: 'y', tension: 0.3, pointRadius: 4, fill: true
+        },
+        {
+          type: 'line', label: 'EPS ($)',
+          data: epsArr, borderColor: '#ffd700', backgroundColor: 'rgba(255,215,0,0.08)',
+          yAxisID: 'y2', tension: 0.3, pointRadius: 4, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: { type: 'linear', position: 'left', title: { display: true, text: 'Net Debt / EBITDA', color: '#00b4d8' }, ticks: { color: '#00b4d8' }, grid: { color: 'rgba(255,255,255,0.06)' } },
+        y2: { type: 'linear', position: 'right', title: { display: true, text: 'EPS ($)', color: '#ffd700' }, ticks: { color: '#ffd700', callback: v => '$' + v.toFixed(2) }, grid: { drawOnChartArea: false } },
+        x: { ticks: { color: '#a0adc8' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      },
+      plugins: { legend: { labels: { color: '#d0d8f0', font: { size: 12 } } } }
+    }
+  });
+}
+
+// Module C: Acquisition Impact
+function acquisitionUpdate() {
+  const dealPrice = parseFloat(document.getElementById('acq-price')?.value || 2.5) * 1000; // $M
+  const cashPct = parseFloat(document.getElementById('acq-cash')?.value || 70) / 100;
+  const targetEBITDA = parseFloat(document.getElementById('acq-ebitda')?.value || 300);
+  const synergies = parseFloat(document.getElementById('acq-synergies')?.value || 75);
+  const intCosts = parseFloat(document.getElementById('acq-intcosts')?.value || 50);
+
+  const fmt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  fmt('acq-price-val', '$' + (dealPrice/1000).toFixed(1) + 'B');
+  fmt('acq-cash-val', (cashPct*100).toFixed(0) + '%');
+  fmt('acq-ebitda-val', '$' + targetEBITDA.toFixed(0) + 'M');
+  fmt('acq-synergies-val', '$' + synergies.toFixed(0) + 'M');
+  fmt('acq-intcosts-val', '$' + intCosts.toFixed(0) + 'M');
+
+  const currentPrice = 69.37;
+  const baseShares = 210;
+  const baseNetDebt = 8130;
+  const baseEBITDA = 1306;
+  const baseInterest = baseNetDebt * 0.055;
+  const taxRate = 0.25;
+  const standaloneEPS = 2.70;
+
+  const stockPct = 1 - cashPct;
+  const newShares = (dealPrice * stockPct) / currentPrice; // M shares
+  const pfShares = baseShares + newShares;
+  const addedDebt = dealPrice * cashPct;
+  const pfNetDebt = baseNetDebt + addedDebt;
+  const pfEBITDA = baseEBITDA + targetEBITDA + synergies - intCosts;
+  const addedInterest = addedDebt * 0.055;
+  const pfTotalInterest = baseInterest + addedInterest;
+  const pfEPS = (pfEBITDA - pfTotalInterest) * (1 - taxRate) / pfShares;
+  const accretion = pfEPS - standaloneEPS;
+  const accretive = accretion >= 0;
+  const pfNDEBITDA = pfNetDebt / pfEBITDA;
+
+  const r = document.getElementById('acq-results');
+  if (!r) return;
+  r.innerHTML = `<table style="width:100%;">
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">New Shares Issued</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;">${newShares.toFixed(1)}M</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">Pro Forma Shares</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;">${pfShares.toFixed(1)}M</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">New Net Debt</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;">$${(pfNetDebt/1000).toFixed(1)}B</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">Pro Forma EBITDA</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;color:var(--teal);">$${pfEBITDA.toFixed(0)}M</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">Pro Forma Net Debt/EBITDA</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;color:${pfNDEBITDA < 4.5 ? 'var(--green)' : 'var(--red)'}">${pfNDEBITDA.toFixed(2)}x</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">Standalone EPS</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;">$${standaloneEPS.toFixed(2)}</td></tr>
+    <tr><td style="font-size:12px;color:var(--gray-200);padding:5px 0;">Pro Forma EPS</td><td style="font-family:var(--font-mono);font-size:13px;font-weight:600;text-align:right;color:var(--teal);">$${pfEPS.toFixed(2)}</td></tr>
+    <tr style="border-top:1px solid var(--border);"><td style="font-size:13px;font-weight:700;color:var(--white);padding:8px 0;">EPS Impact</td><td style="text-align:right;padding:8px 0;"><span style="display:inline-block;background:${accretive ? 'rgba(0,208,132,0.15)' : 'rgba(255,77,109,0.15)'};color:${accretive ? 'var(--green)' : 'var(--red)'};border:1px solid ${accretive ? 'var(--green)' : 'var(--red)'};border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;font-weight:700;">${accretive ? '+' : ''}${accretion.toFixed(2)} (${accretive ? 'Accretive' : 'Dilutive'})</span></td></tr>
+  </table>`;
+}
+
+// Module D: Reverse DCF
+function dcfCalcFull(wacc, tgr, currentFCF, fcfGrowthRate, years) {
+  const w = wacc / 100, g = tgr / 100, gr = fcfGrowthRate;
+  let pvFCFs = 0, fcf = currentFCF;
+  for (let i = 1; i <= years; i++) {
+    fcf *= (1 + gr);
+    pvFCFs += fcf / Math.pow(1 + w, i);
+  }
+  const terminalFCF = fcf * (1 + g);
+  if (w <= g) return Infinity;
+  const tv = terminalFCF / (w - g);
+  const pvTV = tv / Math.pow(1 + w, years);
+  return pvFCFs + pvTV;
+}
+
+function solveFCFGrowth(price, wacc, tgr, currentFCF, shares, netDebt) {
+  let low = -0.10, high = 0.50;
+  const targetEV = price * shares + netDebt;
+  for (let i = 0; i < 60; i++) {
+    const mid = (low + high) / 2;
+    const ev = dcfCalcFull(wacc, tgr, currentFCF, mid, 10);
+    if (ev > targetEV) high = mid;
+    else low = mid;
+  }
+  return (low + high) / 2;
+}
+
+function reverseDCFUpdate() {
+  const price = parseFloat(document.getElementById('rdcf-price')?.value || 69.37);
+  const wacc = parseFloat(document.getElementById('rdcf-wacc')?.value || 8.5);
+  const tgr = parseFloat(document.getElementById('rdcf-tgr')?.value || 3.0);
+  const fcf = parseFloat(document.getElementById('rdcf-fcf')?.value || 633);
+
+  const fmt = (id, v, suffix) => { const el = document.getElementById(id); if (el) el.textContent = v + suffix; };
+  fmt('rdcf-wacc-val', wacc.toFixed(1), '%');
+  fmt('rdcf-tgr-val', tgr.toFixed(1), '%');
+
+  const netDebt = 8130, shares = 210;
+  let impliedGrowth;
+  try {
+    impliedGrowth = solveFCFGrowth(price, wacc, tgr, fcf, shares, netDebt);
+  } catch(e) {
+    impliedGrowth = 0;
+  }
+
+  const impliedPct = (impliedGrowth * 100);
+  const mgmtTarget = 21;
+  const gap = mgmtTarget - impliedPct;
+  const r = document.getElementById('rdcf-results');
+  if (r) {
+    r.innerHTML = `
+      <div style="margin-bottom:16px;padding:16px;background:var(--surface);border:1px solid var(--border-accent);border-radius:8px;text-align:center;">
+        <div style="font-size:11px;color:var(--gray-200);margin-bottom:4px;">Market Implied FCF Growth</div>
+        <div style="font-size:28px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">${impliedPct.toFixed(1)}%</div>
+        <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">vs Management's guided 21% FCF CAGR</div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.7;">
+        <div>Market implies <strong style="color:var(--teal);">${impliedPct.toFixed(1)}%</strong> FCF growth vs management's <strong style="color:var(--gold);">21%</strong></div>
+        <div style="margin-top:4px;">Discount: <strong style="color:var(--red);">${gap.toFixed(1)} pp</strong> — market pricing significant skepticism</div>
+      </div>`;
+  }
+
+  // Update gauge
+  const maxGauge = 50;
+  const impliedPctClamped = Math.min(Math.max(impliedPct, 0), maxGauge);
+  const mgmtPctClamped = Math.min(mgmtTarget, maxGauge);
+  const gaugeImplied = document.getElementById('rdcf-gauge-implied');
+  const gaugeMgmt = document.getElementById('rdcf-gauge-mgmt');
+  const gaugeMgmtLabel = document.getElementById('rdcf-gauge-mgmt-label');
+  if (gaugeImplied) gaugeImplied.style.width = (impliedPctClamped / maxGauge * 100) + '%';
+  if (gaugeMgmt) gaugeMgmt.style.left = (mgmtPctClamped / maxGauge * 100) + '%';
+  if (gaugeMgmtLabel) gaugeMgmtLabel.textContent = `Mgmt ${mgmtTarget}%`;
 }
 
 // ===== INIT =====
