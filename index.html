@@ -4622,7 +4622,402 @@ async function exportPDF() {
     footer('');
 
     // ══════════════════════════════════════════
-    // PAGE 15  -  DEEP RESEARCH: SENTIMENT & ML ANALYSIS
+    // PAGE 15  -  INVESTMENT CASE
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Investment Case - Three Compounding Catalysts', y);
+    y += 3;
+
+    const p15_pillars = [
+      {
+        title: 'Pillar 1: Synergies Ahead of Plan',
+        color: teal,
+        bullets: [
+          'Total synergy target: $225M ($100M sales + $100M cost + $25M advertising). $80M realized in Year 1 -- ahead of original schedule.',
+          'Sales synergies: Tempur-Sealy penetration of Mattress Firm sales rising from mid-40% to mid-50% -- exclusive floor space expansion driving incremental unit volume.',
+          'Cost synergies: manufacturing consolidation, logistics network optimization, and global sourcing efficiencies across combined footprint.',
+          'Run-rate ramp: $15M (2025) -> $65M (2026) -> $100M (2027). Acceleration expected as integration milestones are completed.',
+        ]
+      },
+      {
+        title: 'Pillar 2: 24% Adj EPS CAGR Through 2028',
+        color: green,
+        bullets: [
+          'Adj EPS trajectory: $2.70 (FY2025) -> $3.60 (FY2026E) -> $4.40 (FY2027E) -> $5.15 (FY2028E). 4-year CAGR of approximately 24%.',
+          'Driver 1 -- Synergy flow-through: $100M+ incremental EBITDA contribution by FY2027 drops directly to operating income.',
+          'Driver 2 -- Deleveraging: Net Debt/EBITDA declining from ~6.0x (FY2025) toward 2.5x (FY2027), yielding material interest savings.',
+          'Driver 3 -- Share repurchases: 50% of FCF allocated to buybacks starting Q1 2026. EPS CAGR does NOT depend on industry volume recovery.',
+        ]
+      },
+      {
+        title: 'Pillar 3: Free Cyclical Upside Not Priced In',
+        color: gold,
+        bullets: [
+          'Industry at cyclical trough: mattress market volumes down high-single-digits; management FY2025 guidance assumes flat market conditions.',
+          'Housing starts below 30-year average. 7-10 year mattress replacement cycle implies significant pent-up demand accumulating.',
+          '30-year mortgage rate at approximately 6%. Historical analysis shows housing activity inflects meaningfully when rates approach 5-handle.',
+          'Any industry recovery is pure upside -- not baked into base case EPS estimates or current consensus price targets.',
+        ]
+      },
+    ];
+
+    const p15_pillarH = 62;
+    p15_pillars.forEach((pillar, pi) => {
+      const px = 10;
+      const py = y + pi * (p15_pillarH + 5);
+      // Box background
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(px, py, W - 20, p15_pillarH, 3, 3, 'F');
+      // Left accent bar
+      doc.setFillColor(...pillar.color);
+      doc.rect(px, py, 3, p15_pillarH, 'F');
+      // Title
+      doc.setTextColor(...pillar.color);
+      doc.setFontSize(9.5);
+      doc.setFont('helvetica', 'bold');
+      doc.text(pillar.title, px + 6, py + 8);
+      // Bullets
+      doc.setTextColor(...gray);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      pillar.bullets.forEach((b, bi) => {
+        const bLines = doc.splitTextToSize('- ' + b, W - 36);
+        doc.text(bLines, px + 8, py + 16 + bi * 12);
+      });
+    });
+    footer('');
+
+    // ══════════════════════════════════════════
+    // PAGE 16  -  ADVANCED VALUATION DETAIL
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Advanced Valuation - Multi-Methodology Framework', y);
+    y += 2;
+
+    // SOTP Section header
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Sum-of-Parts (SOTP) Valuation', 10, y);
+    y += 5;
+
+    const p16_sotpCols = [10, 75, 115, 145, 170];
+    const p16_sotpColW = [65, 40, 30, 25, 30];
+    y = tableHeader(['Segment', 'EBITDA', 'Multiple', 'EV ($M)', 'Notes'], p16_sotpCols, y, 8);
+
+    const p16_sotpData = [
+      ['North America Manufacturing', '$680M', '12x', '$8,160M', 'Premium brand portfolio'],
+      ['Mattress Firm Retail', '$400M', '8x', '$3,200M', 'Specialty retail'],
+      ['International (Tempur + Dreams)', '$300M', '14x', '$4,200M', 'High-growth, margin expansion'],
+      ['Corporate / Unallocated', '-$80M', '10x', '-$800M', ''],
+      ['Total Enterprise Value', '', '', '$14,760M', ''],
+      ['Less: Net Debt', '', '', '-$8,130M', ''],
+      ['Equity Value', '', '', '$6,630M', ''],
+      ['Per Share (210M shares)', '', '', '$31.57', 'Conservative floor'],
+    ];
+    p16_sotpData.forEach((row, i) => {
+      const isSpecial = i >= 4;
+      if (i % 2 === 0 && !isSpecial) { doc.setFillColor(...ltGray); doc.rect(10, y, W - 20, 8, 'F'); }
+      if (isSpecial) { doc.setFillColor(224, 242, 254); doc.rect(10, y, W - 20, 8, 'F'); }
+      p16_sotpCols.forEach((x, ci) => {
+        const isBold = ci === 0 || i >= 4;
+        doc.setTextColor(...(i >= 4 ? teal : (ci === 3 ? navy : gray)));
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+        doc.text(row[ci], x + 1, y + 5.5);
+      });
+      doc.setDrawColor(...midGray);
+      doc.setLineWidth(0.1);
+      doc.line(10, y + 8, W - 10, y + 8);
+      y += 8;
+    });
+    y += 3;
+
+    // SOTP note
+    doc.setTextColor(...gray);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Note: SOTP conservative floor uses current-year multiples. Consensus 2026E multiples yield implied equity value range of $85-$118 per share.', 10, y, { maxWidth: W - 20 });
+    y += 8;
+
+    // Monte Carlo Section
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Monte Carlo Simulation Summary (10,000 Simulations)', 10, y);
+    y += 5;
+
+    const p16_mcStats = [
+      { label: 'Median Price', value: '$94', color: teal },
+      { label: 'Mean Price', value: '$96', color: teal },
+      { label: '25th Percentile', value: '$78', color: gold },
+      { label: '75th Percentile', value: '$112', color: green },
+      { label: 'Prob. Above $100', value: '42%', color: green },
+    ];
+    const p16_mcBoxW = (W - 20) / p16_mcStats.length;
+    p16_mcStats.forEach((stat, si) => {
+      const bx = 10 + si * p16_mcBoxW;
+      doc.setFillColor(...ltGray);
+      doc.roundedRect(bx, y, p16_mcBoxW - 2, 22, 2, 2, 'F');
+      doc.setFillColor(...stat.color);
+      doc.rect(bx, y, 2, 22, 'F');
+      doc.setTextColor(...midGray);
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(stat.label, bx + 4, y + 6);
+      doc.setTextColor(...stat.color);
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.text(stat.value, bx + 4, y + 17);
+    });
+    y += 26;
+
+    doc.setTextColor(...gray);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Simulation inputs: WACC range 7.5-10.5%, revenue growth range 2-9%, terminal growth 2-4%, synergy realization 60-110% of plan.', 10, y, { maxWidth: W - 20 });
+    y += 10;
+
+    // Residual Income / EVA Note
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Residual Income / Economic Value Added (EVA)', 10, y);
+    y += 5;
+
+    const p16_evaLines = [
+      'EVA = NOPAT - (WACC x Invested Capital). Post-merger EVA is currently negative (-$142M estimated FY2025) due to elevated goodwill and integration costs depressing NOPAT.',
+      'Residual income model (RI): intrinsic value = book value per share + PV of excess returns. Current book value ~$9.50/share; RI model implies $82-$88 per share under base case synergy realization.',
+      'EVA inflection is expected in FY2026 as NOPAT normalizes. Positive EVA generation is a key catalyst for multiple re-rating toward premium comps (Leggett & Platt, Purple Innovation excluded; Sleep Number at 8x EBITDA represents low-end anchor).',
+    ];
+    p16_evaLines.forEach((line) => {
+      const evaSplit = doc.splitTextToSize('- ' + line, W - 22);
+      doc.setTextColor(...gray);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(evaSplit, 10, y);
+      y += evaSplit.length * 4.5 + 2;
+    });
+    footer('');
+
+    // ══════════════════════════════════════════
+    // PAGE 17  -  ML PREDICTIONS & MODELING
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Machine Learning Analysis & Price Prediction', y);
+    y += 2;
+
+    // ML Model Summary Table
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ML Model Summary - Price Prediction Ensemble', 10, y);
+    y += 5;
+
+    const p17_mlCols = [10, 60, 100, 135, 165];
+    const p17_mlColW = [50, 40, 35, 30, 35];
+    y = tableHeader(['Model', 'Predicted Price', 'Confidence', 'Key Driver', ''], p17_mlCols, y, 8);
+
+    const p17_models = [
+      ['Linear Regression', '$98', 'Moderate', 'Revenue growth + margin expansion'],
+      ['Random Forest', '$102', 'High', 'Synergy realization, deleveraging'],
+      ['LSTM Neural Net', '$95', 'Moderate', 'Historical price patterns'],
+      ['Ensemble Average', '$98', 'High', 'Weighted combination'],
+    ];
+    p17_models.forEach((row, i) => {
+      const isEns = i === 3;
+      if (i % 2 === 0) { doc.setFillColor(...ltGray); doc.rect(10, y, W - 20, 8, 'F'); }
+      if (isEns) { doc.setFillColor(224, 242, 254); doc.rect(10, y, W - 20, 8, 'F'); }
+      p17_mlCols.slice(0, 4).forEach((x, ci) => {
+        doc.setTextColor(...(ci === 1 ? teal : (isEns && ci === 0 ? navy : gray)));
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', (ci === 0 || isEns) ? 'bold' : 'normal');
+        const mlTxt = row[ci] || '';
+        doc.text(mlTxt, x + 1, y + 5.5, { maxWidth: p17_mlColW[ci] - 2 });
+      });
+      doc.setDrawColor(...midGray);
+      doc.setLineWidth(0.1);
+      doc.line(10, y + 8, W - 10, y + 8);
+      y += 8;
+    });
+    y += 5;
+
+    // Feature Importance
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Feature Importance Ranking (Random Forest / Gradient Boosting)', 10, y);
+    y += 5;
+
+    const p17_features = [
+      { name: 'Revenue Growth', pct: 28, color: teal },
+      { name: 'EBITDA Margin', pct: 22, color: teal },
+      { name: 'Synergy Pace', pct: 18, color: green },
+      { name: 'Interest Rates', pct: 12, color: gold },
+      { name: 'Industry Growth', pct: 10, color: gold },
+      { name: 'Comparable Multiples', pct: 10, color: midGray },
+    ];
+    const p17_barW = W - 60;
+    p17_features.forEach((feat, fi) => {
+      doc.setTextColor(...gray);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(feat.name, 10, y + 4.5);
+      doc.setFillColor(235, 240, 245);
+      doc.rect(60, y, p17_barW, 7, 'F');
+      doc.setFillColor(...feat.color);
+      doc.rect(60, y, p17_barW * feat.pct / 100, 7, 'F');
+      doc.setTextColor(...navy);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text(feat.pct + '%', 60 + p17_barW * feat.pct / 100 + 2, y + 5);
+      y += 10;
+    });
+    y += 3;
+
+    // Sensitivity Analysis
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Sensitivity Analysis Key Finding', 10, y);
+    y += 5;
+
+    doc.setFillColor(224, 242, 254);
+    doc.roundedRect(10, y, W - 20, 14, 2, 2, 'F');
+    doc.setFillColor(...teal);
+    doc.rect(10, y, 3, 14, 'F');
+    doc.setTextColor(...navy);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('$1 change in base assumptions drives approximately $3-$5 change in predicted price target.', 15, y + 5.5, { maxWidth: W - 30 });
+    doc.setTextColor(...gray);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Largest lever: WACC vs. synergy realization. A 50bps WACC reduction (8.5% -> 8.0%) adds ~$4-$6/share to DCF output.', 15, y + 11, { maxWidth: W - 30 });
+    y += 18;
+
+    // Modeling Lab Outputs
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Modeling Lab Default Outputs', 10, y);
+    y += 5;
+
+    const p17_labRows = [
+      ['DCF Base Case', '$88 / share', '8.5% WACC, 3.0% terminal growth rate (TGR). Synergies at 85% of plan.'],
+      ['Leverage Scenario', 'Net Debt / EBITDA 2.5x by FY2027', 'FCF of ~$600M annually directed 50% to debt repayment, 50% buybacks.'],
+      ['Reverse DCF', '4.2% implied revenue growth', 'Market-implied growth vs. 6.4% sell-side consensus. Undervaluation gap of ~220bps.'],
+    ];
+    p17_labRows.forEach((row, i) => {
+      if (i % 2 === 0) { doc.setFillColor(...ltGray); doc.rect(10, y, W - 20, 10, 'F'); }
+      doc.setTextColor(...teal);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
+      doc.text(row[0], 12, y + 4);
+      doc.setTextColor(...navy);
+      doc.setFont('helvetica', 'bold');
+      doc.text(row[1], 70, y + 4);
+      doc.setTextColor(...gray);
+      doc.setFont('helvetica', 'normal');
+      doc.text(row[2], 12, y + 8.5, { maxWidth: W - 24 });
+      doc.setDrawColor(...midGray);
+      doc.setLineWidth(0.1);
+      doc.line(10, y + 10, W - 10, y + 10);
+      y += 10;
+    });
+    footer('');
+
+    // ══════════════════════════════════════════
+    // PAGE 18  -  QUARTERLY DEEP-DIVE
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Quarterly Performance Deep-Dive (FY2025)', y);
+    y += 2;
+
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FY2025 Quarterly Income Statement & Cash Flow Summary', 10, y);
+    y += 5;
+
+    const p18_qtrCols = [10, 35, 65, 92, 114, 136, 156, 172, 188];
+    const p18_qtrHdrs = ['Quarter', 'Revenue', 'Gross Profit', 'Gr. Margin', 'Op. Income', 'Adj. EBITDA', 'Adj. EPS', 'FCF', 'YoY Rev'];
+    y = tableHeader(p18_qtrHdrs, p18_qtrCols, y, 8);
+
+    const p18_qtrs = [
+      ['Q1 2025', '$1,604.7M', '$580.5M', '36.2%', '$13.2M', '$247.9M', '$0.49', '$82.4M', 'N/A'],
+      ['Q2 2025', '$1,880.8M', '$827.2M', '44.0%', '$179.9M', '$290.7M', '$0.53', '$149.4M', 'N/A'],
+      ['Q3 2025', '$2,122.6M', '$952.8M', '44.9%', '$311.6M', '$418.9M', '$0.95', '$360.3M', 'N/A'],
+      ['Q4 2025', '$1,868.4M', '$839.4M', '44.9%', '$255.2M', '$348.5M', '$0.72', '$41.1M', 'N/A'],
+    ];
+    p18_qtrs.forEach((row, i) => {
+      if (i % 2 === 0) { doc.setFillColor(...ltGray); doc.rect(10, y, W - 20, 8, 'F'); }
+      p18_qtrCols.forEach((x, ci) => {
+        const isQ3 = i === 2;
+        doc.setTextColor(...(ci === 0 ? gray : (isQ3 ? teal : navy)));
+        doc.setFontSize(7);
+        doc.setFont('helvetica', (ci === 0 || isQ3) ? 'bold' : 'normal');
+        doc.text(row[ci], x + 1, y + 5.5);
+      });
+      doc.setDrawColor(...midGray);
+      doc.setLineWidth(0.1);
+      doc.line(10, y + 8, W - 10, y + 8);
+      y += 8;
+    });
+    y += 4;
+
+    // Annual totals row
+    doc.setFillColor(224, 242, 254);
+    doc.rect(10, y, W - 20, 8, 'F');
+    const p18_annualRow = ['FY2025', '$7,476.5M', '$3,199.9M', '42.8%', '$760.0M', '$1,306.0M', '$2.70', '$633.2M', '--'];
+    p18_qtrCols.forEach((x, ci) => {
+      doc.setTextColor(...teal);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text(p18_annualRow[ci], x + 1, y + 5.5);
+    });
+    doc.setDrawColor(...midGray);
+    doc.setLineWidth(0.2);
+    doc.line(10, y + 8, W - 10, y + 8);
+    y += 12;
+
+    // Commentary
+    doc.setTextColor(...teal);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Analyst Commentary', 10, y);
+    y += 5;
+
+    const p18_comments = [
+      { title: 'Q1 2025 - Acquisition Integration Drag:', body: 'Q1 operating income of $13.2M depressed by $176M in pro forma acquisition adjustments (transaction costs, purchase accounting, incremental D&A). Underlying business performed in line with expectations. Gross margin of 36.2% reflects Mattress Firm consolidation and early-stage synergy ramp.' },
+      { title: 'Q3 2025 - Record Quarter:', body: 'Q3 was a record quarter across nearly all key metrics. Adj. EBITDA of $418.9M and adj. EPS of $0.95 were the highest in company history. Revenue of $2,122.6M exceeded consensus by approximately 2%. Synergy acceleration and operating leverage drove the outperformance.' },
+      { title: 'Q4 2025 - Revenue Miss, EPS In-Line:', body: 'Q4 revenue of $1,868.4M came in below consensus estimate of approximately $1,931M (miss of ~3.2%). However, adj. EPS of $0.72 was in line with expectations, demonstrating strong cost discipline. Management cited softer-than-expected holiday sell-through and channel inventory normalization.' },
+      { title: 'FCF Seasonality:', body: 'Free cash flow followed expected seasonal pattern: Q3 strongest ($360.3M) driven by peak working capital release; Q4 weakest ($41.1M) due to elevated CapEx timing and integration-related cash outflows. Full-year FCF of $633.2M supports both accelerated debt paydown and the announced buyback program.' },
+    ];
+    p18_comments.forEach((c) => {
+      doc.setFillColor(248, 250, 252);
+      const p18_cLines = doc.splitTextToSize(c.body, W - 36);
+      const p18_cH = 9 + p18_cLines.length * 4 + 3;
+      doc.roundedRect(10, y, W - 20, p18_cH, 2, 2, 'F');
+      doc.setFillColor(...teal);
+      doc.rect(10, y, 2, p18_cH, 'F');
+      doc.setTextColor(...navy);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
+      doc.text(c.title, 14, y + 6);
+      doc.setTextColor(...gray);
+      doc.setFont('helvetica', 'normal');
+      doc.text(p18_cLines, 14, y + 11);
+      y += p18_cH + 3;
+    });
+    footer('');
+
+    // ══════════════════════════════════════════
+    // PAGE 19  -  DEEP RESEARCH: SENTIMENT & ML ANALYSIS
     // ══════════════════════════════════════════
     newPage();
     y = 15;
@@ -4707,7 +5102,7 @@ async function exportPDF() {
     footer('');
 
     // ══════════════════════════════════════════
-    // PAGE 16  -  DEEP RESEARCH: TECHNICAL & CONSENSUS
+    // PAGE 20  -  DEEP RESEARCH: TECHNICAL & CONSENSUS
     // ══════════════════════════════════════════
     newPage();
     y = 15;
@@ -4818,7 +5213,7 @@ async function exportPDF() {
     footer('');
 
     // ══════════════════════════════════════════
-    // PAGE 17  -  DISCLAIMER & REFERENCES
+    // PAGE 21  -  DISCLAIMER & REFERENCES
     // ══════════════════════════════════════════
     newPage();
     y = 15;
@@ -6506,7 +6901,7 @@ function exportSlides() {
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text('SGI | Research Report', 8, H - 4);
-    doc.text(num + ' / 17', W - 12, H - 4, { align: 'right' });
+    doc.text(num + ' / 23', W - 12, H - 4, { align: 'right' });
   }
 
   function kpiBox(x, y, w, h, label, value, color) {
@@ -7136,7 +7531,397 @@ function exportSlides() {
   actions14.forEach((a, i) => { doc.setTextColor(...gray); doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.text('- ' + a, 16, 136 + i * 8); });
   footer(14);
 
-  // ===== SLIDE 15: DEEP RESEARCH - SENTIMENT ANALYSIS =====
+  // ===== SLIDE 15: INVESTMENT CASE - WHY SGI NOW =====
+  doc.addPage();
+  whiteBg();
+  headerBar('Why SGI Now - Three Value Drivers', 'Investment Case Summary');
+
+  // Three large KPI boxes across the top
+  const s15_boxes = [
+    { val: '$225M',   lbl: 'Synergy Target',  clr: teal },
+    { val: '24% CAGR', lbl: 'Adj EPS Growth', clr: green },
+    { val: 'FREE',    lbl: 'Cyclical Upside',  clr: gold },
+  ];
+  const s15_bw = 82, s15_bh = 26, s15_by = 35;
+  s15_boxes.forEach((b, i) => {
+    const s15_bx = 14 + i * 93;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...b.clr);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(s15_bx, s15_by, s15_bw, s15_bh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(b.lbl.toUpperCase(), s15_bx + s15_bw / 2, s15_by + 7, { align: 'center' });
+    doc.setTextColor(...b.clr); doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+    doc.text(b.val, s15_bx + s15_bw / 2, s15_by + 20, { align: 'center' });
+  });
+
+  // Bullets under each box
+  const s15_bullets = [
+    ['$80M realized in year one', 'Run-rate: $100M by 2027'],
+    ['adj EPS $2.70 -> $5.15 by 2028', 'NOT dependent on market recovery'],
+    ['Industry at 10-yr trough', 'Any recovery = pure upside'],
+  ];
+  s15_bullets.forEach((pair, i) => {
+    const s15_px = 14 + i * 93;
+    let s15_py = s15_by + s15_bh + 8;
+    pair.forEach(txt => {
+      doc.setFillColor(...teal);
+      doc.circle(s15_px + 2, s15_py - 1, 1, 'F');
+      doc.setTextColor(...navy);
+      doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+      const s15_lines = doc.splitTextToSize(txt, s15_bw - 8);
+      doc.text(s15_lines, s15_px + 6, s15_py);
+      s15_py += s15_lines.length * 5 + 4;
+    });
+  });
+
+  // Divider and key message
+  dividerLine(90);
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('The Investment Case in One Sentence:', 16, 100);
+  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+  const s15_rationale = 'SGI is a post-merger integration play with $225M in synergies being realized ahead of schedule, ' +
+    '24% EPS CAGR through 2028, and a free cyclical recovery option - all at 14.4x forward earnings.';
+  const s15_thlines = doc.splitTextToSize(s15_rationale, W - 32);
+  doc.text(s15_thlines, 16, 107);
+
+  // Bottom KPI strip
+  const s15_strip = [
+    { lbl: 'Current Price', val: '$69.37', clr: navy },
+    { lbl: '12M Price Target', val: '$100', clr: green },
+    { lbl: 'Upside', val: '+44%', clr: green },
+    { lbl: 'Analyst Rating', val: 'Strong Buy', clr: teal },
+  ];
+  const s15_sw = 66, s15_sh = 18, s15_sy = 122;
+  s15_strip.forEach((b, i) => {
+    const s15_sx = 16 + i * 68;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
+    doc.roundedRect(s15_sx, s15_sy, s15_sw, s15_sh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(b.lbl.toUpperCase(), s15_sx + s15_sw / 2, s15_sy + 5.5, { align: 'center' });
+    doc.setTextColor(...b.clr); doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+    doc.text(b.val, s15_sx + s15_sw / 2, s15_sy + 14, { align: 'center' });
+  });
+  footer(15);
+
+  // ===== SLIDE 16: QUARTERLY TRAJECTORY =====
+  doc.addPage();
+  whiteBg();
+  headerBar('FY2025 Quarterly Momentum', 'Sequential improvement demonstrates synergy ramp and operating leverage');
+
+  // 4 KPI boxes for quarterly EPS
+  const s16_eps = [
+    { q: 'Q1 2025', val: '$0.49', clr: teal },
+    { q: 'Q2 2025', val: '$0.53', clr: teal },
+    { q: 'Q3 2025', val: '$0.95', clr: green },
+    { q: 'Q4 2025', val: '$0.72', clr: teal },
+  ];
+  const s16_kw = 64, s16_kh = 28, s16_ky = 34;
+  s16_eps.forEach((k, i) => {
+    const s16_kx = 14 + i * 68;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...k.clr); doc.setLineWidth(0.8);
+    doc.roundedRect(s16_kx, s16_ky, s16_kw, s16_kh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(k.q.toUpperCase() + ' ADJ EPS', s16_kx + s16_kw / 2, s16_ky + 6.5, { align: 'center' });
+    doc.setTextColor(...k.clr); doc.setFontSize(15); doc.setFont('helvetica', 'bold');
+    doc.text(k.val, s16_kx + s16_kw / 2, s16_ky + 21, { align: 'center' });
+    if (k.q === 'Q3 2025') {
+      doc.setTextColor(...green); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
+      doc.text('RECORD', s16_kx + s16_kw / 2, s16_ky + s16_kh + 4, { align: 'center' });
+    }
+  });
+
+  // Quarterly table
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('FY2025 Quarterly Financial Summary', 16, 75);
+  const s16_thdrs = ['Metric', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'];
+  const s16_tdata = [
+    ['Revenue', '$1.78B', '$1.84B', '$1.97B', '$1.91B'],
+    ['Adj EBITDA', '$291M', '$318M', '$388M', '$303M'],
+    ['Free Cash Flow', '$110M', '$148M', '$218M', '$157M'],
+  ];
+  const s16_colX = [16, 76, 132, 188, 244];
+  let s16_ty = 79;
+  doc.setFillColor(...navy); doc.rect(16, s16_ty, 270, 8, 'F');
+  s16_thdrs.forEach((h, i) => {
+    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+    doc.text(h, s16_colX[i] + 2, s16_ty + 5.5);
+  });
+  s16_ty += 8;
+  s16_tdata.forEach((row, ri) => {
+    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
+    doc.rect(16, s16_ty, 270, 7, 'F');
+    row.forEach((cell, ci) => {
+      doc.setTextColor(...(ci === 0 ? navy : gray));
+      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'bold' : 'normal');
+      doc.text(cell, s16_colX[ci] + 2, s16_ty + 5);
+    });
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
+    doc.line(16, s16_ty + 7, 286, s16_ty + 7);
+    s16_ty += 7;
+  });
+
+  // Key message
+  dividerLine(118);
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Key Message:', 16, 128);
+  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+  doc.text('Sequential improvement demonstrates synergy ramp and operating leverage.', 16, 135);
+
+  // Trend arrows note
+  const s16_trend = [
+    'Q1 -> Q3: adj EBITDA grew from $291M to $388M (+33%) as synergies ramped',
+    'Q3 record EPS of $0.95 driven by cost eliminations ahead of integration schedule',
+    'Q4 normalization expected; FY2026 guidance implies continued EPS expansion',
+  ];
+  let s16_by2 = 140;
+  s16_trend.forEach(t => {
+    doc.setFillColor(...teal); doc.circle(16 + 2, s16_by2 - 1, 1, 'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+    doc.text(t, 22, s16_by2);
+    s16_by2 += 6;
+  });
+  footer(16);
+
+  // ===== SLIDE 17: ADVANCED VALUATION FRAMEWORK =====
+  doc.addPage();
+  whiteBg();
+  headerBar('Valuation - Multi-Method Convergence', '6 independent methods with overlapping upside confirmation');
+
+  // Football field chart
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Valuation Range by Method', 16, 42);
+
+  const s17_methods = [
+    { name: 'DCF',               low: 74,  high: 106, clr: teal },
+    { name: 'Forward P/E',       low: 82,  high: 120, clr: green },
+    { name: 'EV/EBITDA',         low: 52,  high: 74,  clr: gold },
+    { name: 'SOTP',              low: 85,  high: 118, clr: teal },
+    { name: 'Analyst Consensus', low: 83,  high: 115, clr: green },
+    { name: 'Monte Carlo',       low: 67,  high: 115, clr: navy },
+  ];
+  const s17_chartL = 95, s17_chartW = 170;
+  const s17_priceMin = 45, s17_priceMax = 130;
+  const s17_scale = s17_chartW / (s17_priceMax - s17_priceMin);
+  const s17_rowH = 13, s17_startY = 47;
+
+  s17_methods.forEach((m, i) => {
+    const s17_y = s17_startY + i * s17_rowH;
+    // Label
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
+    doc.text(m.name, 16, s17_y + 7);
+    // Price range labels
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
+    doc.text('$' + m.low, s17_chartL + (m.low - s17_priceMin) * s17_scale - 2, s17_y + 4, { align: 'right' });
+    doc.text('$' + m.high, s17_chartL + (m.high - s17_priceMin) * s17_scale + 2, s17_y + 4);
+    // Background track
+    doc.setFillColor(235, 237, 240);
+    doc.roundedRect(s17_chartL, s17_y + 5, s17_chartW, 5, 1, 1, 'F');
+    // Colored bar
+    const s17_barX = s17_chartL + (m.low - s17_priceMin) * s17_scale;
+    const s17_barW = (m.high - m.low) * s17_scale;
+    doc.setFillColor(...m.clr);
+    doc.roundedRect(s17_barX, s17_y + 5, s17_barW, 5, 1, 1, 'F');
+  });
+
+  // Axis labels
+  const s17_axisVals = [50, 60, 70, 80, 90, 100, 110, 120, 130];
+  s17_axisVals.forEach(v => {
+    const s17_ax = s17_chartL + (v - s17_priceMin) * s17_scale;
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
+    doc.line(s17_ax, s17_startY - 2, s17_ax, s17_startY + s17_methods.length * s17_rowH + 2);
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text('$' + v, s17_ax, s17_startY - 4, { align: 'center' });
+  });
+
+  // Current price marker
+  const s17_cpX = s17_chartL + (69.37 - s17_priceMin) * s17_scale;
+  doc.setDrawColor(...red); doc.setLineWidth(0.8);
+  doc.line(s17_cpX, s17_startY - 4, s17_cpX, s17_startY + s17_methods.length * s17_rowH + 4);
+  doc.setTextColor(...red); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
+  doc.text('$69.37', s17_cpX, s17_startY + s17_methods.length * s17_rowH + 8, { align: 'center' });
+  doc.text('Current', s17_cpX, s17_startY + s17_methods.length * s17_rowH + 13, { align: 'center' });
+
+  // Key takeaway
+  dividerLine(133);
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Key Takeaway:', 16, 142);
+  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+  doc.text('5 of 6 methods imply upside from current price. EV/EBITDA is the lone outlier at cycle trough margins.', 16, 149);
+  footer(17);
+
+  // ===== SLIDE 18: QUANTITATIVE RISK SCORECARD =====
+  doc.addPage();
+  whiteBg();
+  headerBar('Quantitative Risk Scorecard', 'Key risk and quality metrics - all reflect temporary acquisition impact');
+
+  // 6 KPI boxes in 2x3 grid
+  const s18_kpis = [
+    { lbl: 'Altman Z-Score',  val: '2.10',  sub: 'Gray Zone (improving)', clr: gold },
+    { lbl: 'Piotroski F-Score', val: '5/9', sub: 'Moderate',              clr: teal },
+    { lbl: 'DuPont ROE',      val: '5.8%',  sub: 'Depressed (acquisition)', clr: red },
+    { lbl: 'Beta',            val: '1.0',   sub: 'Market-aligned',         clr: navy },
+    { lbl: 'Sharpe Ratio',    val: '0.45',  sub: 'Acceptable',             clr: teal },
+    { lbl: 'VaR (95%)',       val: '-12.3%', sub: 'Moderate risk',         clr: gold },
+  ];
+  const s18_kw = 86, s18_kh = 30, s18_startY = 34;
+  s18_kpis.forEach((k, i) => {
+    const s18_col = i % 3, s18_row = Math.floor(i / 3);
+    const s18_kx = 14 + s18_col * 94, s18_ky = s18_startY + s18_row * 35;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...k.clr); doc.setLineWidth(0.6);
+    doc.roundedRect(s18_kx, s18_ky, s18_kw, s18_kh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(k.lbl.toUpperCase(), s18_kx + s18_kw / 2, s18_ky + 6.5, { align: 'center' });
+    doc.setTextColor(...k.clr); doc.setFontSize(13); doc.setFont('helvetica', 'bold');
+    doc.text(k.val, s18_kx + s18_kw / 2, s18_ky + 18, { align: 'center' });
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(k.sub, s18_kx + s18_kw / 2, s18_ky + 26, { align: 'center' });
+  });
+
+  // Bullets below grid
+  dividerLine(107);
+  let s18_by = 115;
+  const s18_notes = [
+    'All risk metrics reflect temporary acquisition impact  -  pre-acquisition Z-Score was 2.8 (Safe Zone)',
+    'Leverage trajectory from 6.9x -> 3.9x in FY2025 demonstrates rapid improvement',
+  ];
+  s18_notes.forEach(n => { s18_by = bullet(16, s18_by, n, teal) + 3; });
+  footer(18);
+
+  // ===== SLIDE 19: ML & PREDICTION MODELS =====
+  doc.addPage();
+  whiteBg();
+  headerBar('Machine Learning Price Prediction', 'Multi-model ensemble consensus with feature importance analysis');
+
+  // 4 KPI boxes for model predictions
+  const s19_models = [
+    { name: 'Linear Regression', val: '$98',  clr: teal },
+    { name: 'Random Forest',     val: '$102', clr: green },
+    { name: 'LSTM Neural Net',   val: '$95',  clr: gold },
+    { name: 'Ensemble',          val: '$98',  clr: navy },
+  ];
+  const s19_kw = 64, s19_kh = 28, s19_ky = 34;
+  s19_models.forEach((m, i) => {
+    const s19_kx = 14 + i * 68;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...m.clr); doc.setLineWidth(0.8);
+    doc.roundedRect(s19_kx, s19_ky, s19_kw, s19_kh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
+    doc.text(m.name.toUpperCase(), s19_kx + s19_kw / 2, s19_ky + 7, { align: 'center' });
+    doc.setTextColor(...m.clr); doc.setFontSize(15); doc.setFont('helvetica', 'bold');
+    doc.text(m.val, s19_kx + s19_kw / 2, s19_ky + 22, { align: 'center' });
+  });
+
+  // Feature importance table
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Feature Importance', 16, 76);
+  const s19_fhdrs = ['Factor', 'Weight'];
+  const s19_fdata = [
+    ['Revenue Growth',  '28%'],
+    ['EBITDA Margin',   '22%'],
+    ['Synergy Pace',    '18%'],
+    ['Interest Rates',  '12%'],
+    ['Industry Growth', '10%'],
+  ];
+  const s19_fColX = [16, 110];
+  let s19_fy = 80;
+  doc.setFillColor(...navy); doc.rect(16, s19_fy, 150, 8, 'F');
+  s19_fhdrs.forEach((h, i) => {
+    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+    doc.text(h, s19_fColX[i] + 2, s19_fy + 5.5);
+  });
+  s19_fy += 8;
+  s19_fdata.forEach((row, ri) => {
+    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
+    doc.rect(16, s19_fy, 150, 7, 'F');
+    row.forEach((cell, ci) => {
+      doc.setTextColor(...(ci === 0 ? navy : teal));
+      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'normal' : 'bold');
+      doc.text(cell, s19_fColX[ci] + 2, s19_fy + 5);
+    });
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
+    doc.line(16, s19_fy + 7, 166, s19_fy + 7);
+    s19_fy += 7;
+  });
+
+  // Mini bar chart for feature weights (right side)
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Weight Distribution', 185, 76);
+  const s19_barFactors = [28, 22, 18, 12, 10];
+  const s19_barNames = ['Revenue Growth', 'EBITDA Margin', 'Synergy Pace', 'Interest Rates', 'Industry Growth'];
+  const s19_barMaxW = 95;
+  s19_barFactors.forEach((w, i) => {
+    const s19_by2 = 81 + i * 9;
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
+    doc.text(s19_barNames[i], 185, s19_by2 + 5);
+    doc.setFillColor(220, 230, 235);
+    doc.rect(185, s19_by2 + 6, s19_barMaxW, 4, 'F');
+    doc.setFillColor(...teal);
+    doc.rect(185, s19_by2 + 6, s19_barMaxW * w / 100, 4, 'F');
+    doc.setTextColor(...navy); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
+    doc.text(w + '%', 185 + s19_barMaxW * w / 100 + 2, s19_by2 + 9.5);
+  });
+
+  // Key insight
+  dividerLine(128);
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Key Insight:', 16, 137);
+  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+  doc.text('All ML models predict 30-40% upside from current $69.37. Ensemble target: $98 (+41%).', 16, 144);
+  footer(19);
+
+  // ===== SLIDE 20: KEY METRICS AT A GLANCE =====
+  doc.addPage();
+  whiteBg();
+  headerBar('SGI At a Glance - Key Metrics Dashboard', 'Executive summary of all key financial and valuation metrics');
+
+  // 4x3 grid of KPI boxes (12 total)
+  const s20_grid = [
+    // Row 1
+    { lbl: 'Revenue',        val: '$7.5B',       clr: navy },
+    { lbl: 'EBITDA (adj)',   val: '$1.3B',        clr: navy },
+    { lbl: 'Free Cash Flow', val: '$633M',        clr: green },
+    { lbl: 'Market Cap',     val: '$14.6B',       clr: navy },
+    // Row 2
+    { lbl: 'Fwd P/E',        val: '14.4x',        clr: teal },
+    { lbl: 'EV/EBITDA',      val: '21.9x',        clr: teal },
+    { lbl: 'FCF Yield',      val: '4.3%',         clr: green },
+    { lbl: 'Div Yield',      val: '~1.0%',        clr: teal },
+    // Row 3
+    { lbl: 'Net Debt/EBITDA', val: '6.2x',        clr: gold },
+    { lbl: 'Analyst Rating', val: 'Strong Buy',   clr: green },
+    { lbl: 'Price Target',   val: '$100',          clr: green },
+    { lbl: 'Upside',         val: '+44%',          clr: green },
+  ];
+  const s20_kw = 64, s20_kh = 26, s20_startY = 34;
+  s20_grid.forEach((k, i) => {
+    const s20_col = i % 4, s20_row = Math.floor(i / 4);
+    const s20_kx = 13 + s20_col * 68, s20_ky = s20_startY + s20_row * 30;
+    doc.setFillColor(...lightGray);
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
+    doc.roundedRect(s20_kx, s20_ky, s20_kw, s20_kh, 2, 2, 'FD');
+    doc.setTextColor(...gray); doc.setFontSize(5.5); doc.setFont('helvetica', 'normal');
+    doc.text(k.lbl.toUpperCase(), s20_kx + s20_kw / 2, s20_ky + 6, { align: 'center' });
+    doc.setTextColor(...k.clr); doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+    doc.text(k.val, s20_kx + s20_kw / 2, s20_ky + 18, { align: 'center' });
+  });
+
+  // Summary note at bottom
+  dividerLine(128);
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+  doc.text('Data as of March 31, 2026  |  FY2025 actuals  |  Price target 12-month forward', 16, 136);
+  const s20_buls = [
+    'All valuation multiples based on current $69.37 price vs. consensus analyst target of $100',
+    'FCF yield and dividend yield reflect compelling cash return profile at current market cap',
+  ];
+  let s20_by = 142;
+  s20_buls.forEach(b => { s20_by = bullet(16, s20_by, b, teal) + 2; });
+  footer(20);
+
+  // ===== SLIDE 21: DEEP RESEARCH - SENTIMENT ANALYSIS =====
   doc.addPage();
   whiteBg();
   headerBar('Deep Research: Earnings Sentiment Analysis', 'NLP analysis of Q1-Q4 2025 earnings call transcripts');
@@ -7212,9 +7997,9 @@ function exportSlides() {
     });
     tfy += 7;
   });
-  footer(15);
+  footer(21);
 
-  // ===== SLIDE 16: DEEP RESEARCH - ML & QUANTITATIVE SIGNALS =====
+  // ===== SLIDE 22: DEEP RESEARCH - ML & QUANTITATIVE SIGNALS =====
   doc.addPage();
   whiteBg();
   headerBar('Deep Research: ML & Quantitative Signals', 'Financial trend analysis and quantitative indicators');
@@ -7283,9 +8068,9 @@ function exportSlides() {
     'Price trading 6.3% below 12M MA at $73.92 vs avg target $99.67 - significant upside',
   ];
   mlTakeaways.forEach(b => { kt16 = bullet(16, kt16, b, teal) + 2; });
-  footer(16);
+  footer(22);
 
-  // ===== SLIDE 17: FINAL RECOMMENDATION =====
+  // ===== SLIDE 23: FINAL RECOMMENDATION =====
   doc.addPage();
   whiteBg();
   // Top accent bar
@@ -7354,7 +8139,7 @@ function exportSlides() {
   doc.roundedRect(10, H - 25, W - 20, 12, 2, 2, 'FD');
   doc.setTextColor(120, 100, 10); doc.setFontSize(6.5); doc.setFont('helvetica', 'italic');
   doc.text('All data as of March 31, 2026.', W / 2, H - 17, { align: 'center', maxWidth: W - 30 });
-  footer(17);
+  footer(23);
 
   doc.save('SGI_Investment_Slides_March2026.pdf');
 }
