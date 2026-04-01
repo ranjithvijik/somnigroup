@@ -67,7 +67,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 .nav-section-title{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-300);padding:16px 20px 6px;}
 .nav-item{display:flex;align-items:center;gap:10px;padding:8px 20px;cursor:pointer;border-left:3px solid transparent;color:var(--gray-200);font-size:13px;font-weight:400;transition:all 0.18s ease;user-select:none;}
 .nav-item:hover{background:var(--teal-glow);color:var(--white);border-left-color:var(--teal-dim);}
-.nav-item.active{background:var(--teal-glow);color:var(--teal);border-left-color:var(--teal);font-weight:600;}
+.nav-item.active{background:linear-gradient(90deg,var(--teal-glow),transparent);color:var(--teal);border-left-color:var(--teal);font-weight:600;}
 .nav-item .nav-icon{width:14px;text-align:center;font-size:13px;flex-shrink:0;}
 .nav-number{font-family:var(--font-mono);font-size:10px;color:var(--gray-300);margin-left:auto;}
 /* ===== SECTIONS ===== */
@@ -316,6 +316,176 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 .synergy-icon{width:32px;height:32px;background:var(--teal-glow);border:1px solid var(--border-accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 /* ===== PORTER LABELS ===== */
 .porter-label{font-size:11px;text-align:center;margin-top:6px;color:var(--gray-200);}
+
+/* ===== DESIGN POLISH ADDITIONS ===== */
+
+/* a) Glassmorphism for cards in dark mode */
+.card, .chart-card {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover, .chart-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 1px var(--border-accent), var(--shadow);
+}
+
+/* b) Animated gradient accent on hero section */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0,180,216,0.04) 0%, transparent 70%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes heroGlow {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  100% { transform: translate(-40px, 40px) scale(1.2); opacity: 1; }
+}
+
+/* e) Top bar enhancement — subtle gradient */
+.top-bar {
+  background: linear-gradient(180deg, var(--navy-800) 0%, rgba(10,22,40,0.97) 100%);
+}
+
+/* f) KPI cards — accent top border */
+.kpi-card {
+  border-top: 2px solid var(--teal);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,180,216,0.15);
+}
+
+/* g) Table row hover with left accent */
+.data-table tbody tr:hover td:first-child {
+  color: var(--teal);
+}
+
+/* h) Section divider — gradient fade */
+.section {
+  border-bottom: 1px solid transparent;
+  background-image: linear-gradient(var(--navy-900), var(--navy-900)),
+    linear-gradient(90deg, transparent, var(--teal-dim), transparent);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* i) Chart card — colored left accent on hover */
+.chart-card {
+  border-left: 3px solid transparent;
+  transition: border-left-color 0.2s ease;
+}
+.chart-card:hover {
+  border-left-color: var(--teal);
+}
+
+/* j) Badge refinement */
+.badge-long {
+  animation: none;
+  letter-spacing: 0.08em;
+}
+.rec-badge {
+  animation: fadeInUp 0.6s ease both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* k) Scrollbar refinement */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: var(--gray-400); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--teal-dim); }
+
+/* l) Thesis card hover lift */
+.thesis-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.thesis-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* m) Button press effect */
+.btn:active { transform: scale(0.97); }
+
+/* n) Section label (monospace tag) — pill style */
+.section-label {
+  display: inline-block;
+  background: var(--teal-glow);
+  border: 1px solid var(--border-accent);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+}
+
+/* o) Smooth entrance animation for sections */
+.section {
+  animation: sectionFadeIn 0.4s ease both;
+}
+@keyframes sectionFadeIn {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+/* 8) Sticky table header */
+.tbl-wrap { position: relative; }
+.data-table thead th { position: sticky; top: 0; z-index: 2; }
+
+/* 9) Insight card component */
+.insight-card {
+  background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(0,180,216,0.03));
+  border: 1px solid var(--border-accent);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 12px 0;
+}
+.insight-card.gold {
+  background: linear-gradient(135deg, var(--gold-glow), transparent);
+  border-left-color: var(--gold);
+  border-color: rgba(255,215,0,0.2);
+}
+.insight-card.green {
+  background: linear-gradient(135deg, rgba(0,208,132,0.08), transparent);
+  border-left-color: var(--green);
+  border-color: rgba(0,208,132,0.2);
+}
+.insight-card .insight-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 4px;
+}
+.insight-card.gold .insight-label { color: var(--gold); }
+.insight-card.green .insight-label { color: var(--green); }
+.insight-card p {
+  font-size: 13px;
+  color: var(--gray-200);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* 10) Chart skeleton shimmer */
+.chart-skeleton {
+  background: linear-gradient(90deg, var(--navy-700) 25%, var(--navy-600) 50%, var(--navy-700) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 </style>
 </head>
 <body>
@@ -323,20 +493,13 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 <!-- ===== SIDEBAR ===== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" rx="8" fill="url(#g1)"/>
-      <path d="M7 20L12 14L17 17L22 11L25 14" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="25" cy="10" r="2.5" fill="#ffd700"/>
-      <defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#0a1628"/><stop offset="1" stop-color="#00b4d8" stop-opacity="0.7"/>
-      </linearGradient></defs>
-    </svg>
-    <div>
-      <div class="sidebar-logo-text">Somnigroup Intl.</div>
-      <div class="sidebar-logo-sub">NYSE: SGI · LONG</div>
-    </div>
+  <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--teal),var(--teal-dim));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#001020;flex-shrink:0;">SGI</div>
+  <div>
+    <div class="sidebar-logo-text">Investment Analysis</div>
+    <div class="sidebar-logo-sub">NYSE: SGI · March 2026</div>
   </div>
-  <div class="nav-section-title">Navigation</div>
+  </div>
+  <div class="nav-section-title">Overview</div>
   <div class="nav-item active" data-target="exec-summary" onclick="scrollToSection('exec-summary')"><span class="nav-icon">◆</span>Executive Summary<span class="nav-number">01</span></div>
   <div class="nav-item" data-target="company-overview" onclick="scrollToSection('company-overview')"><span class="nav-icon">🏢</span>Company Overview<span class="nav-number">02</span></div>
   <div class="nav-item" data-target="industry-analysis" onclick="scrollToSection('industry-analysis')"><span class="nav-icon">📊</span>Industry Analysis<span class="nav-number">03</span></div>
@@ -345,20 +508,27 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-item" data-target="balance-sheet" onclick="scrollToSection('balance-sheet')"><span class="nav-icon">⚖️</span>Balance Sheet &amp; CF<span class="nav-number">06</span></div>
   <div class="nav-item" data-target="valuation" onclick="scrollToSection('valuation')"><span class="nav-icon">🎯</span>Valuation &amp; DCF<span class="nav-number">07</span></div>
   <div class="nav-item" data-target="catalysts-risks" onclick="scrollToSection('catalysts-risks')"><span class="nav-icon">⚡</span>Catalysts &amp; Risks<span class="nav-number">08</span></div>
+  <div class="nav-section-title">Analysis</div>
   <div class="nav-item" data-target="technical-analysis" onclick="scrollToSection('technical-analysis')"><span class="nav-icon">📉</span>Technical Analysis<span class="nav-number">09</span></div>
   <div class="nav-item" data-target="peer-comparison" onclick="scrollToSection('peer-comparison')"><span class="nav-icon">🔍</span>Peer Comparison<span class="nav-number">10</span></div>
   <div class="nav-item" data-target="analyst-consensus" onclick="scrollToSection('analyst-consensus')"><span class="nav-icon">📈</span>Analyst Consensus<span class="nav-number">11</span></div>
   <div class="nav-item" data-target="investment-narrative" onclick="scrollToSection('investment-narrative')"><span class="nav-icon">📝</span>Investment Case<span class="nav-number">11</span></div>
+  <div class="nav-section-title">Advanced</div>
   <div class="nav-item" data-target="quant-risk" onclick="scrollToSection('quant-risk')"><span class="nav-icon">📐</span>Quant Risk Analytics<span class="nav-number">12</span></div>
   <div class="nav-item" data-target="advanced-valuation" onclick="scrollToSection('advanced-valuation')"><span class="nav-icon">🔬</span>Advanced Valuation<span class="nav-number">13</span></div>
   <div class="nav-item" data-target="ml-prediction" onclick="scrollToSection('ml-prediction')"><span class="nav-icon">🤖</span>ML Predictions<span class="nav-number">14</span></div>
   <div class="nav-item" data-target="deep-research" onclick="scrollToSection('deep-research')"><span class="nav-icon">D</span>Deep Research &amp; ML<span class="nav-number">15</span></div>
   <div class="nav-item" data-target="modeling-lab" onclick="scrollToSection('modeling-lab')"><span class="nav-icon">🧲</span>Modeling Lab<span class="nav-number">16</span></div>
+  <div class="nav-section-title">Macro &amp; Data</div>
   <div class="nav-item" data-target="macro-dashboard" onclick="scrollToSection('macro-dashboard')"><span class="nav-icon">🌐</span>Macro Dashboard<span class="nav-number">18</span></div>
   <div class="nav-item" data-target="references" onclick="scrollToSection('references')"><span class="nav-icon">📚</span>References<span class="nav-number">19</span></div>
   <div class="sidebar-footer">
-    <div style="font-weight:600;color:var(--gray-200);margin-bottom:4px;">Investment Analysis</div>
-    
+    <div style="font-weight:600;color:var(--gray-200);margin-bottom:6px;font-size:11px;">SGI Research</div>
+    <div style="color:var(--gray-300);font-size:10px;line-height:1.6;">
+      March 2026 · 19 sections<br>
+      50 references · APA 7th Ed.<br>
+      <span style="color:var(--teal);">LONG · PT: $100 · +44%</span>
+    </div>
   </div>
 </nav>
 
@@ -377,9 +547,12 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="top-bar-right">
     <div class="pt-badge" id="live-pt-badge">PT: $100 · +44%</div>
     <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
-    <button class="btn btn-teal" onclick="exportPDF()">⬇ Export PDF</button>
-    <button class="btn btn-gold" onclick="exportSlides()">📑 Export Slides</button>
-    <button class="btn btn-outline" onclick="exportXLSX()">📥 Excel Data</button>
+    <div style="width:1px;height:28px;background:var(--border);margin:0 4px;"></div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="btn btn-teal" onclick="exportPDF()" title="Export full research report as PDF">⬇ PDF</button>
+      <button class="btn btn-gold" onclick="exportSlides()" title="Export as presentation slides">📑 Slides</button>
+      <button class="btn btn-outline" onclick="exportXLSX()" title="Export financial data to Excel">📥 Excel</button>
+    </div>
     <div id="live-status" style="font-size:10px;display:flex;align-items:center;gap:6px;" title="Real-time data status">
       <span id="live-dot" style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;"></span>
       <span id="live-label" style="color:var(--gray-200);">Static Data</span>
@@ -396,6 +569,13 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="rec-badge"><div class="rec-dot"></div><div class="rec-text">LONG RECOMMENDATION</div></div>
       <div class="hero-company">Somnigroup International<br><span>NYSE: SGI</span></div>
       <div class="hero-desc">The world's largest vertically integrated bedding company, trading 30% below its 52-week high. Three compounding catalysts: Mattress Firm synergies running ahead of plan, a 24% adjusted EPS CAGR through 2028, and cyclical recovery optionality in a depressed industry. <span style="color:var(--gray-300);font-style:italic;">(Somnigroup International Inc., 2026)</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <span class="badge badge-buy" style="font-size:11px;">◆ LONG</span>
+        <span style="font-size:11px;color:var(--gray-300);">·</span>
+        <span style="font-size:11px;color:var(--gray-300);font-family:var(--font-mono);">Last updated: March 31, 2026</span>
+        <span style="font-size:11px;color:var(--gray-300);">·</span>
+        <span style="font-size:11px;color:var(--gray-300);">19 sections · 50 references</span>
+      </div>
       <div class="pt-display">
         <div class="pt-item"><div class="pt-label">Current Price</div><div class="pt-value teal" id="live-hero-price">$69.37</div></div>
         <div class="pt-item"><div class="pt-label">12-Month Target</div><div class="pt-value">$100</div></div>
@@ -458,7 +638,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 02</div>
     <div class="section-title">Company Overview</div>
-    <div class="section-subtitle">Somnigroup International — the world's largest vertically integrated bedding company. Manufacturing + Retail + International under one roof.</div>
+    <div class="section-subtitle">The world's largest vertically integrated sleep company — manufacturer, retailer, and D2C platform combined under one roof. $7.5B revenue, ~3,000 stores, 80+ countries.</div>
     <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('company-overview')">📄 Export Section</button></div>
   </div>
 
@@ -623,7 +803,12 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 04</div>
     <div class="section-title">Financial Performance Dashboard</div>
-    <div class="section-subtitle">Five-year financials showing transformational Mattress Firm acquisition impact. Revenue +51.6% YoY. Adj. EPS growing 12.5% YoY with 24% CAGR ahead.</div>
+    <div class="section-subtitle">FY2025 revenue +52% to $7.5B post-Mattress Firm. EBITDA recovering: $1.0B → $1.9B by FY2028E. EPS CAGR of 24% over 2025–2028E.</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <span class="badge badge-buy">FY2025 Rev +52%</span>
+      <span class="badge badge-neutral">EPS CAGR 24%</span>
+      <span class="badge badge-buy">FCF $633M</span>
+    </div>
     <div class="section-actions">
       <button class="btn btn-ghost" onclick="exportSection('financial-performance')">📄 Export Section</button>
       <button class="btn btn-outline" onclick="exportCSV()">📥 Download CSV</button>
@@ -876,7 +1061,13 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 07</div>
     <div class="section-title">Valuation &amp; DCF Modeling</div>
-    <div class="section-subtitle">Multi-method valuation framework: DCF, P/E comps, EV/EBITDA, and analyst consensus — all pointing to ~$100 price target.</div>
+    <div class="section-subtitle">Six independent valuation methods converge on a $100 price target (44% upside). Current price implies deep discount to DCF, P/E, EV/EBITDA, and SOTP intrinsic value.</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <span class="badge badge-buy">PT: $100</span>
+      <span class="badge badge-buy">+44% Upside</span>
+      <span class="badge badge-neutral">14.4x Fwd P/E</span>
+      <span class="badge badge-neutral">0.6x PEG</span>
+    </div>
     <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('valuation')">📄 Export Section</button></div>
   </div>
 
@@ -1133,7 +1324,12 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 09</div>
     <div class="section-title">Technical Analysis</div>
-    <div class="section-subtitle">1-year price chart with MA50/MA200, support/resistance levels, RSI oscillator, and volume trend context</div>
+    <div class="section-subtitle">SGI trading 29% below 52W high at $69.37. Price above MA-50 ($64.20) but below MA-200 ($71.50) — key breakout level. RSI-14 at 61.8, constructive setup.</div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <span class="badge badge-neutral">RSI 61.8</span>
+      <span class="badge badge-sell">Below MA-200</span>
+      <span class="badge badge-buy">Above MA-50</span>
+    </div>
     <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('technical-analysis')">📄 Export Section</button></div>
   </div>
 
@@ -1258,7 +1454,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 10</div>
     <div class="section-title">Comparable Company Analysis</div>
-    <div class="section-subtitle">SGI vs. 11 comparables across Direct Peers · Retail Adjacents · Diversified Home Goods — dominant on revenue growth, net margin, and ROE</div>
+    <div class="section-subtitle">12-company comparable analysis across direct peers, retail adjacents, and diversified home goods. SGI leads on revenue growth (+51.6%) at the lowest forward P/E (14.4x) in the group.</div>
     <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('peer-comparison')">📄 Export Section</button></div>
   </div>
 
@@ -2812,7 +3008,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 18</div>
     <div class="section-title">Macroeconomic Dashboard</div>
-    <div class="section-subtitle">Leveraging macro data in SGI valuation — key indicators and their direct impact on WACC, revenue model, and price target</div>
+    <div class="section-subtitle">Live macro indicators and their direct valuation impact. Each 50bps rate cut adds ~$4/share to DCF. Housing starts recovery from 1.38M to 1.6M = $396M revenue upside.</div>
     <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('macro-dashboard')">📄 Export Section</button></div>
   </div>
 
@@ -2994,6 +3190,12 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="section-header">
     <div class="section-label">Section 17</div>
     <div class="section-title">References</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+      <span class="badge badge-neutral">50 Sources</span>
+      <span class="badge badge-neutral">7 Categories</span>
+      <span class="badge badge-neutral">APA 7th Edition</span>
+      <span class="badge badge-neutral">March 2026</span>
+    </div>
   </div>
 
   <!-- Company Filings & Investor Relations -->
