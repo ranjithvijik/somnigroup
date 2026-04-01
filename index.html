@@ -9388,1297 +9388,1415 @@ function exportSlides() {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [297, 167] });
   const W = 297, H = 167;
 
-  // Color palette  -  white background design
-  const white = [255, 255, 255];
-  const navy = [10, 22, 40];
-  const teal = [0, 144, 181];
-  const gold = [184, 134, 11];
-  const green = [5, 150, 105];
-  const red = [220, 38, 38];
-  const gray = [75, 85, 99];
-  const lightGray = [249, 250, 251];
-  const midGray = [156, 163, 175];
+  // ── Design-system palette ──────────────────────────────────────
+  const white     = [255, 255, 255];
+  const offWhite  = [248, 250, 252];
+  const navy      = [10,  22,  40];
+  const navyMid   = [22,  45,  78];
+  const teal      = [0,   144, 181];
+  const tealDark  = [0,   100, 130];
+  const gold      = [184, 134, 11];
+  const goldLight = [251, 243, 213];
+  const green     = [5,   150, 105];
+  const greenBg   = [209, 250, 229];
+  const red       = [220, 38,  38];
+  const redBg     = [254, 226, 226];
+  const gray      = [75,  85,  99];
+  const lightGray = [243, 244, 246];
+  const midGray   = [156, 163, 175];
+  const amber     = [217, 119, 6];
+  const purple    = [109, 40,  217];
 
-  function whiteBg() {
-    doc.setFillColor(...white);
-    doc.rect(0, 0, W, H, 'F');
-  }
-
+  // ── Legacy helpers (kept for backward compat) ──────────────────
+  function whiteBg() { doc.setFillColor(...white); doc.rect(0,0,W,H,'F'); }
   function headerBar(title, sub) {
-    doc.setFillColor(...navy);
-    doc.rect(0, 0, W, 28, 'F');
-    doc.setDrawColor(...teal);
-    doc.setLineWidth(0.8);
-    doc.line(0, 28, W, 28);
-    doc.setTextColor(...teal);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
+    doc.setFillColor(...navy); doc.rect(0,0,W,28,'F');
+    doc.setDrawColor(...teal); doc.setLineWidth(0.8); doc.line(0,28,W,28);
+    doc.setTextColor(...teal); doc.setFontSize(7); doc.setFont('helvetica','bold');
     doc.text('SOMNIGROUP INTERNATIONAL | NYSE: SGI', 16, 10);
-    doc.setTextColor(...white);
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...white); doc.setFontSize(16); doc.setFont('helvetica','bold');
     doc.text(title, 16, 22);
-    if (sub) {
-      doc.setFontSize(8);
-      doc.setTextColor(...midGray);
-      doc.setFont('helvetica', 'normal');
-      doc.text(sub, 16, 38);
-    }
+    if (sub) { doc.setFontSize(8); doc.setTextColor(...midGray); doc.setFont('helvetica','normal'); doc.text(sub, 16, 38); }
   }
-
   function footer(num) {
-    doc.setFillColor(245, 247, 250);
-    doc.rect(0, H - 11, W, 11, 'F');
-    doc.setDrawColor(...midGray);
-    doc.setLineWidth(0.2);
-    doc.line(0, H - 11, W, H - 11);
-    doc.setTextColor(...gray);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    doc.text('SGI | Research Report', 8, H - 4);
-    doc.text(num + ' / ' + doc.getNumberOfPages(), W - 12, H - 4, { align: 'right' });
+    doc.setFillColor(245,247,250); doc.rect(0,H-11,W,11,'F');
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.2); doc.line(0,H-11,W,H-11);
+    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica','normal');
+    doc.text('SGI | Research Report', 8, H-4);
+    doc.text(num+' / '+doc.getNumberOfPages(), W-12, H-4, {align:'right'});
   }
-
-  function kpiBox(x, y, w, h, label, value, color) {
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...midGray);
-    doc.setLineWidth(0.2);
-    doc.roundedRect(x, y, w, h, 2, 2, 'FD');
-    doc.setTextColor(...gray);
-    doc.setFontSize(6);
-    doc.setFont('helvetica', 'normal');
-    doc.text(label.toUpperCase(), x + w / 2, y + 7, { align: 'center' });
-    doc.setTextColor(...(color || navy));
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text(value, x + w / 2, y + 17, { align: 'center' });
+  function kpiBox(x,y,w,h,label,value,color) {
+    doc.setFillColor(...lightGray); doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
+    doc.roundedRect(x,y,w,h,2,2,'FD');
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica','normal');
+    doc.text(label.toUpperCase(), x+w/2, y+7, {align:'center'});
+    doc.setTextColor(...(color||navy)); doc.setFontSize(13); doc.setFont('helvetica','bold');
+    doc.text(value, x+w/2, y+17, {align:'center'});
   }
-
-  function bullet(x, y, text, color) {
-    if (y > H - 16) return y; // guard: don't draw below footer
-    doc.setFillColor(...(color || teal));
-    doc.circle(x + 1, y - 1, 1, 'F');
-    doc.setTextColor(...navy);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'normal');
-    const lines = doc.splitTextToSize(text, W - x - 20);
-    doc.text(lines, x + 5, y);
-    return y + lines.length * 5.5;
+  function bullet(x,y,text,color) {
+    if (y>H-16) return y;
+    doc.setFillColor(...(color||teal)); doc.circle(x+1,y-1,1,'F');
+    doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica','normal');
+    const lines = doc.splitTextToSize(text, W-x-20);
+    doc.text(lines, x+5, y);
+    return y + lines.length*5.5;
   }
-
   function dividerLine(y) {
-    doc.setDrawColor(...teal);
-    doc.setLineWidth(0.6);
-    doc.line(16, y, W - 16, y);
+    doc.setDrawColor(...teal); doc.setLineWidth(0.6); doc.line(16,y,W-16,y);
   }
-
-  function tblRow(cols, widths, y, rowH, isHeader, isHighlight) {
+  function tblRow(cols,widths,y,rowH,isHeader,isHighlight) {
     if (isHeader) {
-      doc.setFillColor(...navy);
-      doc.rect(10, y, W - 20, rowH, 'F');
-      doc.setTextColor(...white);
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'bold');
+      doc.setFillColor(...navy); doc.rect(10,y,W-20,rowH,'F');
+      doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica','bold');
     } else if (isHighlight) {
-      doc.setFillColor(224, 242, 254);
-      doc.rect(10, y, W - 20, rowH, 'F');
-      doc.setTextColor(...navy);
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'bold');
-    } else {
-      doc.setTextColor(...navy);
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'normal');
-    }
-    let cx = 12;
-    cols.forEach((c, i) => {
-      doc.text(String(c), cx, y + rowH - 3);
-      cx += widths[i];
-    });
-    doc.setDrawColor(...midGray);
-    doc.setLineWidth(0.15);
-    doc.line(10, y + rowH, W - 10, y + rowH);
+      doc.setFillColor(224,242,254); doc.rect(10,y,W-20,rowH,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    } else { doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal'); }
+    let cx=12; cols.forEach((c,i)=>{ doc.text(String(c),cx,y+rowH-3); cx+=widths[i]; });
+    doc.setDrawColor(...midGray); doc.setLineWidth(0.15); doc.line(10,y+rowH,W-10,y+rowH);
   }
 
-  // ===== SLIDE 1: TITLE =====
-  whiteBg();
-  // Accent left stripe
-  doc.setFillColor(...navy);
-  doc.rect(0, 0, 8, H, 'F');
-  doc.setFillColor(...teal);
-  doc.rect(8, 0, 3, H, 'F');
-  doc.setFillColor(255, 215, 0);
-  doc.rect(11, 0, 2, H, 'F');
+  // ── NEW premium helpers ────────────────────────────────────────
+  function slideBg() {
+    doc.setFillColor(...offWhite); doc.rect(0,0,W,H,'F');
+    doc.setFillColor(...navy);  doc.rect(0,0,3,H,'F');
+    doc.setFillColor(...teal);  doc.rect(3,0,1.5,H,'F');
+  }
 
-  doc.setTextColor(...teal);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('LONG RECOMMENDATION', 28, 38);
-
-  doc.setTextColor(...navy);
-  doc.setFontSize(30);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Somnigroup International', 28, 58);
-  doc.setFontSize(18);
-  doc.setTextColor(...teal);
-  doc.text('NYSE: SGI', 28, 72);
-
-  doc.setTextColor(...gray);
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Investment Rationale  -  Long Recommendation', 28, 85);
-
-  // PT boxes
-  doc.setFillColor(...lightGray);
-  doc.setDrawColor(...gold);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(28, 98, 72, 24, 3, 3, 'FD');
-  doc.setTextColor(...gold);
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.text('$100', 64, 115, { align: 'center' });
-  doc.setFontSize(7);
-  doc.setTextColor(...gray);
-  doc.setFont('helvetica', 'normal');
-  doc.text('12-MONTH PRICE TARGET', 64, 122, { align: 'center' });
-
-  doc.setFillColor(...lightGray);
-  doc.setDrawColor(...green);
-  doc.roundedRect(108, 98, 72, 24, 3, 3, 'FD');
-  doc.setTextColor(...green);
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.text('+44% UPSIDE', 144, 115, { align: 'center' });
-  doc.setFontSize(7);
-  doc.setTextColor(...gray);
-  doc.setFont('helvetica', 'normal');
-  doc.text('FROM $69.37 CURRENT', 144, 122, { align: 'center' });
-
-  doc.setTextColor(...gray);
-  doc.setFontSize(8);
-  doc.text('March 2026  |  Research Report', 28, 148);
-  footer(1);
-
-  // ===== SLIDE 2: EXECUTIVE SUMMARY =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Executive Summary', 'Key Investment Metrics at a Glance');
-  dividerLine(29);
-  const kpis = [
-    ['Current Price', '$69.37', teal],
-    ['Price Target', '$100.00', gold],
-    ['Upside', '+44.1%', green],
-    ['Fwd P/E', '14.4x', navy],
-    ['EPS CAGR', '24%', green],
-    ['Market Cap', '$14.6B', navy]
-  ];
-  const kw = 42, kh = 28, kgap = 5;
-  kpis.forEach((k, i) => {
-    const col = i % 3, row = Math.floor(i / 3);
-    kpiBox(16 + col * (kw + kgap), 42 + row * (kh + 6), kw, kh, k[0], k[1], k[2]);
-  });
-  // Recommendation badge
-  doc.setFillColor(209, 250, 229);
-  doc.setDrawColor(...green);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(16, 104, 120, 16, 3, 3, 'FD');
-  doc.setTextColor(...green);
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.text('RECOMMENDATION: LONG', 76, 115, { align: 'center' });
-  doc.setTextColor(...gray);
-  doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'normal');
-  doc.text('5 Buy · 1 Neutral · 0 Sell  |  Avg analyst target $99.67', 16, 128);
-  doc.text('Conviction: HIGH  |  Time horizon: 12 months  |  Risk: Elevated leverage (7.8x Net Debt/EBITDA)', 16, 135);
-  footer(2);
-
-  // ===== SLIDE 3: COMPANY OVERVIEW =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Company Overview', "World's largest vertically integrated bedding company");
-  dividerLine(29);
-  doc.setTextColor(...navy);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Business Description', 16, 42);
-  const desc = "Somnigroup International Inc. (NYSE: SGI) is the world's largest vertically integrated bedding company, formed in February 2025 through the $5B acquisition of Mattress Firm. The company designs, manufactures, and retails mattresses globally across three decentralized business units.";
-  const descLines = doc.splitTextToSize(desc, 130);
-  doc.setFontSize(8.5);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...gray);
-  doc.text(descLines, 16, 50);
-  doc.setTextColor(...teal);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Key Facts', 16, 76);
-  const facts = [['CEO', 'Scott L. Thompson'], ['HQ', 'Lexington, KY'], ['Employees', '~19,000'], ['FY2025 Revenue', '$7.48B (+51.6%)'], ['D2C Mix', '65% post-acquisition'], ['Mattress Firm Stores', '~2,300 locations']];
-  facts.forEach((f, i) => {
-    const y = 84 + i * 9;
-    doc.setTextColor(...gray); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(f[0] + ':', 16, y);
-    doc.setTextColor(...navy); doc.setFont('helvetica', 'bold'); doc.text(f[1], 65, y);
-  });
-  doc.setTextColor(...teal);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Brand Portfolio', 162, 42);
-  const brands = [
-    ['Tempur-Pedic®', [184, 134, 11], 'Premium memory foam · ASP $2,500+'],
-    ['Sealy®', [29, 78, 216], 'Mass market leader · Posturepedic®'],
-    ['Stearns & Foster®', [109, 40, 217], 'Luxury mid-tier · ASP $1,500-3,000'],
-    ['Mattress Firm', [220, 38, 38], '2,300 stores · Nation\'s largest retailer']
-  ];
-  brands.forEach((b, i) => {
-    const y = 50 + i * 22;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...midGray);
-    doc.setLineWidth(0.2);
-    doc.roundedRect(160, y - 4, 122, 18, 2, 2, 'FD');
-    doc.setFillColor(...b[1]);
-    doc.rect(160, y - 4, 3, 18, 'F');
-    doc.setTextColor(...b[1]); doc.setFontSize(9.5); doc.setFont('helvetica', 'bold'); doc.text(b[0], 167, y + 3);
-    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal'); doc.text(b[2], 167, y + 10);
-  });
-  footer(3);
-
-  // ===== SLIDE 4: INDUSTRY ANALYSIS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Industry Analysis', 'Cyclically Depressed · Structurally Sound · Pent-Up Demand Building');
-  dividerLine(29);
-  doc.setFillColor(...lightGray);
-  doc.roundedRect(16, 34, 82, 20, 2, 2, 'F');
-  doc.setTextColor(...gold);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('$37.7B', 57, 48, { align: 'center' });
-  doc.setFontSize(7);
-  doc.setTextColor(...gray);
-  doc.setFont('helvetica', 'normal');
-  doc.text('US MATTRESS MARKET (2025)', 57, 54, { align: 'center' });
-  doc.setFillColor(...lightGray);
-  doc.roundedRect(104, 34, 82, 20, 2, 2, 'F');
-  doc.setTextColor(...teal);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('+1.9% CAGR', 145, 48, { align: 'center' });
-  doc.setFontSize(7);
-  doc.setTextColor(...gray);
-  doc.setFont('helvetica', 'normal');
-  doc.text('5-YEAR REVENUE FORECAST', 145, 54, { align: 'center' });
-  doc.setFillColor(...lightGray);
-  doc.roundedRect(192, 34, 82, 20, 2, 2, 'F');
-  doc.setTextColor(...green);
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('65% D2C', 233, 48, { align: 'center' });
-  doc.setFontSize(7);
-  doc.setTextColor(...gray);
-  doc.setFont('helvetica', 'normal');
-  doc.text('POST-ACQUISITION MIX', 233, 54, { align: 'center' });
-  doc.setTextColor(...teal);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Key Industry Trends', 16, 66);
-  let y4 = 74;
-  y4 = bullet(16, y4, 'D2C Expansion: SGI now 65% D2C post-Mattress Firm acquisition. Eliminates wholesale markup, improves margin visibility.', teal) + 4;
-  y4 = bullet(16, y4, 'Premiumization & Wellness: Avg mattress ASP $452.63 in Q1 2025 (+4% YoY). Smart/adjustable beds driving higher ASP and margin.', gold) + 4;
-  y4 = bullet(16, y4, 'Pent-Up Replacement Demand: 7-10 year replacement cycle + multiple years of volume declines = building deferred purchase inventory.', green) + 4;
-  bullet(16, y4, 'Housing Recovery Optionality: Mortgage rates easing, housing starts normalizing. SGI guidance assumes FLAT market  -  any recovery = pure upside.', [220, 38, 38]);
-  footer(4);
-
-  // ===== SLIDE 5: INVESTMENT RATIONALE =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Investment Rationale', 'Three Compounding Catalysts  -  Each Self-Contained Upside Driver');
-  dividerLine(29);
-  const pillars = [
-    { num: '01', title: 'Synergies Ahead of Plan', color: teal, bullets: [
-      '$225M total EBITDA synergies  -  raised from $200M',
-      '$145M still unrealized. At 20x EBITDA = ~$2.9B incremental EV',
-      '$14/share of hidden value not yet reflected in stock price',
-      'Q4 2025: Management confirmed "execution ahead of schedule"'
-    ]},
-    { num: '02', title: '24% EPS CAGR  -  Not Priced In', color: gold, bullets: [
-      'Mgmt targets $5.15 adj. EPS by 2028 (24% CAGR)',
-      'Consensus: $7.08. PEG ratio 0.6x  -  deep discount to growth',
-      '14.4x fwd P/E vs. historical 20-25x multiple',
-      'Deleveraging alone adds $0.25-$0.35 EPS annually'
-    ]},
-    { num: '03', title: 'Free Cyclical Upside', color: green, bullets: [
-      'Guidance built on flat market assumption',
-      'Consecutive years of industry decline = pent-up demand',
-      "President's Day 2026: \"very robust  -  double digits\"",
-      'Housing starts normalizing as mortgage rates ease'
-    ]}
-  ];
-  const pw = (W - 48) / 3;
-  pillars.forEach((p, i) => {
-    const px = 16 + i * (pw + 8);
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...p.color);
-    doc.setLineWidth(0.5);
-    doc.roundedRect(px, 34, pw, H - 50, 3, 3, 'FD');
-    doc.setFillColor(...p.color);
-    doc.rect(px, 34, 3, H - 50, 'F');
-    doc.setTextColor(...p.color); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-    doc.text('PILLAR ' + p.num, px + 8, 44);
-    doc.setTextColor(...navy); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-    const titleLines = doc.splitTextToSize(p.title, pw - 12);
-    doc.text(titleLines, px + 8, 52);
-    let py2 = 52 + titleLines.length * 6 + 6;
-    p.bullets.forEach(b => {
-      doc.setFillColor(...p.color);
-      doc.circle(px + 8, py2 - 1.5, 0.8, 'F');
-      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-      const bLines = doc.splitTextToSize(b, pw - 18);
-      doc.text(bLines, px + 12, py2);
-      py2 += bLines.length * 5 + 3;
-    });
-  });
-  footer(5);
-
-  // ===== SLIDE 6: FINANCIAL PERFORMANCE =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Financial Performance', 'FY2021-FY2025 Actuals + FY2026-2028E Consensus');
-  dividerLine(29);
-  const finHeaders = ['Year', 'Revenue', 'EBITDA', 'Net Income', 'EPS', 'FCF', 'Gross Margin'];
-  const finWidths = [26, 36, 30, 34, 22, 28, 32];
-  const finData = [
-    ['FY2021', '$4,931M', '$1,004M', '$625M', '$3.06', '$600M', '43.8%'],
-    ['FY2022', '$4,921M', '$807M', '$456M', '$2.53', '$72M', '41.6%'],
-    ['FY2023', '$4,925M', '$739M', '$368M', '$2.08', '$385M', '43.2%'],
-    ['FY2024', '$4,931M', '$804M', '$384M', '$2.16', '$569M', '44.2%'],
-    ['FY2025', '$7,477M', '$1,041M', '$384M', '$1.84', '$633M', '44.4%'],
-    ['FY2026E', '$7,952M', '$1,478M', '$711M', '$4.82', '$745M', '~45.0%'],
-    ['FY2027E', '$8,369M', '$1,673M', '$881M', '$5.82', '$915M', '~45.5%'],
-    ['FY2028E', '$8,881M', '$1,886M', '$1,055M', '$7.08', '$1,124M', '~46.0%'],
-  ];
-  const startY6 = 42, rowH6 = 11;
-  tblRow(finHeaders, finWidths, startY6, rowH6, true, false);
-  finData.forEach((row, ri) => {
-    const isHighlight = ri === 4;
-    if (!isHighlight && ri < 5) {
-      doc.setFillColor(...(ri % 2 === 0 ? lightGray : white));
-      doc.rect(10, startY6 + (ri + 1) * rowH6, W - 20, rowH6, 'F');
-    } else if (ri >= 5) {
-      doc.setFillColor(239, 246, 255);
-      doc.rect(10, startY6 + (ri + 1) * rowH6, W - 20, rowH6, 'F');
+  function premiumHeader(title, sub, slideLabel) {
+    doc.setFillColor(...navy); doc.rect(0,0,W,32,'F');
+    doc.setFillColor(...teal); doc.rect(0,32,W,1.5,'F');
+    doc.setFillColor(...gold); doc.circle(W-16,8,3,'F');
+    doc.setTextColor(...teal); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    doc.text('SOMNIGROUP INTERNATIONAL  \xB7  NYSE: SGI  \xB7  LONG RECOMMENDATION', 8, 9);
+    doc.setTextColor(...white); doc.setFontSize(15); doc.setFont('helvetica','bold');
+    doc.text(title, 8, 24);
+    if (sub) {
+      doc.setFontSize(7.5); doc.setTextColor(...midGray); doc.setFont('helvetica','normal');
+      doc.text(sub, W-8, 24, {align:'right'});
     }
-    tblRow(row, finWidths, startY6 + (ri + 1) * rowH6, rowH6, false, isHighlight);
-  });
-  doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica', 'italic');
-  doc.text('E = Consensus estimates. FY2025 revenue surge reflects full-year Mattress Firm consolidation. Highlighted row = FY2025 actual.', 10, startY6 + finData.length * rowH6 + 15);
-  footer(6);
+    if (slideLabel) {
+      doc.setFillColor(...teal); doc.setDrawColor(...tealDark); doc.setLineWidth(0.3);
+      doc.roundedRect(W-32,3,28,8,2,2,'FD');
+      doc.setTextColor(...white); doc.setFontSize(6); doc.setFont('helvetica','bold');
+      doc.text(slideLabel, W-18, 8.5, {align:'center'});
+    }
+  }
 
-  // ===== SLIDE 7: SEGMENT ANALYSIS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Segment Analysis', 'FY2025 Revenue $7.48B Across Three Business Units');
-  dividerLine(29);
-  const segments = [
-    { name: 'North America (Manufacturing)', rev: '$2,430M', oi: '$553M', oim: '22.8%', pct: '32.5%', color: [184, 134, 11] },
-    { name: 'Mattress Firm (Retail)', rev: '$3,505M', oi: '$191M', oim: '5.4%', pct: '46.9%', color: [220, 38, 38] },
-    { name: 'International', rev: '$1,542M', oi: '$221M', oim: '14.3%', pct: '20.6%', color: [5, 150, 105] },
+  function premiumFooter(num, total) {
+    const tot = total||23;
+    doc.setFillColor(236,239,244); doc.rect(0,H-12,W,12,'F');
+    doc.setFillColor(210,218,230); doc.rect(0,H-12,W,1.5,'F');
+    doc.setFillColor(...teal); doc.rect(0,H-12,W*(num/tot),1.5,'F');
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text('SGI Investment Analysis  \xB7  March 2026  \xB7  Confidential', 8, H-4);
+    doc.setTextColor(...teal); doc.setFont('helvetica','bold');
+    doc.text(num+' / '+tot, W-8, H-4, {align:'right'});
+  }
+
+  function kpiCard(x,y,w,h,label,value,sub,accentColor) {
+    accentColor = accentColor||teal;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(x,y,w,h,2,2,'FD');
+    doc.setFillColor(...accentColor); doc.roundedRect(x,y,w,1.8,1,0,'F');
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+    doc.text(label.toUpperCase(), x+w/2, y+7, {align:'center'});
+    doc.setTextColor(...accentColor); doc.setFontSize(14); doc.setFont('helvetica','bold');
+    doc.text(value, x+w/2, y+h-6, {align:'center'});
+    if (sub) {
+      doc.setTextColor(...midGray); doc.setFontSize(5); doc.setFont('helvetica','normal');
+      doc.text(sub, x+w/2, y+h-1.5, {align:'center'});
+    }
+  }
+
+  function sectionDivider(y) {
+    doc.setDrawColor(...teal); doc.setLineWidth(0.4); doc.line(8,y,W-8,y);
+  }
+
+  function insightBox(x,y,w,text,color) {
+    color = color||teal;
+    const lines = doc.splitTextToSize(text, w-16);
+    const bh = lines.length*4.8+8;
+    doc.setFillColor(240,248,253);
+    if (color===gold) doc.setFillColor(...goldLight);
+    if (color===green) doc.setFillColor(...greenBg);
+    doc.roundedRect(x,y,w,bh,2,2,'F');
+    doc.setFillColor(...color); doc.rect(x,y,2.5,bh,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(lines, x+6, y+6);
+    return y+bh+4;
+  }
+
+  function dataRow(cols,xs,y,rowH,opts) {
+    opts = opts||{};
+    if (opts.header) {
+      doc.setFillColor(...navy); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F');
+      doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    } else if (opts.highlight) {
+      doc.setFillColor(224,242,254); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F');
+      doc.setFillColor(...teal); doc.rect(xs[0]-2,y,2.5,rowH,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    } else {
+      if (opts.altBg) { doc.setFillColor(...lightGray); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F'); }
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    }
+    cols.forEach((c,i)=>{
+      const colColor = opts.colColors&&opts.colColors[i];
+      if (colColor) doc.setTextColor(...colColor);
+      doc.text(String(c), xs[i], y+rowH-2.5);
+      if (colColor) doc.setTextColor(...navy);
+    });
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15);
+    doc.line(xs[0]-2, y+rowH, W-8, y+rowH);
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 1 — TITLE
+  // ══════════════════════════════════════════════════════════════
+  slideBg();
+  // Left stripe: navy + teal + gold
+  doc.setFillColor(...navy);  doc.rect(0,0,14,H,'F');
+  doc.setFillColor(...teal);  doc.rect(14,0,3,H,'F');
+  doc.setFillColor(...gold);  doc.rect(17,0,1.5,H,'F');
+  // Right panel
+  doc.setFillColor(18,36,64); doc.rect(180,0,W-180,H,'F');
+
+  // LONG badge
+  doc.setFillColor(...greenBg); doc.setDrawColor(...green); doc.setLineWidth(0.5);
+  doc.roundedRect(26,14,42,10,4,4,'FD');
+  doc.setTextColor(...green); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('LONG RECOMMENDATION', 47,21,{align:'center'});
+
+  // Title
+  doc.setTextColor(...navy); doc.setFontSize(26); doc.setFont('helvetica','bold');
+  doc.text('Somnigroup', 26, 50);
+  doc.text('International', 26, 63);
+  doc.setTextColor(...teal); doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('NYSE: SGI', 26, 76);
+  doc.setTextColor(...gray); doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text('Investment Research Report  \xB7  March 2026', 26, 86);
+
+  // Bottom-left metric stack
+  const s1metrics = [
+    {lbl:'CURRENT PRICE', val:'$69.37', clr:teal},
+    {lbl:'PRICE TARGET',  val:'$100',   clr:gold},
+    {lbl:'UPSIDE',        val:'+44%',   clr:green}
   ];
-  const segHdrs = ['Segment', 'Revenue', 'Op. Income', 'OI Margin', 'Rev. Mix'];
-  const segW = [90, 40, 40, 34, 34];
-  const startY7 = 42, rowH7 = 11;
-  tblRow(segHdrs, segW, startY7, rowH7, true, false);
-  segments.forEach((s, i) => {
-    const sy = startY7 + (i + 1) * rowH7;
-    doc.setFillColor(...lightGray);
-    doc.rect(10, sy, W - 20, rowH7, 'F');
-    doc.setFillColor(...s.color);
-    doc.rect(10, sy, 3, rowH7, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'bold'); doc.text(s.name, 15, sy + rowH7 - 3);
-    doc.setTextColor(...gray); doc.setFontSize(8); doc.setFont('helvetica', 'normal');
-    doc.text(s.rev, 105, sy + rowH7 - 3);
-    doc.setTextColor(...green); doc.text(s.oi, 145, sy + rowH7 - 3);
-    doc.setTextColor(...green); doc.text(s.oim, 185, sy + rowH7 - 3);
-    doc.setTextColor(...teal); doc.text(s.pct, 219, sy + rowH7 - 3);
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15); doc.line(10, sy + rowH7, W - 10, sy + rowH7);
+  s1metrics.forEach((m,i)=>{
+    const mx=26+i*52;
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+    doc.text(m.lbl, mx, 108);
+    doc.setTextColor(...m.clr); doc.setFontSize(15); doc.setFont('helvetica','bold');
+    doc.text(m.val, mx, 120);
   });
-  doc.setTextColor(...gray); doc.setFontSize(7.5);
-  doc.setFont('helvetica', 'normal');
-  doc.text('* 65% of FY2025 revenue flows through SGI-controlled D2C channels, eliminating wholesale margin leakage.', 16, 80);
-  doc.text('Key insight: Mattress Firm retail operating margin (5.4%) should expand to 8-10% as synergies materialize by 2027.', 16, 88);
 
-  // OI Margin bars
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Operating Income Margin  -  Visual', 16, 100);
-  segments.forEach((s, i) => {
-    const by = 106 + i * 14;
-    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-    doc.text(s.name, 16, by + 4);
-    const barW = (parseFloat(s.oim) / 30) * 120;
-    doc.setFillColor(230, 240, 248); doc.rect(110, by, 120, 8, 'F');
-    doc.setFillColor(...s.color); doc.rect(110, by, barW, 8, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
-    doc.text(s.oim, 234, by + 6);
-  });
-  footer(7);
-
-  // ===== SLIDE 8: BALANCE SHEET & LEVERAGE =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Balance Sheet & Leverage', 'Post-Acquisition Capital Structure  -  Deleveraging Path 2025-2028');
-  dividerLine(29);
-  const bsHdrs = ['Metric', 'FY2023', 'FY2024', 'FY2025'];
-  const bsW = [80, 50, 50, 50];
-  const bsRows = [
-    ['Total Assets', '$7,246M', '$7,439M', '$21,685M'],
-    ['Total Debt', '$3,450M', '$4,632M', '$8,620M'],
-    ['Net Debt', '$3,191M', '$4,351M', '$8,130M'],
-    ['Stockholders Equity', '$2,114M', '$1,527M', '$6,573M'],
-    ['Net Debt / EBITDA', '4.32x', '5.41x', '7.81x'],
-    ['Interest Coverage', '2.9x', '2.3x', '1.6x'],
-    ['Current Ratio', '1.22x', '1.34x', '1.15x'],
+  // Right panel content
+  doc.setTextColor(...teal); doc.setFontSize(22); doc.setFont('helvetica','bold');
+  doc.text('LONG', W-52, 28, {align:'center'});
+  doc.setFillColor(...teal); doc.rect(186,31,W-186-8,1,'F');
+  doc.setTextColor(...white); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('RATING DETAILS', 188, 40);
+  const s1analysts = [
+    {firm:'Jefferies',      rat:'Buy',     pt:'$115', clr:green},
+    {firm:'Truist',         rat:'Buy',     pt:'$115', clr:green},
+    {firm:'UBS',            rat:'Buy',     pt:'$108', clr:green},
+    {firm:'Raymond James',  rat:'Buy',     pt:'$100', clr:green},
+    {firm:'Goldman Sachs',  rat:'Neutral', pt:'$83',  clr:amber},
   ];
-  const startY8 = 42, rowH8 = 11;
-  tblRow(bsHdrs, bsW, startY8, rowH8, true, false);
-  bsRows.forEach((row, ri) => {
-    const isHighlight = ri === 4;
-    if (ri % 2 === 0) { doc.setFillColor(...lightGray); doc.rect(10, startY8 + (ri+1)*rowH8, W-20, rowH8, 'F'); }
-    tblRow(row, bsW, startY8 + (ri + 1) * rowH8, rowH8, false, isHighlight);
+  s1analysts.forEach((a,i)=>{
+    const ay=48+i*14;
+    doc.setFillColor(28,52,90); doc.rect(186,ay,W-186-8,12,'F');
+    doc.setTextColor(...white); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(a.firm, 190, ay+8);
+    doc.setTextColor(...a.clr); doc.setFont('helvetica','bold');
+    doc.text(a.rat, 226, ay+8);
+    doc.setTextColor(...gold); doc.setFontSize(9);
+    doc.text(a.pt, W-14, ay+8, {align:'right'});
   });
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Deleveraging Path', 16, 126);
-  const dPath = [['FY2025', '7.81x', red], ['FY2026E', '5.5x', [220, 130, 38]], ['FY2027E', '4.2x', [5, 150, 105]], ['FY2028E', '3.2x', green]];
-  dPath.forEach((d, i) => {
-    const dx = 16 + i * 68;
-    doc.setFillColor(...lightGray); doc.setDrawColor(...d[2]); doc.setLineWidth(0.5);
-    doc.roundedRect(dx, 130, 62, 14, 2, 2, 'FD');
-    doc.setTextColor(...d[2]); doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-    doc.text(d[1], dx + 31, 139, { align: 'center' });
-    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica', 'normal');
-    doc.text(d[0], dx + 31, 144, { align: 'center' });
-  });
-  footer(8);
+  doc.setTextColor(...midGray); doc.setFontSize(6); doc.setFont('helvetica','normal');
+  doc.text('5 Buy  \xB7  1 Neutral  \xB7  Avg Target $99.67', 188, 124);
 
-  // ===== SLIDE 9: VALUATION SUMMARY =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Valuation Summary', 'Multiple Methodologies Converge  -  Base Case $100');
-  dividerLine(29);
-  const valHdrs = ['Method', 'Low', 'Base', 'High', 'Notes'];
-  const valW = [72, 28, 28, 28, 80];
-  const valRows = [
-    ['DCF Analysis', '$74', '$88', '$106', '8.5% WACC, 3% terminal growth'],
-    ['Forward P/E (2026E)', '$82', '$99', '$120', '20.5x x $4.82E EPS'],
-    ['EV/EBITDA (2026E)', '$52', '$62', '$74', '16.5x x $1,478M EBITDA'],
-    ['Sum-of-Parts (SOTP)', '$85', '$100', '$118', 'Segment-level DCF blend'],
-    ['Analyst Consensus', '$83', '$100', '$115', '5 Buy, 1 Neutral, avg $99.67'],
-    ['Monte Carlo (P50)', '$67', '$94', '$115', 'Based on 35.2% historical vol'],
+  premiumFooter(1,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 2 — EXECUTIVE SUMMARY
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Executive Summary','Investment Thesis  \xB7  Key Metrics  \xB7  Recommendation','Slide 2/23');
+
+  // 6 kpiCards in 2 rows of 3
+  const s2kpis = [
+    {lbl:'Current Price', val:'$69.37',  sub:'NYSE: SGI',    clr:teal},
+    {lbl:'Price Target',  val:'$100',    sub:'12-Month',     clr:gold},
+    {lbl:'Upside',        val:'+44%',    sub:'From current', clr:green},
+    {lbl:'Fwd P/E',       val:'14.4x',   sub:'2026E EPS',    clr:navy},
+    {lbl:'EPS CAGR',      val:'24%',     sub:'2025-2028',    clr:green},
+    {lbl:'Market Cap',    val:'$14.6B',  sub:'At $69.37',    clr:navy},
   ];
-  const startY9 = 42, rowH9 = 10;
-  tblRow(valHdrs, valW, startY9, rowH9, true, false);
-  valRows.forEach((row, ri) => {
-    if (ri % 2 === 0) { doc.setFillColor(...lightGray); doc.rect(10, startY9 + (ri+1)*rowH9, W-20, rowH9, 'F'); }
-    tblRow(row, valW, startY9 + (ri + 1) * rowH9, rowH9, false, false);
+  const s2kw=84, s2kh=26, s2gap=5;
+  s2kpis.forEach((k,i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    kpiCard(8+col*(s2kw+s2gap), 36+row*(s2kh+5), s2kw, s2kh, k.lbl, k.val, k.sub, k.clr);
   });
 
-  // Scenario cards
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Scenario Analysis', 16, 114);
-  const scenarios = [['Bull Case', '$117', '+68.7%', green], ['Base Case', '$100', '+44.1%', teal], ['Bear Case', '$59', '-15.0%', red]];
-  scenarios.forEach((s, i) => {
-    const sx = 16 + i * 94;
-    doc.setFillColor(...lightGray); doc.setDrawColor(...s[3]); doc.setLineWidth(0.5);
-    doc.roundedRect(sx, 118, 88, 28, 3, 3, 'FD');
-    doc.setTextColor(...s[3]); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-    doc.text(s[0].toUpperCase(), sx + 44, 126, { align: 'center' });
-    doc.setFontSize(18); doc.text(s[1], sx + 44, 137, { align: 'center' });
-    doc.setFontSize(9); doc.text(s[2], sx + 44, 144, { align: 'center' });
-  });
-  footer(9);
+  // Recommendation banner
+  doc.setFillColor(...greenBg); doc.setDrawColor(...green); doc.setLineWidth(0.5);
+  doc.roundedRect(8,98,W-16,11,3,3,'FD');
+  doc.setTextColor(...green); doc.setFontSize(11); doc.setFont('helvetica','bold');
+  doc.text('LONG  \u2014  STRONG BUY', W/2, 106.5, {align:'center'});
 
-  // ===== SLIDE 10: DCF MODEL =====
-  doc.addPage();
-  whiteBg();
-  headerBar('DCF Model', 'Discounted Cash Flow Valuation  -  Base Case $88 per Share');
-  dividerLine(29);
-  doc.setTextColor(...teal); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-  doc.text('DCF Assumptions', 16, 42);
-  const dcfAssumptions = [
-    ['WACC', '8.5%', 'E/V=0.65, D/V=0.35, Re=9.5%, Rd=6.2%, Tc=21%'],
-    ['Terminal Growth Rate', '3.0%', 'Long-run nominal GDP growth'],
-    ['Tax Rate', '25%', 'Normalized effective rate'],
-    ['CapEx / Revenue', '1.8%', 'Maintenance + growth capex'],
-    ['FCF CAGR (2025-2028)', '21%', 'Synergy + deleveraging driven'],
-    ['Terminal Year FCF', '$1,124M', 'FY2028 consensus estimate'],
-    ['Terminal Value', '$22.8B', 'FCF_n x (1+g) / (WACC-g)'],
-    ['PV of Terminal Value', '$18.1B', 'Discounted at WACC, 3 yrs'],
-    ['PV of FCF (2026-28)', '$2.0B', 'Sum of discounted FCFs'],
-    ['Enterprise Value', '$20.1B', 'PV FCF + PV Terminal Value'],
-    ['Net Debt', '($8.1B)', 'FY2025 actual net debt'],
-    ['Equity Value', '$12.0B', 'EV minus net debt'],
-    ['Shares Outstanding', '~208M', 'Diluted share count'],
-    ['Implied Price', '$57.6', 'Conservative with current debt'],
-    ['Target DCF (Base)', '$88', '20% margin of safety to consensus'],
+  // 3 thesis bullets
+  sectionDivider(113);
+  const s2bulls = [
+    '$225M synergies running ahead of plan \u2014 $145M unrealized = $14/share hidden value',
+    '24% adj EPS CAGR to $7.08 by 2028 trading at just 14.4x \u2014 PEG of 0.6x',
+    'Cyclical recovery optionality FREE \u2014 guidance assumes flat market',
   ];
-  const dcfW = [60, 40, 160];
-  const startY10 = 44, rowH10 = 7.5;
-  dcfAssumptions.forEach((row, ri) => {
-    const ry = startY10 + ri * rowH10;
-    if (ri % 2 === 0) { doc.setFillColor(...lightGray); doc.rect(10, ry, W - 20, rowH10, 'F'); }
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.1); doc.line(10, ry + rowH10, W - 10, ry + rowH10);
-    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', ri < 14 ? 'normal' : 'bold');
-    doc.text(row[0], 13, ry + rowH10 - 2);
-    doc.setTextColor(...(ri === 14 ? green : navy));
-    doc.setFont('helvetica', ri === 14 ? 'bold' : 'normal');
-    doc.text(row[1], 73, ry + rowH10 - 2);
-    doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
-    doc.text(row[2], 115, ry + rowH10 - 2);
+  s2bulls.forEach((b,i)=>{
+    const by=118+i*9;
+    doc.setFillColor(...teal); doc.circle(11,by-1,1.2,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    const bl=doc.splitTextToSize(b,W-28);
+    doc.text(bl,15,by);
   });
-  footer(10);
 
-  // ===== SLIDE 11: CATALYSTS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Catalysts', 'Six Key Upside Drivers  -  Asymmetric Reward Setup');
-  dividerLine(29);
-  const cats11 = [
-    ['1', 'Synergy Execution', '$145M unrealized synergies at 20x EBITDA = $14/share of hidden value. Mgmt tracking ahead of initial schedule.'],
-    ['2', 'Q1 2026 Earnings', 'First full-year post-acquisition comp. Consensus likely too conservative. Beat + raise = multiple expansion.'],
-    ['3', 'Industry Recovery', 'Consecutive years of decline create pent-up demand. Any volume uptick is pure incremental upside vs. flat guidance.'],
-    ['4', 'Deleveraging', 'Net Debt/EBITDA from 7.8x to 3.2x by 2028. Each turn of deleveraging = ~$0.25-$0.35 EPS accretion.'],
-    ['5', 'National Ad Campaign', 'Record brand awareness scores post-launch. Mattress Firm now running SGI brand ads in all 2,300 stores.'],
-    ['6', 'Housing Mobility', 'Mortgage rate normalization = housing market unlock. New movers buy mattresses at 2-3x average consumer rate.'],
+  // 3 scenario boxes
+  const s2scenarios=[
+    {lbl:'Bear',  price:'$59',  chg:'-15%', bg:redBg,   bd:red},
+    {lbl:'Base',  price:'$100', chg:'+44%', bg:[224,242,254], bd:teal},
+    {lbl:'Bull',  price:'$117', chg:'+69%', bg:greenBg, bd:green},
   ];
-  const catW = (W - 40) / 2 - 4;
-  cats11.forEach((c, i) => {
-    const col = i % 2, row = Math.floor(i / 2);
-    const cx = 16 + col * (catW + 8);
-    const cy = 42 + row * 34;
-    doc.setFillColor(...lightGray); doc.setDrawColor(...teal); doc.setLineWidth(0.3);
-    doc.roundedRect(cx, cy, catW, 30, 2, 2, 'FD');
-    doc.setTextColor(...teal); doc.setFontSize(14); doc.setFont('helvetica', 'normal');
-    doc.text(c[0], cx + 6, cy + 11);
-    doc.setTextColor(...navy); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-    doc.text(c[1], cx + 18, cy + 11);
-    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-    const dLines = doc.splitTextToSize(c[2], catW - 12);
-    doc.text(dLines, cx + 6, cy + 18);
+  const s2sw=(W-16-20)/3;
+  s2scenarios.forEach((s,i)=>{
+    const sx=8+i*(s2sw+10);
+    doc.setFillColor(...s.bg); doc.setDrawColor(...s.bd); doc.setLineWidth(0.5);
+    doc.roundedRect(sx,H-28,s2sw,16,2,2,'FD');
+    doc.setTextColor(...s.bd); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(s.lbl.toUpperCase()+' CASE', sx+s2sw/2, H-22, {align:'center'});
+    doc.setFontSize(11); doc.text(s.price, sx+s2sw/2, H-15, {align:'center'});
+    doc.setFontSize(7); doc.text(s.chg, sx+s2sw/2, H-13, {align:'center'});
   });
-  footer(11);
 
-  // ===== SLIDE 12: RISKS & MITIGANTS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Risks & Mitigants', 'Asymmetric Risk/Reward  -  3:1 Ratio');
-  dividerLine(29);
-  const risks12 = [
-    ['Leverage 7.8x EBITDA  -  elevated; requires earnings growth', 'Deleveraging path to 3.2x by 2028; FCF of $633M+ covers interest'],
-    ['Consumer spending softness delays industry recovery', 'Guidance already assumes FLAT market; any recovery = pure upside'],
-    ['Integration complexity of Mattress Firm operations', '$80M synergies already realized in first year; tracked ahead of plan'],
-    ['FTC scrutiny of vertical integration', 'Acquisition cleared. Ongoing monitoring; no new regulatory actions'],
-    ['Interest rate sensitivity on $8.1B net debt', 'Majority fixed-rate; ~$0.05-0.10 EPS impact per 50bps rate move'],
+  premiumFooter(2,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 3 — COMPANY OVERVIEW
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Company Overview',"World's largest vertically integrated sleep company",'Slide 3/23');
+
+  // Left column
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Business Description', 8, 40);
+  const s3desc="Somnigroup International Inc. (NYSE: SGI) is the world's largest vertically integrated bedding company, formed in February 2025 through the $5B acquisition of Mattress Firm. The company designs, manufactures, and retails mattresses globally across three decentralized business units.";
+  const s3dl=doc.splitTextToSize(s3desc,138);
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...gray);
+  doc.text(s3dl,8,47);
+
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Key Facts', 8, 78);
+  const s3facts=[
+    ['CEO','Scott L. Thompson'],
+    ['HQ','Lexington, KY'],
+    ['Employees','~19,000'],
+    ['Revenue','$7.48B (+51.6%)'],
+    ['Stores','~2,300 Mattress Firm'],
+    ['D2C Mix','65% post-acquisition'],
   ];
-  const riskW = [130, 130];
-  const startY12 = 42, rowH12 = 12;
-  // Header
-  doc.setFillColor(...navy); doc.rect(10, startY12, W-20, rowH12, 'F');
-  doc.setTextColor(...white); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
-  doc.text('RISK', 13, startY12 + rowH12 - 3);
-  doc.text('MITIGANT', 143, startY12 + rowH12 - 3);
-  // Divider
-  doc.setDrawColor(...midGray); doc.setLineWidth(0.3); doc.line(140, startY12, 140, startY12 + 1 + risks12.length * rowH12);
-
-  risks12.forEach((row, ri) => {
-    const ry = startY12 + (ri + 1) * rowH12;
-    if (ri % 2 === 0) { doc.setFillColor(...lightGray); } else { doc.setFillColor(...white); }
-    doc.rect(10, ry, W - 20, rowH12, 'F');
-    doc.setFillColor(...red); doc.rect(10, ry, 3, rowH12, 'F');
-    doc.setFillColor(...green); doc.rect(140, ry, 3, rowH12, 'F');
-    doc.setTextColor(...red); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-    const rLines = doc.splitTextToSize(row[0], 120);
-    doc.text(rLines, 15, ry + 8);
-    doc.setTextColor(...green);
-    const mLines = doc.splitTextToSize(row[1], 120);
-    doc.text(mLines, 145, ry + 8);
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15); doc.line(10, ry + rowH12, W - 10, ry + rowH12);
+  s3facts.forEach((f,i)=>{
+    const fy=85+i*10;
+    if(i%2===0){doc.setFillColor(...lightGray);}else{doc.setFillColor(...white);}
+    doc.rect(8,fy-4,148,9,'F');
+    doc.setFillColor(...teal); doc.rect(8,fy-4,2.5,9,'F');
+    doc.setTextColor(...gray); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    doc.text(f[0]+':', 14, fy+2);
+    doc.setTextColor(...navy); doc.setFont('helvetica','bold');
+    doc.text(f[1], 60, fy+2);
   });
-  footer(12);
 
-  // ===== SLIDE 13: PEER COMPARISON =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Peer Comparison', 'SGI vs. Sector Peers  -  Valuation & Quality Metrics');
-  dividerLine(29);
-  const peerHdrs = ['Company', 'Mkt Cap', 'P/E', 'EV/EBITDA', 'Gross Mgn', 'Net Mgn', 'Rev Grw', 'FCF Yld'];
-  const peerW = [50, 28, 22, 30, 28, 26, 26, 24];
-  const peerRows = [
-    ['SGI (Somnigroup)', '$14.6B', '14.4x', '21.9x', '44.4%', '5.1%', '+51.6%', '4.3%'],
-    ['SNBR (Sleep Number)', '$0.3B', 'NM', '6.2x', '62.1%', '-3.2%', '-12.4%', 'NM'],
-    ['PRPL (Purple Innovation)', '$0.2B', 'NM', 'NM', '28.4%', '-8.1%', '-15.6%', 'NM'],
-    ['LZB (La-Z-Boy)', '$1.6B', '15.2x', '8.1x', '47.8%', '4.8%', '-2.3%', '5.2%'],
-    ['LEG (Leggett & Platt)', '$1.4B', 'NM', '8.6x', '20.3%', '-4.2%', '-7.8%', 'NM'],
+  // Right column — Brand Portfolio
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Brand Portfolio', 162, 40);
+  const s3brands=[
+    {name:"Tempur-Pedic\xAE", clr:gold,              desc:'Premium memory foam  \xB7  ASP $2,500+'},
+    {name:"Sealy\xAE",         clr:[29,78,216],       desc:'Mass market leader  \xB7  Posturepedic\xAE'},
+    {name:"Stearns & Foster\xAE", clr:purple,         desc:'Luxury tier  \xB7  ASP $1,500\u20133,000'},
+    {name:"Mattress Firm",    clr:red,               desc:'2,300 stores  \xB7  Nation\'s largest retailer'},
   ];
-  const startY13 = 42, rowH13 = 11;
-  tblRow(peerHdrs, peerW, startY13, rowH13, true, false);
-  peerRows.forEach((row, ri) => {
-    const isHighlight = ri === 0;
-    if (!isHighlight && ri % 2 !== 0) { doc.setFillColor(...lightGray); doc.rect(10, startY13 + (ri+1)*rowH13, W-20, rowH13, 'F'); }
-    tblRow(row, peerW, startY13 + (ri + 1) * rowH13, rowH13, false, isHighlight);
+  s3brands.forEach((b,i)=>{
+    const by=48+i*24;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(160,by-4,W-168,20,2,2,'FD');
+    doc.setFillColor(...b.clr); doc.rect(160,by-4,3,20,'F');
+    doc.setTextColor(...b.clr); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(b.name, 167, by+5);
+    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica','normal');
+    doc.text(b.desc, 167, by+12);
   });
-  doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-  doc.text('Best-in-class metrics highlighted in bold (blue row = SGI). NM = Not Meaningful (loss-making firms).', 10, 104);
-  doc.text('Key takeaway: SGI trades at 14.4x forward P/E vs. historical 20-25x. Competitors lack scale, integration, and FCF generation.', 10, 111);
-  footer(13);
 
-  // ===== SLIDE 14: ANALYST CONSENSUS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Analyst Consensus', 'Strong Buy · 5/6 Bullish · Average PT $99.67');
-  dividerLine(29);
-  const ratings14 = [['5', 'BUY', green], ['1', 'NEUTRAL', [217, 119, 6]], ['0', 'SELL', red]];
-  ratings14.forEach((r, i) => {
-    const rx = 16 + i * 82;
-    doc.setFillColor(...lightGray); doc.setDrawColor(...r[2]); doc.setLineWidth(0.5);
-    doc.roundedRect(rx, 34, 76, 28, 3, 3, 'FD');
-    doc.setTextColor(...r[2]); doc.setFontSize(22); doc.setFont('helvetica', 'bold');
-    doc.text(r[0], rx + 38, 52, { align: 'center' });
-    doc.setFontSize(8.5); doc.text(r[1], rx + 38, 60, { align: 'center' });
-  });
-  doc.setTextColor(...teal); doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.text('Analyst Price Targets', 16, 74);
-  const pts14 = [
-    ['Jefferies', 'BUY', '$115', green],
-    ['Truist Securities', 'BUY', '$115', green],
-    ['UBS', 'BUY', '$108', teal],
-    ['Raymond James', 'BUY', '$100', teal],
-    ['Piper Sandler', 'BUY', '$100', teal],
-    ['Goldman Sachs', 'NEUTRAL', '$83', [217, 119, 6]]
+  // Revenue mix
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Revenue Mix', 162, 150);
+  const mixData=[
+    {lbl:'Manufacturing', pct:'32%', clr:gold},
+    {lbl:'Retail',        pct:'47%', clr:red},
+    {lbl:'International', pct:'21%', clr:green},
   ];
-  pts14.forEach((pt, i) => {
-    const col = i % 2, row = Math.floor(i / 2);
-    const px = 16 + col * 136, py = 78 + row * 14;
-    doc.setFillColor(...lightGray); doc.roundedRect(px, py - 3, 130, 12, 2, 2, 'F');
-    doc.setFillColor(...pt[3]); doc.rect(px, py - 3, 3, 12, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.text(pt[0], px + 6, py + 5);
-    const rc = pt[1] === 'BUY' ? green : [217, 119, 6];
-    doc.setTextColor(...rc); doc.text(pt[1], px + 72, py + 5);
-    doc.setFontSize(10); doc.text(pt[2], px + 105, py + 5);
-  });
-  // Recent actions
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.text('Recent Rating Actions', 16, 128);
-  const actions14 = ['Truist raised PT from $100 to $115 (Jan 2026)', 'Jefferies initiated Buy at $115 (Feb 2026)', 'UBS maintained Buy; noted synergy beat in Q4 2025'];
-  actions14.forEach((a, i) => { doc.setTextColor(...gray); doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.text('- ' + a, 16, 136 + i * 8); });
-  footer(14);
-
-  // ===== SLIDE 15: INVESTMENT CASE - WHY SGI NOW =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Why SGI Now - Three Value Drivers', 'Investment Case Summary');
-
-  // Three large KPI boxes across the top
-  const s15_boxes = [
-    { val: '$225M',   lbl: 'Synergy Target',  clr: teal },
-    { val: '24% CAGR', lbl: 'Adj EPS Growth', clr: green },
-    { val: 'FREE',    lbl: 'Cyclical Upside',  clr: gold },
-  ];
-  const s15_bw = 82, s15_bh = 26, s15_by = 35;
-  s15_boxes.forEach((b, i) => {
-    const s15_bx = 14 + i * 93;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...b.clr);
-    doc.setLineWidth(0.8);
-    doc.roundedRect(s15_bx, s15_by, s15_bw, s15_bh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(b.lbl.toUpperCase(), s15_bx + s15_bw / 2, s15_by + 7, { align: 'center' });
-    doc.setTextColor(...b.clr); doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-    doc.text(b.val, s15_bx + s15_bw / 2, s15_by + 20, { align: 'center' });
+  mixData.forEach((m,i)=>{
+    doc.setFillColor(...m.clr); doc.rect(162+i*42,153,38,4,'F');
+    doc.setTextColor(...m.clr); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(m.pct+' '+m.lbl, 162+i*42, 162);
   });
 
-  // Bullets under each box
-  const s15_bullets = [
-    ['$80M realized in year one', 'Run-rate: $100M by 2027'],
-    ['adj EPS $2.70 -> $5.15 by 2028', 'NOT dependent on market recovery'],
-    ['Industry at 10-yr trough', 'Any recovery = pure upside'],
+  premiumFooter(3,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 4 — INDUSTRY ANALYSIS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Industry Analysis','Cyclically Depressed  \xB7  Pent-Up Demand Building  \xB7  Structural Tailwinds','Slide 4/23');
+
+  // 3 big stat boxes
+  const s4stats=[
+    {val:'$37.7B',   lbl:'US MATTRESS MARKET (2025)',   clr:gold},
+    {val:'4.5% CAGR',lbl:'5-YEAR GROWTH FORECAST',      clr:teal},
+    {val:'27% Share',lbl:'SGI MARKET SHARE (EST.)',      clr:green},
   ];
-  s15_bullets.forEach((pair, i) => {
-    const s15_px = 14 + i * 93;
-    let s15_py = s15_by + s15_bh + 8;
-    pair.forEach(txt => {
-      doc.setFillColor(...teal);
-      doc.circle(s15_px + 2, s15_py - 1, 1, 'F');
-      doc.setTextColor(...navy);
-      doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-      const s15_lines = doc.splitTextToSize(txt, s15_bw - 8);
-      doc.text(s15_lines, s15_px + 6, s15_py);
-      s15_py += s15_lines.length * 5 + 4;
+  const s4sw=(W-16-20)/3;
+  s4stats.forEach((s,i)=>{
+    const sx=8+i*(s4sw+10);
+    kpiCard(sx,36,s4sw,22,s.lbl,s.val,null,s.clr);
+  });
+
+  // 5 trend cards in 2-col grid
+  const s4trends=[
+    {num:'1',title:'Premiumization',      desc:'Avg mattress ASP $452 (+4% YoY). Smart/adjustable beds driving higher margin.',        clr:gold},
+    {num:'2',title:'D2C Disruption',       desc:'SGI 65% D2C post-Mattress Firm. Eliminates wholesale markup, improves visibility.',     clr:teal},
+    {num:'3',title:'Sleep Wellness',        desc:'Health-tech integration and consumer awareness driving secular demand growth.',          clr:green},
+    {num:'4',title:'Housing Sensitivity',  desc:'New movers buy at 2\u20133x avg rate. Housing recovery = direct SGI revenue uplift.',        clr:amber},
+    {num:'5',title:'Vertical Advantage',   desc:'Manufacture-to-retail integration: SGI captures margin at every step of the chain.',    clr:teal},
+  ];
+  const s4cw=(W-16-12)/2;
+  s4trends.forEach((t,i)=>{
+    const col=i%2, row=Math.floor(i/2);
+    const tx=8+col*(s4cw+12), ty=64+row*24;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(tx,ty,s4cw,20,2,2,'FD');
+    doc.setFillColor(...t.clr); doc.rect(tx,ty,2.5,20,'F');
+    doc.setTextColor(...t.clr); doc.setFontSize(10); doc.setFont('helvetica','bold');
+    doc.text(t.num, tx+6, ty+13);
+    doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(t.title, tx+16, ty+8);
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    const tl=doc.splitTextToSize(t.desc, s4cw-22);
+    doc.text(tl, tx+16, ty+14);
+  });
+
+  insightBox(8,H-33,W-16,'Housing starts at 1.38M vs. historic norm 1.6M \u2014 each 100K increase = +$180M SGI revenue',teal);
+  premiumFooter(4,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 5 — INVESTMENT RATIONALE
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Investment Rationale','Three Compounding Catalysts \u2014 Each Self-Contained','Slide 5/23');
+
+  const s5pillars=[
+    {num:'01',title:'Synergies Ahead of Plan',clr:teal,
+     pts:['$225M total target (raised from $200M)','$145M unrealized at 20x EBITDA = $2.9B incremental EV','$14/share hidden value not yet in stock price','Q4 2025: "execution ahead of schedule"']},
+    {num:'02',title:'24% EPS CAGR',clr:gold,
+     pts:['$1.84 TTM \u2192 $4.82E (2026) \u2192 $7.08E (2028)','14.4x fwd P/E \u2014 historical range 20\u201325x','PEG ratio 0.6x \u2014 deep discount to growth','Deleveraging adds $0.25\u20130.35 EPS annually']},
+    {num:'03',title:'Free Cyclical Upside',clr:green,
+     pts:['Guidance: flat market assumption','Pent-up demand building over 3 years of declines',"President's Day 2026: \"very robust \u2014 double digits\"",'Housing starts normalizing as rates ease']},
+  ];
+  const s5pw=(W-16-16)/3;
+  const s5cardH=H-50;
+  s5pillars.forEach((p,i)=>{
+    const px=8+i*(s5pw+8);
+    doc.setFillColor(...white); doc.setDrawColor(...p.clr); doc.setLineWidth(0.5);
+    doc.roundedRect(px,36,s5pw,s5cardH,3,3,'FD');
+    doc.setFillColor(...p.clr); doc.rect(px,36,s5pw,4,'F');
+    doc.setTextColor(...white); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text('PILLAR '+p.num, px+s5pw/2, 41.5, {align:'center'});
+    doc.setTextColor(...p.clr); doc.setFontSize(10); doc.setFont('helvetica','bold');
+    const titleL=doc.splitTextToSize(p.title,s5pw-10);
+    doc.text(titleL, px+5, 52);
+    let py2=52+titleL.length*7+4;
+    p.pts.forEach(pt=>{
+      doc.setFillColor(...p.clr); doc.circle(px+7,py2-1.5,0.9,'F');
+      doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica','normal');
+      const bl=doc.splitTextToSize(pt,s5pw-16);
+      doc.text(bl,px+11,py2);
+      py2+=bl.length*5+3;
     });
   });
 
-  // Divider and key message
-  dividerLine(90);
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('The Investment Case in One Sentence:', 16, 100);
-  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
-  const s15_rationale = 'SGI is a post-merger integration play with $225M in synergies being realized ahead of schedule, ' +
-    '24% EPS CAGR through 2028, and a free cyclical recovery option - all at 14.4x forward earnings.';
-  const s15_thlines = doc.splitTextToSize(s15_rationale, W - 32);
-  doc.text(s15_thlines, 16, 107);
+  // Bottom strip
+  doc.setFillColor(230,240,250); doc.rect(8,H-24,W-16,12,'F');
+  doc.setFillColor(...teal); doc.rect(8,H-24,3,12,'F');
+  doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+  const s5msg='Any ONE of these three catalysts independently justifies the current price.';
+  doc.text(s5msg, W/2, H-16, {align:'center'});
+  premiumFooter(5,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 6 — FINANCIAL PERFORMANCE
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Financial Performance','FY2021\u20132025 Actuals + FY2026\u20132028E Consensus','Slide 6/23');
+
+  const s6xs=[8,52,88,118,150,174,198,226];
+  const s6hdrs=['Year','Revenue','Gross Mgn','EBITDA','Net Income','EPS','FCF'];
+  dataRow(s6hdrs,s6xs,35,8,{header:true});
+
+  const s6data=[
+    {row:['FY2021','$4,931M','43.8%','$1,004M','$625M','$3.06','$600M'],hi:false,est:false},
+    {row:['FY2022','$4,921M','41.6%','$807M', '$456M','$2.53','$72M'], hi:false,est:false},
+    {row:['FY2023','$4,925M','43.2%','$739M', '$368M','$2.08','$385M'],hi:false,est:false},
+    {row:['FY2024','$4,931M','44.2%','$804M', '$384M','$2.16','$569M'],hi:false,est:false},
+    {row:['FY2025','$7,477M','44.4%','$1,041M','$384M','$1.84','$633M'],hi:true, est:false},
+    {row:['FY2026E','$7,952M','~45.0%','$1,478M','$711M','$4.82','$745M'],hi:false,est:true},
+    {row:['FY2027E','$8,369M','~45.5%','$1,673M','$881M','$5.82','$915M'],hi:false,est:true},
+    {row:['FY2028E','$8,881M','~46.0%','$1,886M','$1,055M','$7.08','$1,124M'],hi:false,est:true},
+  ];
+  s6data.forEach((r,ri)=>{
+    const ry=43+ri*9;
+    if (r.hi) {
+      dataRow(r.row,s6xs,ry,9,{highlight:true});
+    } else if (r.est) {
+      doc.setFillColor(...goldLight); doc.rect(s6xs[0]-2,ry,W-(s6xs[0]-2)-8,9,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7); doc.setFont('helvetica','italic');
+      r.row.forEach((c,ci)=>doc.text(String(c),s6xs[ci],ry+6.5));
+      doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(s6xs[0]-2,ry+9,W-8,ry+9);
+    } else {
+      dataRow(r.row,s6xs,ry,9,{altBg:ri%2===0});
+    }
+  });
+
+  // 3 callout boxes below
+  const s6calls=[
+    {lbl:'Revenue',  txt:'$4.9B \u2192 $7.5B (+52%)\nMattress Firm consolidation',clr:teal},
+    {lbl:'EBITDA',   txt:'$1.0B \u2192 $1.9B by 2028 (+88%)\nSynergy + organic growth',clr:green},
+    {lbl:'EPS',      txt:'$1.84 \u2192 $7.08E (2028)\n24% CAGR',                   clr:gold},
+  ];
+  const s6cw=(W-16-20)/3;
+  s6calls.forEach((c,i)=>{
+    const cx=8+i*(s6cw+10), cy=H-32;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(cx,cy,s6cw,18,2,2,'FD');
+    doc.setFillColor(...c.clr); doc.roundedRect(cx,cy,s6cw,2,1,0,'F');
+    doc.setTextColor(...c.clr); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(c.lbl, cx+s6cw/2, cy+8, {align:'center'});
+    const cl=doc.splitTextToSize(c.txt,s6cw-6);
+    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica','normal');
+    doc.text(cl, cx+s6cw/2, cy+13, {align:'center'});
+  });
+
+  doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','italic');
+  doc.text('E = Consensus estimates. Highlighted row = FY2025 acquisition year actual. Gold rows = forward estimates.', 8, H-14);
+  premiumFooter(6,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 7 — SEGMENT ANALYSIS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Segment Analysis','FY2025: Three Business Units  \xB7  $7.48B Combined Revenue','Slide 7/23');
+
+  // Left: segment table
+  const s7xs=[8,96,122,148,170];
+  const s7hdrs=['Segment','Revenue','Op. Inc.','OI Margin','Rev Mix'];
+  dataRow(s7hdrs,s7xs,36,8,{header:true});
+  const s7segs=[
+    {name:'N. America (Mfg)',  rev:'$2,430M',oi:'$553M',oim:'22.8%',mix:'32.5%',clr:gold},
+    {name:'Mattress Firm (Retail)',rev:'$3,505M',oi:'$191M',oim:'5.4%',mix:'46.9%',clr:red},
+    {name:'International',    rev:'$1,542M',oi:'$221M',oim:'14.3%',mix:'20.6%',clr:green},
+  ];
+  s7segs.forEach((s,i)=>{
+    const sy=44+i*10;
+    if(i%2===0){doc.setFillColor(...lightGray);}else{doc.setFillColor(...white);}
+    doc.rect(s7xs[0]-2,sy,W-(s7xs[0]-2)-8,10,'F');
+    doc.setFillColor(...s.clr); doc.rect(s7xs[0]-2,sy,2.5,10,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text(s.name,s7xs[0]+2,sy+7);
+    doc.setTextColor(...gray); doc.setFont('helvetica','normal');
+    doc.text(s.rev,s7xs[1],sy+7);
+    doc.setTextColor(...green); doc.text(s.oi,s7xs[2],sy+7);
+    doc.setTextColor(...green); doc.text(s.oim,s7xs[3],sy+7);
+    doc.setTextColor(...teal);  doc.text(s.mix,s7xs[4],sy+7);
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(s7xs[0]-2,sy+10,W-8,sy+10);
+  });
+
+  // OI margin bars
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('Operating Income Margin', 8, 80);
+  s7segs.forEach((s,i)=>{
+    const by=84+i*13;
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text(s.name, 8, by+5);
+    doc.setFillColor(220,230,240); doc.rect(82,by,90,6,'F');
+    doc.setFillColor(...s.clr); doc.rect(82,by,(parseFloat(s.oim)/25)*90,6,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(s.oim, 176, by+5);
+  });
+
+  // Right: Revenue mix visual
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Revenue Mix', 162, 40);
+  const mixBlocks=[
+    {pct:'32.5%',lbl:'Manufacturing',clr:gold,  h:28},
+    {pct:'46.9%',lbl:'Retail',        clr:red,   h:40},
+    {pct:'20.6%',lbl:'International', clr:green, h:18},
+  ];
+  let mixY=44;
+  mixBlocks.forEach(m=>{
+    doc.setFillColor(...m.clr);
+    doc.roundedRect(162,mixY,W-170,m.h,2,2,'F');
+    doc.setTextColor(...white); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(m.pct, 164, mixY+m.h/2+3);
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text(m.lbl, 184, mixY+m.h/2+3);
+    mixY+=m.h+3;
+  });
+
+  insightBox(162,135,W-170,'Mattress Firm retail (5.4% OI margin) should reach 8\u201310% as synergies materialize \u2014 each 100bps = $35M incremental EBITDA',teal);
+  premiumFooter(7,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 8 — BALANCE SHEET & LEVERAGE
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Balance Sheet & Leverage','Post-Acquisition Peak Leverage  \xB7  Clear Deleveraging Path','Slide 8/23');
+
+  // BS table - left column
+  const s8xs=[8,72,106,140];
+  const s8hdrs=['Metric','FY2023','FY2024','FY2025'];
+  dataRow(s8hdrs,s8xs,36,8,{header:true});
+  const s8rows=[
+    {r:['Total Assets','$7,246M','$7,439M','$21,685M'],hi:false},
+    {r:['Total Debt','$3,450M','$4,632M','$8,620M'],hi:false},
+    {r:['Net Debt','$3,191M','$4,351M','$8,130M'],hi:false},
+    {r:['Stockholders Equity','$2,114M','$1,527M','$6,573M'],hi:false},
+    {r:['Net Debt / EBITDA','4.32x','5.41x','7.81x'],hi:true},
+    {r:['Interest Coverage','2.9x','2.3x','1.6x'],hi:false},
+    {r:['Current Ratio','1.22x','1.34x','1.15x'],hi:false},
+  ];
+  s8rows.forEach((r,ri)=>{
+    const ry=44+ri*10;
+    if (r.hi) {
+      doc.setFillColor(255,243,205); doc.rect(s8xs[0]-2,ry,155,10,'F');
+      doc.setFillColor(...amber); doc.rect(s8xs[0]-2,ry,2.5,10,'F');
+      doc.setTextColor(...amber); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+      r.r.forEach((c,ci)=>doc.text(String(c),s8xs[ci],ry+7));
+    } else {
+      dataRow(r.r,s8xs,ry,10,{altBg:ri%2===0});
+    }
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(s8xs[0]-2,ry+10,158,ry+10);
+  });
+
+  // Right: Deleveraging roadmap
+  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Deleveraging Roadmap', 166, 40);
+  const s8path=[
+    {yr:'FY2025',val:'7.81x',clr:red},
+    {yr:'FY2026E',val:'5.5x',clr:amber},
+    {yr:'FY2027E',val:'4.2x',clr:teal},
+    {yr:'FY2028E',val:'3.2x',clr:green},
+  ];
+  let dly=44;
+  s8path.forEach((d,i)=>{
+    doc.setFillColor(...white); doc.setDrawColor(...d.clr); doc.setLineWidth(0.5);
+    doc.roundedRect(166,dly,W-174,16,2,2,'FD');
+    doc.setFillColor(...d.clr); doc.rect(166,dly,3,16,'F');
+    doc.setTextColor(...d.clr); doc.setFontSize(14); doc.setFont('helvetica','bold');
+    doc.text(d.val, 200, dly+11);
+    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica','normal');
+    doc.text(d.yr, 166+W-174-4, dly+10, {align:'right'});
+    if (i<3) { doc.setDrawColor(...midGray); doc.setLineWidth(0.3); doc.line(W/2+30,dly+16,W/2+30,dly+20); }
+    dly+=20;
+  });
+
+  insightBox(166,dly+2,W-174,'FCF of $745M in FY2026E covers $620M interest + leaves $125M for debt paydown. Peak leverage reflects acquisition cost, not business quality.',gold);
+  premiumFooter(8,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 9 — VALUATION SUMMARY
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Valuation Summary','Six Methods \u2014 All Point to Significant Upside','Slide 9/23');
+
+  // Football field chart
+  const s9methods=[
+    {name:'DCF',              low:74,  high:106,base:88,  clr:teal},
+    {name:'Forward P/E',      low:82,  high:120,base:99,  clr:green},
+    {name:'EV/EBITDA',        low:52,  high:74, base:62,  clr:gold},
+    {name:'SOTP',             low:85,  high:118,base:100, clr:purple},
+    {name:'Analyst Consensus',low:83,  high:115,base:100, clr:teal},
+    {name:'Monte Carlo',      low:67,  high:115,base:94,  clr:navy},
+  ];
+  const s9chartL=80, s9chartW=175, s9pMin=45, s9pMax=130;
+  const s9scale=s9chartW/(s9pMax-s9pMin);
+  const s9startY=37, s9rowH=13;
+
+  // Axis gridlines
+  [50,60,70,80,90,100,110,120,130].forEach(v=>{
+    const ax=s9chartL+(v-s9pMin)*s9scale;
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15);
+    doc.line(ax,s9startY-3,ax,s9startY+s9methods.length*s9rowH+3);
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+    doc.text('$'+v, ax, s9startY-4.5, {align:'center'});
+  });
+
+  s9methods.forEach((m,i)=>{
+    const sy=s9startY+i*s9rowH;
+    doc.setTextColor(...navy); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(m.name, 8, sy+8);
+    // Track
+    doc.setFillColor(230,235,242); doc.roundedRect(s9chartL,sy+4,s9chartW,6,1,1,'F');
+    // Bar
+    const bx=s9chartL+(m.low-s9pMin)*s9scale;
+    const bw=(m.high-m.low)*s9scale;
+    doc.setFillColor(...m.clr); doc.roundedRect(bx,sy+4,bw,6,1,1,'F');
+    // Low/high labels
+    doc.setTextColor(...gray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+    doc.text('$'+m.low, bx-1, sy+3.5, {align:'right'});
+    doc.text('$'+m.high, bx+bw+1, sy+3.5);
+  });
+
+  // Current price line
+  const s9cpX=s9chartL+(69.37-s9pMin)*s9scale;
+  doc.setDrawColor(...red); doc.setLineWidth(0.8);
+  doc.line(s9cpX,s9startY-5,s9cpX,s9startY+s9methods.length*s9rowH+5);
+  doc.setTextColor(...red); doc.setFontSize(6); doc.setFont('helvetica','bold');
+  doc.text('$69.37 Current',s9cpX,s9startY+s9methods.length*s9rowH+10,{align:'center'});
+
+  // Scenarios
+  const s9scens=[
+    {lbl:'Bear $59',  chg:'-15%', prob:'20%',bg:redBg,  bd:red},
+    {lbl:'Base $100', chg:'+44%', prob:'55%',bg:[224,242,254],bd:teal},
+    {lbl:'Bull $117', chg:'+69%', prob:'25%',bg:greenBg,bd:green},
+  ];
+  const s9sw=(W-16-20)/3;
+  s9scens.forEach((s,i)=>{
+    const sx=8+i*(s9sw+10), sy=H-36;
+    doc.setFillColor(...s.bg); doc.setDrawColor(...s.bd); doc.setLineWidth(0.5);
+    doc.roundedRect(sx,sy,s9sw,16,2,2,'FD');
+    doc.setTextColor(...s.bd); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text(s.lbl, sx+s9sw/2, sy+7, {align:'center'});
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text(s.chg+'  prob: '+s.prob, sx+s9sw/2, sy+13, {align:'center'});
+  });
+
+  insightBox(8,H-19,W-16,'Blended base case $100 = 44% upside. 5 of 6 methods show positive return from current $69.37.',teal);
+  premiumFooter(9,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 10 — DCF MODEL
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('DCF Model','Discounted Cash Flow \u2014 Base Case $88/share','Slide 10/23');
+
+  // Left: assumptions table
+  const s10xs=[8,74,108];
+  const s10hdrs=['Assumption','Value','Notes'];
+  dataRow(s10hdrs,s10xs,36,8,{header:true});
+  const s10rows=[
+    ['WACC','8.5%','E/V=0.65, D/V=0.35, Re=9.5%, Rd=6.2%'],
+    ['Terminal Growth Rate','3.0%','Long-run nominal GDP growth'],
+    ['Tax Rate','25%','Normalized effective rate'],
+    ['CapEx / Revenue','1.8%','Maintenance + growth capex'],
+    ['FCF CAGR (2025\u201328)','21%','Synergy + deleveraging driven'],
+    ['Terminal Year FCF','$1,124M','FY2028 consensus estimate'],
+    ['Terminal Value','$22.8B','FCF_n x (1+g) / (WACC-g)'],
+    ['PV of Terminal Value','$18.1B','Discounted at WACC, 3 yrs'],
+    ['PV of FCF (2026\u201328)','$2.0B','Sum of discounted FCFs'],
+    ['Enterprise Value','$20.1B','PV FCF + PV Terminal Value'],
+    ['Net Debt','($8.1B)','FY2025 actual net debt'],
+    ['Equity Value','$12.0B','EV minus net debt'],
+    ['Shares Outstanding','~208M','Diluted share count'],
+    ['Conservative Price','$57.60','With current debt load'],
+    ['Base Target','$88','20% margin of safety to consensus'],
+  ];
+  s10rows.forEach((r,ri)=>{
+    const ry=44+ri*7.5;
+    const isLast=ri===14;
+    if (isLast) {
+      doc.setFillColor(...greenBg); doc.rect(s10xs[0]-2,ry,W-(s10xs[0]-2)-8,7.5,'F');
+      doc.setFillColor(...green); doc.rect(s10xs[0]-2,ry,2.5,7.5,'F');
+      doc.setTextColor(...green); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    } else {
+      if (ri%2===0){ doc.setFillColor(...lightGray); doc.rect(s10xs[0]-2,ry,180,7.5,'F'); }
+      doc.setTextColor(...navy); doc.setFontSize(7); doc.setFont('helvetica',ri<13?'normal':'bold');
+    }
+    doc.text(r[0],s10xs[0],ry+5.5);
+    if(isLast){doc.setTextColor(...green);}else{doc.setTextColor(...navy);} doc.setFont('helvetica',isLast?'bold':'normal');
+    doc.text(r[1],s10xs[1],ry+5.5);
+    doc.setTextColor(...gray); doc.setFont('helvetica','normal');
+    doc.text(r[2],s10xs[2],ry+5.5);
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.12); doc.line(s10xs[0]-2,ry+7.5,W/2+50,ry+7.5);
+  });
+
+  // Right: sensitivity table
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('WACC Sensitivity (Price / Share)', 196, 40);
+  const s10tgrs=['2.0%','2.5%','3.0%','3.5%'];
+  const s10wacc=['7.5%','8.5%','9.5%','10.5%'];
+  const s10sens=[
+    ['$92','$82','$74','$67'],
+    ['$102','$90','$80','$72'],
+    ['$115','$100','$88','$78'],
+    ['$135','$115','$99','$87'],
+  ];
+  // Column headers
+  doc.setFillColor(...navy); doc.rect(194,43,W-202,8,'F');
+  doc.setTextColor(...white); doc.setFontSize(6); doc.setFont('helvetica','bold');
+  doc.text('TGR\\WACC', 196, 48.5);
+  s10wacc.forEach((w,i)=>doc.text(w, 218+i*17, 48.5));
+  // Rows
+  s10tgrs.forEach((tgr,ri)=>{
+    const ry=51+ri*8;
+    if(ri%2===0){doc.setFillColor(...lightGray);}else{doc.setFillColor(...white);}
+    doc.rect(194,ry,W-202,8,'F');
+    doc.setTextColor(...navy); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    doc.text(tgr, 196, ry+5.5);
+    s10sens[ri].forEach((v,ci)=>{
+      const vn=parseInt(v.replace('$',''));
+      const cellClr = vn>=100?green : vn>=80?teal : amber;
+      if (vn>=100) { doc.setFillColor(...greenBg); doc.rect(214+ci*17,ry,16,8,'F'); }
+      else if (vn>=80) { doc.setFillColor(224,242,254); doc.rect(214+ci*17,ry,16,8,'F'); }
+      else { doc.setFillColor(255,243,205); doc.rect(214+ci*17,ry,16,8,'F'); }
+      doc.setTextColor(...cellClr); doc.setFont('helvetica','bold');
+      doc.text(v, 222+ci*17, ry+5.5, {align:'center'});
+    });
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(194,ry+8,W-8,ry+8);
+  });
+
+  premiumFooter(10,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 11 — CATALYSTS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Catalysts','Six Key Upside Drivers  \xB7  Asymmetric Reward Setup','Slide 11/23');
+
+  const s11cats=[
+    {num:'1',title:'Synergy Execution',     clr:teal,  desc:'$145M unrealized synergies at 20x EBITDA = $14/share hidden value. Management tracking ahead of initial schedule.'},
+    {num:'2',title:'Q1 2026 Earnings',      clr:green, desc:'First full-year post-acquisition comp. Consensus likely too conservative. Beat + raise = multiple expansion.'},
+    {num:'3',title:'Industry Recovery',     clr:gold,  desc:'Consecutive years of decline create pent-up demand. Any volume uptick is pure incremental upside vs. flat guidance.'},
+    {num:'4',title:'Deleveraging',           clr:teal,  desc:'Net Debt/EBITDA from 7.8x to 3.2x by 2028. Each turn = ~$0.25\u20130.35 EPS accretion.'},
+    {num:'5',title:'National Ad Campaign',  clr:purple,desc:'Record brand awareness scores post-launch. Mattress Firm running SGI brand ads in all 2,300 stores.'},
+    {num:'6',title:'Housing Mobility',      clr:green, desc:'Mortgage rate normalization = housing market unlock. New movers buy mattresses at 2\u20133x average consumer rate.'},
+  ];
+  const s11cw=(W-16-12)/2;
+  s11cats.forEach((c,i)=>{
+    const col=i%2, row=Math.floor(i/2);
+    const cx=8+col*(s11cw+12), cy=37+row*32;
+    doc.setFillColor(...white); doc.setDrawColor(...c.clr); doc.setLineWidth(0.4);
+    doc.roundedRect(cx,cy,s11cw,28,2,2,'FD');
+    doc.setFillColor(...c.clr); doc.rect(cx,cy,s11cw,3,'F');
+    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text('CATALYST '+c.num+': '+c.title, cx+4, cy+2.5);
+    doc.setTextColor(...navy); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(c.title, cx+4, cy+11);
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    const dl=doc.splitTextToSize(c.desc,s11cw-10);
+    doc.text(dl, cx+4, cy+17);
+  });
+
+  premiumFooter(11,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 12 — RISKS & MITIGANTS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Risks & Mitigants','Asymmetric Risk/Reward  \xB7  3:1 Ratio','Slide 12/23');
+
+  // 3:1 badge top-right
+  doc.setFillColor(...greenBg); doc.setDrawColor(...green); doc.setLineWidth(0.5);
+  doc.roundedRect(W-52,35,44,12,3,3,'FD');
+  doc.setTextColor(...green); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('3:1 Risk/Reward', W-30, 43.5, {align:'center'});
+
+  const s12xs=[8,152];
+  // Header
+  doc.setFillColor(...navy); doc.rect(6,36,W-14,10,'F');
+  doc.setTextColor(...white); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+  doc.text('RISK FACTOR', 11, 43);
+  doc.text('MITIGANT / CONTEXT', 155, 43);
+  doc.setDrawColor(...midGray); doc.setLineWidth(0.3); doc.line(150,36,150,36+10+5*14);
+
+  const s12risks=[
+    ['Leverage 7.8x EBITDA \u2014 elevated; requires earnings growth','Deleveraging path to 3.2x by 2028; $633M FCF covers interest'],
+    ['Consumer spending softness delays industry recovery','Guidance assumes FLAT market; any recovery = pure upside'],
+    ['Integration complexity of Mattress Firm operations','$80M synergies already realized in year 1 \u2014 ahead of plan'],
+    ['FTC scrutiny of vertical integration','Acquisition cleared. Ongoing monitoring; no new actions'],
+    ['Interest rate sensitivity on $8.1B net debt','Majority fixed-rate; ~$0.05\u20130.10 EPS per 50bps rate move'],
+  ];
+  s12risks.forEach((r,ri)=>{
+    const ry=46+ri*14;
+    if(ri%2===0){doc.setFillColor(...lightGray);}else{doc.setFillColor(...white);}
+    doc.rect(6,ry,W-14,14,'F');
+    doc.setFillColor(...red);   doc.rect(6,ry,2.5,14,'F');
+    doc.setFillColor(...green); doc.rect(148,ry,2.5,14,'F');
+    doc.setTextColor(...red); doc.setFontSize(7); doc.setFont('helvetica','normal');
+    const rl=doc.splitTextToSize(r[0],130);
+    doc.text(rl,11,ry+7);
+    doc.setTextColor(5,120,80);
+    const ml=doc.splitTextToSize(r[1],130);
+    doc.text(ml,153,ry+7);
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(6,ry+14,W-8,ry+14);
+  });
+
+  premiumFooter(12,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 13 — PEER COMPARISON
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Peer Comparison','SGI vs. Direct Peers \u2014 Highest Growth, Lowest Multiple','Slide 13/23');
+
+  const s13xs=[8,72,100,122,148,174,200,224];
+  const s13hdrs=['Company','Mkt Cap','P/E','EV/EBITDA','Gross Mgn','Net Mgn','Rev Grw','FCF Yld'];
+  dataRow(s13hdrs,s13xs,36,8,{header:true});
+
+  const s13peers=[
+    {r:['SGI (Somnigroup)','$14.6B','14.4x','21.9x','44.4%','5.1%','+51.6%','4.3%'],hi:true},
+    {r:['SNBR (Sleep Number)','$0.3B','NM','6.2x','62.1%','-3.2%','-12.4%','NM'],hi:false},
+    {r:['PRPL (Purple Innovation)','$0.2B','NM','NM','28.4%','-8.1%','-15.6%','NM'],hi:false},
+    {r:['LZB (La-Z-Boy)','$1.6B','15.2x','8.1x','47.8%','4.8%','-2.3%','5.2%'],hi:false},
+    {r:['LEG (Leggett & Platt)','$1.4B','NM','8.6x','20.3%','-4.2%','-7.8%','NM'],hi:false},
+  ];
+  s13peers.forEach((p,ri)=>{
+    const ry=44+ri*11;
+    if (p.hi) {
+      doc.setFillColor(224,242,254); doc.rect(s13xs[0]-2,ry,W-(s13xs[0]-2)-8,11,'F');
+      doc.setFillColor(...teal); doc.rect(s13xs[0]-2,ry,2.5,11,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    } else {
+      if (ri%2!==0){ doc.setFillColor(...lightGray); doc.rect(s13xs[0]-2,ry,W-(s13xs[0]-2)-8,11,'F'); }
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    }
+    p.r.forEach((c,ci)=>{
+      const isNM=c==='NM';
+      if (isNM) doc.setTextColor(...midGray);
+      else doc.setTextColor(...navy);
+      doc.text(String(c),s13xs[ci],ry+8);
+    });
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15); doc.line(s13xs[0]-2,ry+11,W-8,ry+11);
+  });
+
+  // Callouts
+  const s13cw=(W-16-10)/2;
+  [{lbl:'Best-in-class revenue growth',val:'+51.6% YoY',clr:green},{lbl:'Lowest P/E with positive earnings',val:'14.4x Fwd',clr:teal}].forEach((c,i)=>{
+    const cx=8+i*(s13cw+10), cy=103;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(cx,cy,s13cw,12,2,2,'FD');
+    doc.setFillColor(...c.clr); doc.roundedRect(cx,cy,s13cw,2,1,0,'F');
+    doc.setTextColor(...c.clr); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.text(c.val+' \u2014 '+c.lbl, cx+s13cw/2, cy+9, {align:'center'});
+  });
+
+  insightBox(8,H-31,W-16,'SGI +51.6% revenue growth at 14.4x P/E = PEG 0.6x. Every peer either loses money or grows slower. The valuation gap is unjustified.',teal);
+  premiumFooter(13,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 14 — ANALYST CONSENSUS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Analyst Consensus','Strong Buy  \xB7  5/6 Bullish  \xB7  Average PT $99.67','Slide 14/23');
+
+  // Rating badges
+  const s14ratings=[{n:'5',lbl:'BUY',clr:green},{n:'1',lbl:'NEUTRAL',clr:amber},{n:'0',lbl:'SELL',clr:red}];
+  s14ratings.forEach((r,i)=>{
+    kpiCard(8+i*90,36,84,30,r.lbl+' RATINGS',r.n,'Analyst count',r.clr);
+  });
+
+  // Consensus banner
+  doc.setFillColor(...greenBg); doc.setDrawColor(...green); doc.setLineWidth(0.5);
+  doc.roundedRect(8,70,W-16,10,3,3,'FD');
+  doc.setTextColor(...green); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text('CONSENSUS: STRONG BUY', W/2, 77.5, {align:'center'});
+
+  // Analyst rows
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('Individual Price Targets', 8, 88);
+  const s14pts=[
+    {firm:'Jefferies',       rat:'BUY',    pt:'$115',clr:green},
+    {firm:'Truist Securities',rat:'BUY',   pt:'$115',clr:green},
+    {firm:'UBS',             rat:'BUY',    pt:'$108',clr:teal},
+    {firm:'Raymond James',   rat:'BUY',    pt:'$100',clr:teal},
+    {firm:'Piper Sandler',   rat:'BUY',    pt:'$100',clr:teal},
+    {firm:'Goldman Sachs',   rat:'NEUTRAL',pt:'$83', clr:amber},
+  ];
+  const s14pw=(W-16-10)/2;
+  s14pts.forEach((p,i)=>{
+    const col=i%2, row=Math.floor(i/2);
+    const px=8+col*(s14pw+10), py=92+row*14;
+    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
+    doc.roundedRect(px,py,s14pw,12,2,2,'FD');
+    doc.setFillColor(...p.clr); doc.rect(px,py,2.5,12,'F');
+    doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(p.firm, px+5, py+8);
+    doc.setTextColor(...p.clr);
+    doc.text(p.rat, px+s14pw/2, py+8);
+    doc.setTextColor(...gold); doc.setFontSize(9);
+    doc.text(p.pt, px+s14pw-4, py+8, {align:'right'});
+  });
+
+  // Recent actions
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('Recent Rating Actions', 8, 136);
+  ['Truist raised PT from $100 to $115 (Jan 2026)','Jefferies initiated Buy at $115 (Feb 2026)','UBS maintained Buy; noted synergy beat in Q4 2025'].forEach((a,i)=>{
+    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text('\u2022 '+a, 8, 142+i*8);
+  });
+
+  premiumFooter(14,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 15 — INVESTMENT CASE
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Investment Case','Why SGI Now \u2014 Three Value Drivers','Slide 15/23');
+
+  // Three pillar boxes
+  const s15boxes=[
+    {val:'$225M',   lbl:'Synergy Target', clr:teal},
+    {val:'24% CAGR',lbl:'Adj EPS Growth', clr:green},
+    {val:'FREE',    lbl:'Cyclical Upside', clr:gold},
+  ];
+  const s15bw=84;
+  s15boxes.forEach((b,i)=>{
+    kpiCard(8+i*95,36,s15bw,28,b.lbl,b.val,null,b.clr);
+  });
+
+  // Bullets under each
+  const s15bulls=[
+    ['$80M realized in year one','Run-rate $100M by 2027'],
+    ['adj EPS $1.84 \u2192 $7.08E by 2028','NOT dependent on market recovery'],
+    ['Industry at 10-yr trough','Any recovery = pure upside'],
+  ];
+  s15bulls.forEach((pair,i)=>{
+    let py=70;
+    pair.forEach(txt=>{
+      doc.setFillColor(...[teal,green,gold][i]); doc.circle(12+i*95,py-1,1,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      const bl=doc.splitTextToSize(txt,s15bw-8);
+      doc.text(bl,16+i*95,py);
+      py+=bl.length*5+4;
+    });
+  });
+
+  // Investment case statement — large centered box
+  sectionDivider(88);
+  doc.setFillColor(230,240,250); doc.rect(8,92,W-16,22,'F');
+  doc.setFillColor(...teal); doc.rect(8,92,3,22,'F');
+  doc.setTextColor(...teal); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+  doc.text('The Investment Case in One Sentence:', 14, 100);
+  doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','normal');
+  const s15stmt='SGI is a post-merger integration play with $225M in synergies being realized ahead of schedule, 24% EPS CAGR through 2028, and a free cyclical recovery option \u2014 all at 14.4x forward earnings.';
+  const s15l=doc.splitTextToSize(s15stmt,W-28);
+  doc.text(s15l,14,107);
 
   // Bottom KPI strip
-  const s15_strip = [
-    { lbl: 'Current Price', val: '$69.37', clr: navy },
-    { lbl: '12M Price Target', val: '$100', clr: green },
-    { lbl: 'Upside', val: '+44%', clr: green },
-    { lbl: 'Analyst Rating', val: 'Strong Buy', clr: teal },
+  const s15strip=[
+    {lbl:'Current Price', val:'$69.37', clr:navy},
+    {lbl:'12M Price Target',val:'$100', clr:green},
+    {lbl:'Upside',         val:'+44%',  clr:green},
+    {lbl:'Analyst Rating', val:'Strong Buy',clr:teal},
   ];
-  const s15_sw = 66, s15_sh = 18, s15_sy = 122;
-  s15_strip.forEach((b, i) => {
-    const s15_sx = 16 + i * 68;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
-    doc.roundedRect(s15_sx, s15_sy, s15_sw, s15_sh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(b.lbl.toUpperCase(), s15_sx + s15_sw / 2, s15_sy + 5.5, { align: 'center' });
-    doc.setTextColor(...b.clr); doc.setFontSize(11); doc.setFont('helvetica', 'bold');
-    doc.text(b.val, s15_sx + s15_sw / 2, s15_sy + 14, { align: 'center' });
-  });
-  footer(15);
-
-  // ===== SLIDE 16: QUARTERLY TRAJECTORY =====
-  doc.addPage();
-  whiteBg();
-  headerBar('FY2025 Quarterly Momentum', 'Sequential improvement demonstrates synergy ramp and operating leverage');
-
-  // 4 KPI boxes for quarterly EPS
-  const s16_eps = [
-    { q: 'Q1 2025', val: '$0.49', clr: teal },
-    { q: 'Q2 2025', val: '$0.53', clr: teal },
-    { q: 'Q3 2025', val: '$0.95', clr: green },
-    { q: 'Q4 2025', val: '$0.72', clr: teal },
-  ];
-  const s16_kw = 64, s16_kh = 28, s16_ky = 34;
-  s16_eps.forEach((k, i) => {
-    const s16_kx = 14 + i * 68;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...k.clr); doc.setLineWidth(0.8);
-    doc.roundedRect(s16_kx, s16_ky, s16_kw, s16_kh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(k.q.toUpperCase() + ' ADJ EPS', s16_kx + s16_kw / 2, s16_ky + 6.5, { align: 'center' });
-    doc.setTextColor(...k.clr); doc.setFontSize(15); doc.setFont('helvetica', 'bold');
-    doc.text(k.val, s16_kx + s16_kw / 2, s16_ky + 21, { align: 'center' });
-    if (k.q === 'Q3 2025') {
-      doc.setTextColor(...green); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
-      doc.text('RECORD', s16_kx + s16_kw / 2, s16_ky + s16_kh + 4, { align: 'center' });
-    }
+  const s15sw=(W-16-18)/4;
+  s15strip.forEach((b,i)=>{
+    kpiCard(8+i*(s15sw+6),H-32,s15sw,20,b.lbl,b.val,null,b.clr);
   });
 
-  // Quarterly table
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('FY2025 Quarterly Financial Summary', 16, 75);
-  const s16_thdrs = ['Metric', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'];
-  const s16_tdata = [
-    ['Revenue', '$1.78B', '$1.84B', '$1.97B', '$1.91B'],
-    ['Adj EBITDA', '$291M', '$318M', '$388M', '$303M'],
-    ['Free Cash Flow', '$110M', '$148M', '$218M', '$157M'],
+  premiumFooter(15,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 16 — QUARTERLY TRAJECTORY
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('FY2025 Quarterly Momentum','Sequential improvement demonstrates synergy ramp and operating leverage','Slide 16/23');
+
+  // 4 EPS KPI cards
+  const s16eps=[
+    {q:'Q1 2025',val:'$0.49',clr:teal,rec:false},
+    {q:'Q2 2025',val:'$0.53',clr:teal,rec:false},
+    {q:'Q3 2025',val:'$0.95',clr:green,rec:true},
+    {q:'Q4 2025',val:'$0.72',clr:teal,rec:false},
   ];
-  const s16_colX = [16, 76, 132, 188, 244];
-  let s16_ty = 79;
-  doc.setFillColor(...navy); doc.rect(16, s16_ty, 270, 8, 'F');
-  s16_thdrs.forEach((h, i) => {
-    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-    doc.text(h, s16_colX[i] + 2, s16_ty + 5.5);
+  const s16kw=(W-16-18)/4;
+  s16eps.forEach((k,i)=>{
+    kpiCard(8+i*(s16kw+6),36,s16kw,26,k.q+' ADJ EPS',k.val,k.rec?'RECORD':null,k.clr);
   });
-  s16_ty += 8;
-  s16_tdata.forEach((row, ri) => {
-    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
-    doc.rect(16, s16_ty, 270, 7, 'F');
-    row.forEach((cell, ci) => {
-      doc.setTextColor(...(ci === 0 ? navy : gray));
-      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'bold' : 'normal');
-      doc.text(cell, s16_colX[ci] + 2, s16_ty + 5);
-    });
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
-    doc.line(16, s16_ty + 7, 286, s16_ty + 7);
-    s16_ty += 7;
+
+  // Quarterly summary table
+  const s16xs=[8,76,132,188,244];
+  const s16hdrs=['Metric','Q1 2025','Q2 2025','Q3 2025','Q4 2025'];
+  dataRow(s16hdrs,s16xs,66,8,{header:true});
+  [
+    ['Revenue','$1.78B','$1.84B','$1.97B','$1.91B'],
+    ['Adj EBITDA','$291M','$318M','$388M','$303M'],
+    ['Free Cash Flow','$110M','$148M','$218M','$157M'],
+  ].forEach((r,ri)=>{
+    dataRow(r,s16xs,74+ri*9,9,{altBg:ri%2===0});
   });
 
   // Key message
-  dividerLine(118);
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Message:', 16, 128);
-  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
-  doc.text('Sequential improvement demonstrates synergy ramp and operating leverage.', 16, 135);
+  sectionDivider(103);
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Key Message:', 8, 111);
+  doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('Sequential improvement demonstrates synergy ramp and operating leverage.', 8, 119);
 
-  // Trend arrows note
-  const s16_trend = [
-    'Q1 -> Q3: adj EBITDA grew from $291M to $388M (+33%) as synergies ramped',
+  const s16trends=[
+    'Q1 \u2192 Q3: adj EBITDA grew from $291M to $388M (+33%) as synergies ramped',
     'Q3 record EPS of $0.95 driven by cost eliminations ahead of integration schedule',
     'Q4 normalization expected; FY2026 guidance implies continued EPS expansion',
   ];
-  let s16_by2 = 140;
-  s16_trend.forEach(t => {
-    doc.setFillColor(...teal); doc.circle(16 + 2, s16_by2 - 1, 1, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-    doc.text(t, 22, s16_by2);
-    s16_by2 += 6;
+  let s16by=126;
+  s16trends.forEach(t=>{
+    doc.setFillColor(...teal); doc.circle(11,s16by-1,1,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(t,15,s16by);
+    s16by+=8;
   });
-  footer(16);
 
-  // ===== SLIDE 17: ADVANCED VALUATION FRAMEWORK =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Valuation - Multi-Method Convergence', '6 independent methods with overlapping upside confirmation');
+  premiumFooter(16,23);
 
-  // Football field chart
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Valuation Range by Method', 16, 42);
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 17 — VALUATION FOOTBALL FIELD
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Valuation Football Field','6 Independent Methods  \xB7  Overlapping Upside Confirmation','Slide 17/23');
 
-  const s17_methods = [
-    { name: 'DCF',               low: 74,  high: 106, clr: teal },
-    { name: 'Forward P/E',       low: 82,  high: 120, clr: green },
-    { name: 'EV/EBITDA',         low: 52,  high: 74,  clr: gold },
-    { name: 'SOTP',              low: 85,  high: 118, clr: teal },
-    { name: 'Analyst Consensus', low: 83,  high: 115, clr: green },
-    { name: 'Monte Carlo',       low: 67,  high: 115, clr: navy },
+  const s17methods=[
+    {name:'DCF',              low:74, high:106,clr:teal},
+    {name:'Forward P/E',      low:82, high:120,clr:green},
+    {name:'EV/EBITDA',        low:52, high:74, clr:gold},
+    {name:'SOTP',             low:85, high:118,clr:purple},
+    {name:'Analyst Consensus',low:83, high:115,clr:teal},
+    {name:'Monte Carlo',      low:67, high:115,clr:navy},
   ];
-  const s17_chartL = 95, s17_chartW = 170;
-  const s17_priceMin = 45, s17_priceMax = 130;
-  const s17_scale = s17_chartW / (s17_priceMax - s17_priceMin);
-  const s17_rowH = 13, s17_startY = 47;
+  const s17cL=95, s17cW=170, s17pMin=45, s17pMax=130;
+  const s17scale=s17cW/(s17pMax-s17pMin);
+  const s17rH=14, s17sY=38;
 
-  s17_methods.forEach((m, i) => {
-    const s17_y = s17_startY + i * s17_rowH;
-    // Label
-    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
-    doc.text(m.name, 16, s17_y + 7);
-    // Price range labels
-    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
-    doc.text('$' + m.low, s17_chartL + (m.low - s17_priceMin) * s17_scale - 2, s17_y + 4, { align: 'right' });
-    doc.text('$' + m.high, s17_chartL + (m.high - s17_priceMin) * s17_scale + 2, s17_y + 4);
-    // Background track
-    doc.setFillColor(235, 237, 240);
-    doc.roundedRect(s17_chartL, s17_y + 5, s17_chartW, 5, 1, 1, 'F');
-    // Colored bar
-    const s17_barX = s17_chartL + (m.low - s17_priceMin) * s17_scale;
-    const s17_barW = (m.high - m.low) * s17_scale;
-    doc.setFillColor(...m.clr);
-    doc.roundedRect(s17_barX, s17_y + 5, s17_barW, 5, 1, 1, 'F');
+  [50,60,70,80,90,100,110,120,130].forEach(v=>{
+    const ax=s17cL+(v-s17pMin)*s17scale;
+    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15);
+    doc.line(ax,s17sY-3,ax,s17sY+s17methods.length*s17rH+3);
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+    doc.text('$'+v, ax, s17sY-4, {align:'center'});
   });
 
-  // Axis labels
-  const s17_axisVals = [50, 60, 70, 80, 90, 100, 110, 120, 130];
-  s17_axisVals.forEach(v => {
-    const s17_ax = s17_chartL + (v - s17_priceMin) * s17_scale;
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
-    doc.line(s17_ax, s17_startY - 2, s17_ax, s17_startY + s17_methods.length * s17_rowH + 2);
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text('$' + v, s17_ax, s17_startY - 4, { align: 'center' });
+  s17methods.forEach((m,i)=>{
+    const sy=s17sY+i*s17rH;
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text(m.name, 8, sy+8);
+    doc.setFillColor(230,235,242); doc.roundedRect(s17cL,sy+4,s17cW,6,1,1,'F');
+    const bx=s17cL+(m.low-s17pMin)*s17scale;
+    const bw=(m.high-m.low)*s17scale;
+    doc.setFillColor(...m.clr); doc.roundedRect(bx,sy+4,bw,6,1,1,'F');
+    doc.setTextColor(...gray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+    doc.text('$'+m.low, bx-1, sy+3.5, {align:'right'});
+    doc.text('$'+m.high, bx+bw+1, sy+3.5);
   });
 
-  // Current price marker
-  const s17_cpX = s17_chartL + (69.37 - s17_priceMin) * s17_scale;
+  const s17cpX=s17cL+(69.37-s17pMin)*s17scale;
   doc.setDrawColor(...red); doc.setLineWidth(0.8);
-  doc.line(s17_cpX, s17_startY - 4, s17_cpX, s17_startY + s17_methods.length * s17_rowH + 4);
-  doc.setTextColor(...red); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
-  doc.text('$69.37', s17_cpX, s17_startY + s17_methods.length * s17_rowH + 8, { align: 'center' });
-  doc.text('Current', s17_cpX, s17_startY + s17_methods.length * s17_rowH + 13, { align: 'center' });
+  doc.line(s17cpX,s17sY-5,s17cpX,s17sY+s17methods.length*s17rH+5);
+  doc.setTextColor(...red); doc.setFontSize(6); doc.setFont('helvetica','bold');
+  doc.text('$69.37 Current',s17cpX,s17sY+s17methods.length*s17rH+10,{align:'center'});
 
-  // Key takeaway
-  dividerLine(133);
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Takeaway:', 16, 142);
-  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
-  doc.text('5 of 6 methods imply upside from current price. EV/EBITDA is the lone outlier at cycle trough margins.', 16, 149);
-  footer(17);
+  sectionDivider(133);
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Key Takeaway:', 8, 141);
+  doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('5 of 6 methods imply upside from current price. EV/EBITDA is the lone outlier at cycle trough margins.', 8, 149);
+  premiumFooter(17,23);
 
-  // ===== SLIDE 18: QUANTITATIVE RISK SCORECARD =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Quantitative Risk Scorecard', 'Key risk and quality metrics - all reflect temporary acquisition impact');
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 18 — QUANTITATIVE RISK SCORECARD
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Quantitative Risk Scorecard','Key risk and quality metrics \u2014 all reflect temporary acquisition impact','Slide 18/23');
 
-  // 6 KPI boxes in 2x3 grid
-  const s18_kpis = [
-    { lbl: 'Altman Z-Score',  val: '2.10',  sub: 'Gray Zone (improving)', clr: gold },
-    { lbl: 'Piotroski F-Score', val: '5/9', sub: 'Moderate',              clr: teal },
-    { lbl: 'DuPont ROE',      val: '5.8%',  sub: 'Depressed (acquisition)', clr: red },
-    { lbl: 'Beta',            val: '1.0',   sub: 'Market-aligned',         clr: navy },
-    { lbl: 'Sharpe Ratio',    val: '0.45',  sub: 'Acceptable',             clr: teal },
-    { lbl: 'VaR (95%)',       val: '-12.3%', sub: 'Moderate risk',         clr: gold },
+  const s18kpis=[
+    {lbl:'Altman Z-Score',    val:'2.10', sub:'Gray Zone (improving)',     clr:gold},
+    {lbl:'Piotroski F-Score', val:'5/9',  sub:'Moderate',                  clr:teal},
+    {lbl:'DuPont ROE',        val:'5.8%', sub:'Depressed (acquisition)',    clr:red},
+    {lbl:'Beta',              val:'1.0',  sub:'Market-aligned',             clr:navy},
+    {lbl:'Sharpe Ratio',      val:'0.45', sub:'Acceptable',                 clr:teal},
+    {lbl:'VaR (95%)',         val:'-12.3%',sub:'Moderate risk',             clr:gold},
   ];
-  const s18_kw = 86, s18_kh = 30, s18_startY = 34;
-  s18_kpis.forEach((k, i) => {
-    const s18_col = i % 3, s18_row = Math.floor(i / 3);
-    const s18_kx = 14 + s18_col * 94, s18_ky = s18_startY + s18_row * 35;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...k.clr); doc.setLineWidth(0.6);
-    doc.roundedRect(s18_kx, s18_ky, s18_kw, s18_kh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(k.lbl.toUpperCase(), s18_kx + s18_kw / 2, s18_ky + 6.5, { align: 'center' });
-    doc.setTextColor(...k.clr); doc.setFontSize(13); doc.setFont('helvetica', 'bold');
-    doc.text(k.val, s18_kx + s18_kw / 2, s18_ky + 18, { align: 'center' });
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(k.sub, s18_kx + s18_kw / 2, s18_ky + 26, { align: 'center' });
+  const s18kw=(W-16-20)/3, s18kh=32;
+  s18kpis.forEach((k,i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    kpiCard(8+col*(s18kw+10), 36+row*(s18kh+8), s18kw, s18kh, k.lbl, k.val, k.sub, k.clr);
   });
 
-  // Bullets below grid
-  dividerLine(107);
-  let s18_by = 115;
-  const s18_notes = [
-    'All risk metrics reflect temporary acquisition impact  -  pre-acquisition Z-Score was 2.8 (Safe Zone)',
-    'Leverage trajectory from 6.9x -> 3.9x in FY2025 demonstrates rapid improvement',
+  sectionDivider(115);
+  let s18by=123;
+  [
+    'All risk metrics reflect temporary acquisition impact \u2014 pre-acquisition Z-Score was 2.8 (Safe Zone)',
+    'Leverage trajectory from 7.8x to 3.2x by 2028 demonstrates rapid FCF-driven deleveraging',
+  ].forEach(n=>{ s18by=bullet(8,s18by,n,teal)+3; });
+  premiumFooter(18,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 19 — ML PREDICTIONS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Machine Learning Price Prediction','Multi-model ensemble consensus with feature importance analysis','Slide 19/23');
+
+  const s19models=[
+    {name:'Linear Regression',val:'$98', clr:teal},
+    {name:'Random Forest',    val:'$102',clr:green},
+    {name:'LSTM Neural Net',  val:'$95', clr:gold},
+    {name:'Ensemble',         val:'$98', clr:navy},
   ];
-  s18_notes.forEach(n => { s18_by = bullet(16, s18_by, n, teal) + 3; });
-  footer(18);
+  const s19kw=(W-16-18)/4;
+  s19models.forEach((m,i)=>{
+    kpiCard(8+i*(s19kw+6),36,s19kw,26,m.name,m.val,null,m.clr);
+  });
 
-  // ===== SLIDE 19: ML & PREDICTION MODELS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Machine Learning Price Prediction', 'Multi-model ensemble consensus with feature importance analysis');
+  // Feature importance table (left)
+  const s19xs=[8,108];
+  const s19hdrs=['Factor','Weight'];
+  dataRow(s19hdrs,s19xs,66,8,{header:true});
+  [['Revenue Growth','28%'],['EBITDA Margin','22%'],['Synergy Pace','18%'],['Interest Rates','12%'],['Industry Growth','10%']].forEach((r,ri)=>{
+    dataRow(r,s19xs,74+ri*8,8,{altBg:ri%2===0,colColors:[null,teal]});
+  });
 
-  // 4 KPI boxes for model predictions
-  const s19_models = [
-    { name: 'Linear Regression', val: '$98',  clr: teal },
-    { name: 'Random Forest',     val: '$102', clr: green },
-    { name: 'LSTM Neural Net',   val: '$95',  clr: gold },
-    { name: 'Ensemble',          val: '$98',  clr: navy },
+  // Bar chart (right)
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('Weight Distribution', 162, 70);
+  const s19bFactors=[28,22,18,12,10];
+  const s19bNames=['Revenue Growth','EBITDA Margin','Synergy Pace','Interest Rates','Industry Growth'];
+  s19bFactors.forEach((w,i)=>{
+    const by=74+i*9;
+    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text(s19bNames[i], 162, by+5);
+    doc.setFillColor(220,230,235); doc.rect(162,by+6,95,4,'F');
+    doc.setFillColor(...teal); doc.rect(162,by+6,95*w/100,4,'F');
+    doc.setTextColor(...navy); doc.setFontSize(6); doc.setFont('helvetica','bold');
+    doc.text(w+'%', 162+95*w/100+2, by+9.5);
+  });
+
+  sectionDivider(126);
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Key Insight:', 8, 134);
+  doc.setTextColor(...navy); doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text('All ML models predict 30\u201340% upside from current $69.37. Ensemble target: $98 (+41%).', 8, 142);
+  premiumFooter(19,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 20 — KEY METRICS DASHBOARD
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('SGI At a Glance \u2014 Key Metrics Dashboard','Executive summary of all key financial and valuation metrics','Slide 20/23');
+
+  const s20grid=[
+    {lbl:'Revenue',        val:'$7.5B',      clr:navy},
+    {lbl:'EBITDA (adj)',   val:'$1.3B',       clr:navy},
+    {lbl:'Free Cash Flow', val:'$633M',       clr:green},
+    {lbl:'Market Cap',     val:'$14.6B',      clr:navy},
+    {lbl:'Fwd P/E',        val:'14.4x',       clr:teal},
+    {lbl:'EV/EBITDA',      val:'21.9x',       clr:teal},
+    {lbl:'FCF Yield',      val:'4.3%',        clr:green},
+    {lbl:'Div Yield',      val:'~1.0%',       clr:teal},
+    {lbl:'Net Debt/EBITDA',val:'6.2x',        clr:gold},
+    {lbl:'Analyst Rating', val:'Strong Buy',  clr:green},
+    {lbl:'Price Target',   val:'$100',        clr:green},
+    {lbl:'Upside',         val:'+44%',        clr:green},
   ];
-  const s19_kw = 64, s19_kh = 28, s19_ky = 34;
-  s19_models.forEach((m, i) => {
-    const s19_kx = 14 + i * 68;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...m.clr); doc.setLineWidth(0.8);
-    doc.roundedRect(s19_kx, s19_ky, s19_kw, s19_kh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(m.name.toUpperCase(), s19_kx + s19_kw / 2, s19_ky + 7, { align: 'center' });
-    doc.setTextColor(...m.clr); doc.setFontSize(15); doc.setFont('helvetica', 'bold');
-    doc.text(m.val, s19_kx + s19_kw / 2, s19_ky + 22, { align: 'center' });
+  const s20kw=(W-16-18)/4, s20kh=24;
+  s20grid.forEach((k,i)=>{
+    const col=i%4, row=Math.floor(i/4);
+    kpiCard(8+col*(s20kw+6), 36+row*(s20kh+5), s20kw, s20kh, k.lbl, k.val, null, k.clr);
   });
 
-  // Feature importance table
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Feature Importance', 16, 76);
-  const s19_fhdrs = ['Factor', 'Weight'];
-  const s19_fdata = [
-    ['Revenue Growth',  '28%'],
-    ['EBITDA Margin',   '22%'],
-    ['Synergy Pace',    '18%'],
-    ['Interest Rates',  '12%'],
-    ['Industry Growth', '10%'],
-  ];
-  const s19_fColX = [16, 110];
-  let s19_fy = 80;
-  doc.setFillColor(...navy); doc.rect(16, s19_fy, 150, 8, 'F');
-  s19_fhdrs.forEach((h, i) => {
-    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-    doc.text(h, s19_fColX[i] + 2, s19_fy + 5.5);
-  });
-  s19_fy += 8;
-  s19_fdata.forEach((row, ri) => {
-    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
-    doc.rect(16, s19_fy, 150, 7, 'F');
-    row.forEach((cell, ci) => {
-      doc.setTextColor(...(ci === 0 ? navy : teal));
-      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'normal' : 'bold');
-      doc.text(cell, s19_fColX[ci] + 2, s19_fy + 5);
-    });
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15);
-    doc.line(16, s19_fy + 7, 166, s19_fy + 7);
-    s19_fy += 7;
+  sectionDivider(130);
+  doc.setTextColor(...teal); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+  doc.text('Data as of March 31, 2026  \xB7  FY2025 actuals  \xB7  Price target 12-month forward', 8, 137);
+  let s20by=143;
+  ['All valuation multiples based on current $69.37 price vs. consensus analyst target of $100',
+   'FCF yield and dividend yield reflect compelling cash return profile at current market cap'].forEach(b=>{ s20by=bullet(8,s20by,b,teal)+2; });
+  premiumFooter(20,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 21 — SENTIMENT ANALYSIS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Deep Research: Earnings Sentiment Analysis','NLP analysis of Q1\u2013Q4 2025 earnings call transcripts','Slide 21/23');
+
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Earnings Call Sentiment Metrics \u2014 2025', 8, 40);
+
+  const s21xs=[8,100,148,196,244];
+  const s21hdrs=['Metric','Q1 2025','Q2 2025','Q3 2025','Q4 2025'];
+  dataRow(s21hdrs,s21xs,43,8,{header:true});
+  [
+    ['Overall Sentiment','Cautious','Neutral','Positive','Strong Positive'],
+    ['Positive Tone Score','0.41','0.47','0.61','0.68'],
+    ['Negative Tone Score','0.29','0.24','0.18','0.14'],
+    ['Uncertainty Index','High','Moderate','Low','Very Low'],
+    ['Mgmt Confidence','6.2 / 10','6.8 / 10','7.9 / 10','8.6 / 10'],
+  ].forEach((r,ri)=>{
+    dataRow(r,s21xs,51+ri*9,9,{altBg:ri%2===0});
   });
 
-  // Mini bar chart for feature weights (right side)
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Weight Distribution', 185, 76);
-  const s19_barFactors = [28, 22, 18, 12, 10];
-  const s19_barNames = ['Revenue Growth', 'EBITDA Margin', 'Synergy Pace', 'Interest Rates', 'Industry Growth'];
-  const s19_barMaxW = 95;
-  s19_barFactors.forEach((w, i) => {
-    const s19_by2 = 81 + i * 9;
-    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
-    doc.text(s19_barNames[i], 185, s19_by2 + 5);
-    doc.setFillColor(220, 230, 235);
-    doc.rect(185, s19_by2 + 6, s19_barMaxW, 4, 'F');
-    doc.setFillColor(...teal);
-    doc.rect(185, s19_by2 + 6, s19_barMaxW * w / 100, 4, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(6); doc.setFont('helvetica', 'bold');
-    doc.text(w + '%', 185 + s19_barMaxW * w / 100 + 2, s19_by2 + 9.5);
-  });
-
-  // Key insight
-  dividerLine(128);
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Insight:', 16, 137);
-  doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
-  doc.text('All ML models predict 30-40% upside from current $69.37. Ensemble target: $98 (+41%).', 16, 144);
-  footer(19);
-
-  // ===== SLIDE 20: KEY METRICS AT A GLANCE =====
-  doc.addPage();
-  whiteBg();
-  headerBar('SGI At a Glance - Key Metrics Dashboard', 'Executive summary of all key financial and valuation metrics');
-
-  // 4x3 grid of KPI boxes (12 total)
-  const s20_grid = [
-    // Row 1
-    { lbl: 'Revenue',        val: '$7.5B',       clr: navy },
-    { lbl: 'EBITDA (adj)',   val: '$1.3B',        clr: navy },
-    { lbl: 'Free Cash Flow', val: '$633M',        clr: green },
-    { lbl: 'Market Cap',     val: '$14.6B',       clr: navy },
-    // Row 2
-    { lbl: 'Fwd P/E',        val: '14.4x',        clr: teal },
-    { lbl: 'EV/EBITDA',      val: '21.9x',        clr: teal },
-    { lbl: 'FCF Yield',      val: '4.3%',         clr: green },
-    { lbl: 'Div Yield',      val: '~1.0%',        clr: teal },
-    // Row 3
-    { lbl: 'Net Debt/EBITDA', val: '6.2x',        clr: gold },
-    { lbl: 'Analyst Rating', val: 'Strong Buy',   clr: green },
-    { lbl: 'Price Target',   val: '$100',          clr: green },
-    { lbl: 'Upside',         val: '+44%',          clr: green },
-  ];
-  const s20_kw = 64, s20_kh = 26, s20_startY = 34;
-  s20_grid.forEach((k, i) => {
-    const s20_col = i % 4, s20_row = Math.floor(i / 4);
-    const s20_kx = 13 + s20_col * 68, s20_ky = s20_startY + s20_row * 30;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
-    doc.roundedRect(s20_kx, s20_ky, s20_kw, s20_kh, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(5.5); doc.setFont('helvetica', 'normal');
-    doc.text(k.lbl.toUpperCase(), s20_kx + s20_kw / 2, s20_ky + 6, { align: 'center' });
-    doc.setTextColor(...k.clr); doc.setFontSize(11); doc.setFont('helvetica', 'bold');
-    doc.text(k.val, s20_kx + s20_kw / 2, s20_ky + 18, { align: 'center' });
-  });
-
-  // Summary note at bottom
-  dividerLine(128);
-  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-  doc.text('Data as of March 31, 2026  |  FY2025 actuals  |  Price target 12-month forward', 16, 136);
-  const s20_buls = [
-    'All valuation multiples based on current $69.37 price vs. consensus analyst target of $100',
-    'FCF yield and dividend yield reflect compelling cash return profile at current market cap',
-  ];
-  let s20_by = 142;
-  s20_buls.forEach(b => { s20_by = bullet(16, s20_by, b, teal) + 2; });
-  footer(20);
-
-  // ===== SLIDE 21: DEEP RESEARCH - SENTIMENT ANALYSIS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Deep Research: Earnings Sentiment Analysis', 'NLP analysis of Q1-Q4 2025 earnings call transcripts');
-
-  // Sentiment Metrics Table header
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Earnings Call Sentiment Metrics - 2025', 16, 45);
-
-  // Table setup
-  const sentCols = [60, 50, 50, 50, 65];
-  const sentHeaders = ['Metric', 'Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'];
-  const sentData = [
-    ['Overall Sentiment', 'Cautious', 'Neutral', 'Positive', 'Strong Positive'],
-    ['Positive Tone Score', '0.41', '0.47', '0.61', '0.68'],
-    ['Negative Tone Score', '0.29', '0.24', '0.18', '0.14'],
-    ['Uncertainty Index', 'High', 'Moderate', 'Low', 'Very Low'],
-    ['Mgmt Confidence', '6.2 / 10', '6.8 / 10', '7.9 / 10', '8.6 / 10'],
-  ];
-  let sty = 49;
-  const sColX = [16, 76, 126, 176, 226];
-  // Header row
-  doc.setFillColor(...navy);
-  doc.rect(16, sty, 275, 8, 'F');
-  sentHeaders.forEach((h, i) => {
-    doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica', 'bold');
-    doc.text(h, sColX[i] + 2, sty + 5.5);
-  });
-  sty += 8;
-  sentData.forEach((row, ri) => {
-    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
-    doc.rect(16, sty, 275, 7, 'F');
-    row.forEach((cell, ci) => {
-      const isVal = ci > 0;
-      doc.setTextColor(...(ci === 0 ? navy : gray));
-      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'bold' : 'normal');
-      doc.text(cell, sColX[ci] + 2, sty + 5);
-    });
-    sty += 7;
-  });
-
-  // Key Insights
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Insights from NLP Analysis', 16, sty + 7);
-  let ky15 = sty + 13;
-  const sentInsights = [
-    'Sentiment trajectory improved markedly each quarter - Q4 2025 most positive in 3-year history',
-    'Negative language around mattress demand declined 52% by Q4 vs Q1 - management tone shift confirmed',
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Key Insights from NLP Analysis', 8, 100);
+  let s21by=107;
+  [
+    'Sentiment trajectory improved markedly each quarter \u2014 Q4 2025 most positive in 3-year history',
+    'Negative language around mattress demand declined 52% by Q4 vs Q1 \u2014 management tone shift confirmed',
     'Synergy references increased 4x from Q1 to Q4 indicating accelerating integration confidence',
-    'Forward guidance language shifted from hedged to affirmative - highest conviction signals in Q4 2025',
-  ];
-  sentInsights.forEach(b => { ky15 = bullet(16, ky15, b, teal) + 2; });
+    'Forward guidance language shifted from hedged to affirmative \u2014 highest conviction signals in Q4 2025',
+  ].forEach(b=>{ s21by=bullet(8,s21by,b,teal)+2; });
 
-  // Topic Frequency Grid
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Topic Mention Frequency', 168, 99);
-  const topicData = [
-    ['Topic', 'Q1', 'Q2', 'Q3', 'Q4'],
-    ['Synergy', '8', '14', '22', '31'],
-    ['Tariff / Supply', '19', '16', '11', '6'],
-    ['Mattress Firm', '4', '9', '17', '24'],
-    ['FCF / Cash', '6', '10', '15', '22'],
-  ];
-  let tfy = 103;
-  const tfX = [168, 210, 228, 246, 264];
-  topicData.forEach((row, ri) => {
-    const isHdr = ri === 0;
-    doc.setFillColor(isHdr ? navy[0] : (ri % 2 === 0 ? 249 : 255), isHdr ? navy[1] : (ri % 2 === 0 ? 250 : 255), isHdr ? navy[2] : (ri % 2 === 0 ? 251 : 255));
-    doc.rect(168, tfy, 120, 7, 'F');
-    row.forEach((cell, ci) => {
-      doc.setTextColor(...(isHdr ? white : (ci === 0 ? navy : gray)));
-      doc.setFontSize(7); doc.setFont('helvetica', isHdr || ci === 0 ? 'bold' : 'normal');
-      doc.text(cell, tfX[ci] + 2, tfy + 5);
+  // Topic frequency grid (right panel)
+  doc.setTextColor(...teal); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('Key Topic Mention Frequency', 168, 100);
+  const s21tX=[168,210,228,246,264];
+  [['Topic','Q1','Q2','Q3','Q4'],['Synergy','8','14','22','31'],['Tariff / Supply','19','16','11','6'],['Mattress Firm','4','9','17','24'],['FCF / Cash','6','10','15','22']].forEach((r,ri)=>{
+    const isHdr=ri===0;
+    if(isHdr){doc.setFillColor(...navy);}else if(ri%2===0){doc.setFillColor(...lightGray);}else{doc.setFillColor(...white);}
+    doc.rect(168,103+ri*8,120,8,'F');
+    r.forEach((c,ci)=>{
+      if(isHdr){doc.setTextColor(...white);}else if(ci===0){doc.setTextColor(...navy);}else{doc.setTextColor(...gray);}
+      doc.setFontSize(7); doc.setFont('helvetica',isHdr||ci===0?'bold':'normal');
+      doc.text(c,s21tX[ci]+2,103+ri*8+5.5);
     });
-    tfy += 7;
   });
-  footer(21);
 
-  // ===== SLIDE 22: DEEP RESEARCH - ML & QUANTITATIVE SIGNALS =====
-  doc.addPage();
-  whiteBg();
-  headerBar('Deep Research: ML & Quantitative Signals', 'Financial trend analysis and quantitative indicators');
+  premiumFooter(21,23);
 
-  // ML Metrics KPI Grid - 6 boxes in 3x2
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('ML-Derived Metrics & Quantitative Signals', 16, 44);
-  const mlKPIs = [
-    ['Post-Acquisition Rev Uplift', '+52%', green],
-    ['EPS CAGR (2025-28E)', '37.9%', green],
-    ['FCF CAGR (2025-28E)', '21.1%', teal],
-    ['RSI-14', '61.8', gold],
-    ['Ann. Volatility', '31.3%', gold],
-    ['Analyst Consensus', 'Strong Buy', green],
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 22 — ML ANALYSIS
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+  premiumHeader('Deep Research: ML & Quantitative Signals','Financial trend analysis and quantitative indicators','Slide 22/23');
+
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('ML-Derived Metrics & Quantitative Signals', 8, 40);
+
+  const s22kpis=[
+    ['Post-Acquisition Rev Uplift','+52%',    green],
+    ['EPS CAGR (2025\u201328E)',     '37.9%',  green],
+    ['FCF CAGR (2025\u201328E)',     '21.1%',  teal],
+    ['RSI-14',                       '61.8',   gold],
+    ['Ann. Volatility',              '31.3%',  gold],
+    ['Analyst Consensus',            'Strong Buy',green],
   ];
-  mlKPIs.forEach((k, i) => {
-    const col = i % 3, row = Math.floor(i / 3);
-    const kx = 16 + col * 92, ky = 48 + row * 24;
-    doc.setFillColor(...lightGray);
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
-    doc.roundedRect(kx, ky, 86, 20, 2, 2, 'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica', 'normal');
-    doc.text(k[0].toUpperCase(), kx + 43, ky + 6, { align: 'center' });
-    doc.setTextColor(...k[2]); doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-    doc.text(k[1], kx + 43, ky + 16, { align: 'center' });
+  const s22kw=(W-16-20)/3, s22kh=22;
+  s22kpis.forEach((k,i)=>{
+    const col=i%3, row=Math.floor(i/3);
+    kpiCard(8+col*(s22kw+10), 43+row*(s22kh+5), s22kw, s22kh, k[0], k[1], null, k[2]);
   });
 
-  // Forward Estimates Table
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Forward Estimates', 16, 100);
-  const fwdHeaders = ['Period', 'Revenue', 'EPS', 'EBITDA'];
-  const fwdData = [
-    ['FY2026E', '$7.95B', '$4.82', '$1.48B'],
-    ['FY2027E', '$8.37B', '$5.82', '$1.67B'],
-    ['FY2028E', '$8.88B', '$7.08', '$1.89B'],
+  // Forward estimates table
+  const s22xs=[8,80,140,200];
+  const s22hdrs=['Period','Revenue','EPS','EBITDA'];
+  dataRow(s22hdrs,s22xs,96,8,{header:true});
+  [['FY2026E','$7.95B','$4.82','$1.48B'],['FY2027E','$8.37B','$5.82','$1.67B'],['FY2028E','$8.88B','$7.08','$1.89B']].forEach((r,ri)=>{
+    dataRow(r,s22xs,104+ri*9,9,{altBg:ri%2===0});
+  });
+
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Key Takeaways', 8, 133);
+  let s22by=140;
+  [
+    'Q3 2025 adj EPS $0.95 is a statistical anomaly (z=+2.01) \u2014 record quarter driven by synergy ramp',
+    'Leverage deleveraging from 7.8x to 3.2x by 2028 demonstrates strong FCF conversion',
+    'Price trading 6.3% below 12M MA at $73.92 vs avg target $99.67 \u2014 significant upside',
+  ].forEach(b=>{ s22by=bullet(8,s22by,b,teal)+2; });
+
+  premiumFooter(22,23);
+
+  // ══════════════════════════════════════════════════════════════
+  // SLIDE 23 — FINAL RECOMMENDATION
+  // ══════════════════════════════════════════════════════════════
+  doc.addPage(); slideBg();
+
+  // Full-bleed navy header (taller, 40mm)
+  doc.setFillColor(...navy); doc.rect(0,0,W,40,'F');
+  doc.setFillColor(...teal); doc.rect(0,40,W,1.5,'F');
+  doc.setFillColor(...gold); doc.circle(W-16,10,3.5,'F');
+  doc.setTextColor(...teal); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+  doc.text('SOMNIGROUP INTERNATIONAL  \xB7  NYSE: SGI  \xB7  LONG RECOMMENDATION', 8, 10);
+  doc.setTextColor(...white); doc.setFontSize(18); doc.setFont('helvetica','bold');
+  doc.text('FINAL RECOMMENDATION', W/2, 30, {align:'center'});
+
+  // THREE large metric boxes
+  const s23boxes=[
+    {lbl:'RATING',      val:'LONG',  sub:'Strong Buy', clr:green},
+    {lbl:'PRICE TARGET',val:'$100',  sub:'12-Month',   clr:gold},
+    {lbl:'UPSIDE',      val:'+44%',  sub:'From $69.37',clr:green},
   ];
-  let fwy = 104;
-  const fwX = [16, 76, 136, 196];
-  const fwW = 240;
-  // Header
-  doc.setFillColor(...navy);
-  doc.rect(16, fwy, fwW, 8, 'F');
-  fwdHeaders.forEach((h, i) => {
-    doc.setTextColor(...white); doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
-    doc.text(h, fwX[i] + 2, fwy + 5.5);
-  });
-  fwy += 8;
-  fwdData.forEach((row, ri) => {
-    doc.setFillColor(ri % 2 === 0 ? 249 : 255, ri % 2 === 0 ? 250 : 255, ri % 2 === 0 ? 251 : 255);
-    doc.rect(16, fwy, fwW, 7, 'F');
-    row.forEach((cell, ci) => {
-      doc.setTextColor(...(ci === 0 ? navy : gray));
-      doc.setFontSize(7.5); doc.setFont('helvetica', ci === 0 ? 'bold' : 'normal');
-      doc.text(cell, fwX[ci] + 2, fwy + 5);
-    });
-    fwy += 7;
+  const s23bw=(W-16-20)/3;
+  s23boxes.forEach((b,i)=>{
+    const bx=8+i*(s23bw+10);
+    doc.setFillColor(...white); doc.setDrawColor(...b.clr); doc.setLineWidth(0.8);
+    doc.roundedRect(bx,44,s23bw,28,3,3,'FD');
+    doc.setFillColor(...b.clr); doc.roundedRect(bx,44,s23bw,3,1,0,'F');
+    doc.setTextColor(...midGray); doc.setFontSize(6); doc.setFont('helvetica','bold');
+    doc.text(b.lbl, bx+s23bw/2, 52, {align:'center'});
+    doc.setTextColor(...b.clr); doc.setFontSize(18); doc.setFont('helvetica','bold');
+    doc.text(b.val, bx+s23bw/2, 65, {align:'center'});
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+    doc.text(b.sub, bx+s23bw/2, 70, {align:'center'});
   });
 
-  // Key Takeaways
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Takeaways', 16, fwy + 9);
-  let kt16 = fwy + 15;
-  const mlTakeaways = [
-    'Q3 2025 adj EPS $0.95 is a statistical anomaly (z=+2.01) - record quarter driven by synergy ramp',
-    'Leverage deleveraging from 6.9x to 3.9x in 2025 demonstrates strong FCF conversion',
-    'Price trading 6.3% below 12M MA at $73.92 vs avg target $99.67 - significant upside',
+  // 4 conviction metrics
+  const s23metrics=[
+    {lbl:'PEG Ratio',    val:'0.6x'},
+    {lbl:'EPS CAGR',     val:'24%'},
+    {lbl:'FCF FY2026E',  val:'$633M'},
+    {lbl:'Synergy Left', val:'$145M'},
   ];
-  mlTakeaways.forEach(b => { kt16 = bullet(16, kt16, b, teal) + 2; });
-  footer(22);
-
-  // ===== SLIDE 23: FINAL RECOMMENDATION =====
-  doc.addPage();
-  whiteBg();
-  // Top accent bar
-  doc.setFillColor(...navy);
-  doc.rect(0, 0, W, 28, 'F');
-  doc.setTextColor(...teal);
-  doc.setFontSize(7);
-  doc.setFont('helvetica', 'bold');
-  doc.text('SOMNIGROUP INTERNATIONAL | NYSE: SGI', 16, 10);
-  doc.setTextColor(...white);
-  doc.setFontSize(16);
-  doc.text('Final Recommendation', 16, 22);
-
-  // LONG badge
-  doc.setFillColor(209, 250, 229); doc.setDrawColor(...green); doc.setLineWidth(1);
-  doc.roundedRect(16, 32, 80, 24, 3, 3, 'FD');
-  doc.setTextColor(...green); doc.setFontSize(24); doc.setFont('helvetica', 'bold');
-  doc.text('LONG', 56, 49, { align: 'center' });
-
-  // PT and upside
-  doc.setFillColor(...lightGray); doc.setDrawColor(...gold); doc.setLineWidth(0.5);
-  doc.roundedRect(102, 32, 80, 24, 3, 3, 'FD');
-  doc.setTextColor(...gold); doc.setFontSize(22); doc.setFont('helvetica', 'bold');
-  doc.text('$100', 142, 47, { align: 'center' });
-  doc.setFontSize(7.5); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
-  doc.text('12-MONTH PRICE TARGET', 142, 55, { align: 'center' });
-
-  doc.setFillColor(...lightGray); doc.setDrawColor(...green); doc.setLineWidth(0.5);
-  doc.roundedRect(188, 32, 80, 24, 3, 3, 'FD');
-  doc.setTextColor(...green); doc.setFontSize(22); doc.setFont('helvetica', 'bold');
-  doc.text('+44%', 228, 47, { align: 'center' });
-  doc.setFontSize(7.5); doc.setTextColor(...gray); doc.setFont('helvetica', 'normal');
-  doc.text('UPSIDE FROM $69.37', 228, 55, { align: 'center' });
-
-  // Key metrics grid
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Key Investment Metrics', 16, 66);
-  const finalKPIs = [
-    ['Fwd P/E', '14.4x'], ['EPS CAGR', '24%'], ['FCF Yield', '4.3%'],
-    ['Synergy Upside', '$14/sh'], ['Time Horizon', '12 months'], ['Conviction', 'HIGH']
-  ];
-  finalKPIs.forEach((k, i) => {
-    const col = i % 3, row = Math.floor(i / 3);
-    const fx = 16 + col * 92, fy = 70 + row * 20;
-    doc.setFillColor(...lightGray); doc.roundedRect(fx, fy, 86, 16, 2, 2, 'F');
-    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica', 'normal');
-    doc.text(k[0].toUpperCase(), fx + 43, fy + 5, { align: 'center' });
-    doc.setTextColor(...navy); doc.setFontSize(11); doc.setFont('helvetica', 'bold');
-    doc.text(k[1], fx + 43, fy + 13, { align: 'center' });
+  const s23mw=(W-16-18)/4;
+  s23metrics.forEach((m,i)=>{
+    const mx=8+i*(s23mw+6), my=76;
+    doc.setFillColor(230,240,250); doc.rect(mx,my,s23mw,14,'F');
+    doc.setFillColor(...teal); doc.rect(mx,my,s23mw,2,'F');
+    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+    doc.text(m.lbl.toUpperCase(), mx+s23mw/2, my+7, {align:'center'});
+    doc.setTextColor(...navy); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(m.val, mx+s23mw/2, my+12, {align:'center'});
   });
 
-  // Summary bullets
-  doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-  doc.text('Why Buy SGI Now?', 16, 118);
-  const summBullets = [
+  // 4 Why Now bullets
+  sectionDivider(95);
+  doc.setTextColor(...teal); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+  doc.text('Why Now?', 8, 103);
+  const s23whys=[
     'Trading 30% below 52-week high with fundamental improvement ahead',
-    '$145M unrealized synergies = $14/share at 20x EBITDA ($2.9B of unrealized EV)',
-    '24% EPS CAGR through 2028 trading at 0.6x PEG ratio  -  deeply discounted growth',
+    '$145M unrealized synergies = $14/share at 20x EBITDA ($2.9B of unrealized enterprise value)',
+    '24% EPS CAGR through 2028 trading at 0.6x PEG \u2014 deeply discounted growth',
     'Industry cyclical recovery not in guidance: any volume uptick = pure upside',
   ];
-  let sy15 = 124;
-  summBullets.forEach(b => { sy15 = bullet(16, sy15, b, teal) + 2; });
+  let s23by=110;
+  s23whys.forEach(b=>{
+    doc.setFillColor(...green); doc.circle(11,s23by-1,1.2,'F');
+    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    const bl=doc.splitTextToSize(b,W-28);
+    doc.text(bl,15,s23by);
+    s23by+=bl.length*5.5+3;
+  });
 
-  // Disclaimer
-  doc.setFillColor(254, 252, 232); doc.setDrawColor(253, 224, 71); doc.setLineWidth(0.3);
-  doc.roundedRect(10, H - 25, W - 20, 12, 2, 2, 'FD');
-  doc.setTextColor(120, 100, 10); doc.setFontSize(6.5); doc.setFont('helvetica', 'italic');
-  doc.text('All data as of March 31, 2026.', W / 2, H - 17, { align: 'center', maxWidth: W - 30 });
-  footer(23);
+  // Strong Buy pill
+  doc.setFillColor(...greenBg); doc.setDrawColor(...green); doc.setLineWidth(0.8);
+  doc.roundedRect(W/2-70,H-27,140,14,5,5,'FD');
+  doc.setTextColor(...green); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('STRONG BUY  \xB7  5 of 6 Analysts  \xB7  $100 Target', W/2, H-18, {align:'center'});
+
+  premiumFooter(23,23);
 
   doc.save('SGI_Investment_Slides_' + getTimestamp() + '.pdf');
 }
+
 
 // ═══════════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════════
