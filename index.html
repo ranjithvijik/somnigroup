@@ -9693,60 +9693,6 @@ async function exportXLSX() {
     });
   });
 
-  // ── TAB 10: REFERENCES ──────────────────────────────────────────────────────
-  const ws10 = wb.addWorksheet('References', { properties:{tabColor:{argb:'FF475569'}} });
-  setCols(ws10, [5,85,65]);
-  ws10.getRow(1).height = 28;
-
-  const refHeaders = ['#','Citation (APA 7th Edition)','URL / Source'];
-  const refData = [
-    [1,'IBISWorld. (2025). Mattress manufacturing in the US (NAICS 33791). IBISWorld Industry Report.','https://my.ibisworld.com/us/en/industry/33791'],
-    [2,'IBISWorld. (2025). Bed and mattress stores in the US (NAICS OD5462). IBISWorld Industry Report.','https://my.ibisworld.com/us/en/industry/OD5462'],
-    [3,'Somnigroup International Inc. (2026, February 17). Fourth quarter and full year 2025 earnings call transcript.','https://somnigroup.com'],
-    [4,'Somnigroup International Inc. (2025, February 5). Tempur Sealy successfully completes acquisition of Mattress Firm.','https://somnigroup.com/newsroom'],
-    [5,'Somnigroup International Inc. (2026, March 4). 2026 investor day presentation.','https://somnigroup.com'],
-    [6,'International Sleep Products Association. (2025). Q1 2025 mattress industry report.','https://www.sleepproducts.org'],
-    [7,'Federal Reserve Bank of St. Louis. (2025). PPI: Mattress manufacturing. FRED Economic Data.','https://fred.stlouisfed.org'],
-    [8,'U.S. Census Bureau. (2025). New residential construction (housing starts).','https://www.census.gov/construction/nrc/'],
-    [9,'Mintel Group Ltd. (2025). Pillows and mattresses - US, 2025. Mintel Reports.','https://www.mintel.com'],
-    [10,'Damodaran, A. (2026). Cost of capital by sector (US). NYU Stern School of Business.','https://pages.stern.nyu.edu/~adamodar/'],
-    [11,'Bloomberg L.P. (2026). SGI equity analysis and consensus estimates.','Bloomberg Terminal (subscription required)'],
-    [12,'S&P Capital IQ. (2026). Somnigroup International Inc. financial data.','S&P Capital IQ (subscription required)'],
-    [13,'Altman, E. I. (1968). Financial ratios, discriminant analysis and the prediction of corporate bankruptcy. J. Finance, 23(4).','https://doi.org/10.1111/j.1540-6261.1968.tb00843.x'],
-    [14,'Piotroski, J. D. (2000). Value investing: Historical financial statement information. JAR, 38.','https://doi.org/10.2307/2672906'],
-    [15,'Fama, E. F., & French, K. R. (1993). Common risk factors in returns on stocks and bonds. JFE, 33(1).','https://doi.org/10.1016/0304-405X(93)90023-5'],
-    [16,'Somnigroup International Inc. (2025). Annual Report on Form 10-K. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=TPX&type=10-K'],
-    [17,'Somnigroup International Inc. (2025). Form 10-Q for Q3 2025. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=TPX&type=10-Q'],
-  ];
-
-  refHeaders.forEach((h,i) => {
-    const cell = ws10.getCell(1,i+1);
-    cell.value = h;
-    styleCell(cell, headerStyle('475569','FFFFFF'));
-  });
-  refData.forEach((row, ri) => {
-    const altBg = ri % 2 === 0 ? C.gray1 : 'FFFFFF';
-    ws10.getRow(ri+2).height = 28;
-    row.forEach((val, ci) => {
-      const cell = ws10.getCell(ri+2, ci+1);
-      cell.value = val;
-      if (ci===0) {
-        styleCell(cell, dataStyle(altBg, null, 'center'));
-        cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+C.navyBg} };
-      } else if (ci===1) {
-        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
-        cell.font = {size:9, name:'Calibri', color:{argb:'FF1E293B'}};
-        cell.alignment = {horizontal:'left', wrapText:true, vertical:'middle'};
-        cell.border = borderAll(true);
-      } else {
-        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
-        cell.font = {size:9, name:'Calibri', color:{argb:'FF1D4ED8'}, underline: val.startsWith('http')};
-        cell.alignment = {horizontal:'left', wrapText:true, vertical:'middle'};
-        cell.border = borderAll(true);
-      }
-    });
-  });
-
   // ── TAB 11: SENTIMENT ANALYSIS ───────────────────────────────────────────────
   const ws11 = wb.addWorksheet('Sentiment Analysis', { properties:{tabColor:{argb:'FF7C3AED'}} });
   setCols(ws11, [12,16,17,14,14,16,13,18,18,22,14,18]);
