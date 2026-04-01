@@ -347,9 +347,14 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   100% { transform: translate(-40px, 40px) scale(1.2); opacity: 1; }
 }
 
-/* e) Top bar enhancement — subtle gradient */
+/* e) Top bar — dark mode: subtle navy gradient; light mode: clean white */
 .top-bar {
   background: linear-gradient(180deg, var(--navy-800) 0%, rgba(10,22,40,0.97) 100%);
+}
+[data-theme="light"] .top-bar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 /* f) KPI cards — accent top border */
