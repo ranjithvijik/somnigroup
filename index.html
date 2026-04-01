@@ -4658,78 +4658,6 @@ async function exportPDF() {
     });
     footer('');
 
-    // ══════════════════════════════════════════
-
-    // ══════════════════════════════════════════
-    // PAGE 2B  -  PLAIN ENGLISH: WHAT THIS MEANS FOR YOU
-    // ══════════════════════════════════════════
-    newPage();
-    y = 15;
-
-    // Header
-    doc.setFillColor(...navy);
-    doc.rect(0, 0, W, 22, 'F');
-    doc.setFillColor(...teal);
-    doc.rect(0, 22, W, 1.5, 'F');
-    doc.setTextColor(...white);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Plain English: What This Analysis Actually Means', W/2, 14, { align:'center' });
-    y = 30;
-
-    // Intro blurb
-    doc.setFillColor(224, 242, 254);
-    doc.roundedRect(10, y, W-20, 16, 2, 2, 'F');
-    doc.setFillColor(...teal); doc.rect(10, y, 2.5, 16, 'F');
-    doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'bold');
-    doc.text('Bottom line up front:', 15, y+6);
-    doc.setTextColor(...gray); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-    doc.text('SGI stock trades at ~$69. Our analysis says it\'s worth ~$100 — a 44% discount. Here\'s why, in plain terms.', 15, y+13, { maxWidth: W-28 });
-    y += 22;
-
-    // Helper: draw a plain-English explanation box
-    function plainBox(y, emoji, heading, body, bgColor, borderColor) {
-      bgColor = bgColor || [248, 250, 252];
-      borderColor = borderColor || teal;
-      const lines = doc.splitTextToSize(body, W - 38);
-      const boxH = 10 + lines.length * 4.8 + 4;
-      y = checkY(y, boxH + 4);
-      doc.setFillColor(...bgColor);
-      doc.roundedRect(10, y, W-20, boxH, 2, 2, 'F');
-      doc.setFillColor(...borderColor); doc.rect(10, y, 2.5, boxH, 'F');
-      doc.setTextColor(...navy); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
-      doc.text(emoji + '  ' + heading, 15, y+7);
-      doc.setTextColor(...gray); doc.setFontSize(7.8); doc.setFont('helvetica', 'normal');
-      doc.text(lines, 15, y+13);
-      return y + boxH + 4;
-    }
-
-    y = plainBox(y, '📈', 'The Company Is Growing Fast — But the Stock Hasn\'t Caught Up Yet',
-      'Somnigroup (SGI) just completed a huge acquisition — they bought Mattress Firm in early 2025, making them both the manufacturer AND the largest retailer of mattresses in the US. Revenue jumped from $4.9B to $7.5B in one year (+52%). The stock is still priced like it\'s the old, smaller company. That gap is the opportunity.',
-      [248, 250, 252], teal);
-
-    y = plainBox(y, '💰', 'EPS Is About to Triple — That\'s the Core of the "Buy" Case',
-      'In 2025, earnings per share were just $1.84 because of one-time costs from the acquisition (lawyers, debt, restructuring). In 2026, now that the dust has settled, analysts estimate EPS of $4.82 — nearly a 3x jump. By 2028, EPS is expected to reach $7.08. When earnings triple but the stock price stays flat, that\'s a classic undervaluation signal.',
-      [240, 253, 244], green);
-
-    y = plainBox(y, '🏦', 'Yes, They Have a Lot of Debt — But It\'s Going Down Quickly',
-      'To buy Mattress Firm, SGI borrowed heavily. Their debt-to-EBITDA ratio hit 7.81x in 2025 — that\'s high. Think of it like a person who took out a big mortgage. The concern is real, but the house is a good one: they generate $633M in free cash flow per year, and management has committed to paying down ~$500M+ of debt each year through 2028. By 2027, the ratio drops to ~3.9x — comfortable territory.',
-      [255, 251, 235], gold);
-
-    y = plainBox(y, '🔗', 'Owning Both the Factory and the Store Is a Big Deal',
-      'Before the acquisition, SGI made Tempur-Pedic and Sealy mattresses and sold them through third-party stores. Now they also own 2,300 Mattress Firm stores — the #1 mattress retail chain in the US. This means they capture profit at every step: manufacturing, delivery, and retail sale. That\'s called "vertical integration," and it typically leads to higher profit margins over time.',
-      [248, 250, 252], teal);
-
-    y = plainBox(y, '📊', 'What "44% Upside" Actually Means',
-      'When analysts say the stock has 44% upside to a $100 target, they mean: if the company hits its earnings targets over the next 12 months, investors paying $69 today should expect the stock to reach around $100. That\'s based on 6 different valuation methods (discounted cash flows, earnings multiples, peer comparison etc.), all of which point to a $88–$120 range. The $100 target is the midpoint.',
-      [240, 253, 244], green);
-
-    y = plainBox(y, '⚠️', 'The Main Risks — When This Trade Goes Wrong',
-      'Two things could prevent this from working: (1) If the US housing market stays depressed (people buy mattresses when they move), fewer consumers shop for mattresses. (2) If the debt load becomes a problem — rising interest rates or slower-than-expected earnings recovery could tighten their financial flexibility. The bear case puts the stock at $59, which is actually below where it trades today. That\'s why this is a "considered" bet, not a certainty.',
-      [255, 241, 242], red);
-
-    footer('');
-
     // PAGE 3  -  COMPANY OVERVIEW
     // ══════════════════════════════════════════
     newPage();
@@ -5286,14 +5214,6 @@ async function exportPDF() {
       y = checkY(y, 62);
       addChartToPDF(doc, pngVal, 10, y, W-20, 60);
       y += 63;
-      const valLines = doc.splitTextToSize(
-        '📊  Plain English: Every bar chart above represents a different way to calculate what SGI is worth. The green bars (high end) average $110+. The navy bars (base case) average $92. Even the most conservative method (EV/EBITDA low) gives $52 — which is still below today\'s $69 price in that lone pessimistic scenario. The weight of evidence strongly points to undervaluation.',
-        W-28);
-      doc.setFillColor(240,253,244); doc.roundedRect(10,y,W-20,valLines.length*4.5+8,2,2,'F');
-      doc.setFillColor(...green); doc.rect(10,y,2.5,valLines.length*4.5+8,'F');
-      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-      doc.text(valLines,15,y+6);
-      y += valLines.length*4.5+12;
     }
 
     footer('');
