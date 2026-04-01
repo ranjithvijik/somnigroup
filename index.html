@@ -6507,16 +6507,32 @@ async function exportPDF() {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210, H = 297;
 
-    // ── Morningstar Color Palette ──
-    const msSteelBlue  = [0, 88, 150];
-    const msOrange     = [230, 107, 25];
-    const msRed        = [180, 40, 40];
-    const msGreen      = [40, 140, 80];
-    const msGray       = [100, 100, 100];
-    const msLightGray  = [220, 220, 220];
-    const msDarkGray   = [50, 50, 50];
-    const white        = [255, 255, 255];
-    const black        = [0, 0, 0];
+    // ── Professional Bloomberg/GS Color System ──
+    const C_NAVY    = [8, 24, 58];
+    const C_STEEL   = [26, 82, 118];
+    const C_CRIMSON = [185, 28, 28];
+    const C_EMERALD = [21, 128, 61];
+    const C_AMBER   = [161, 98, 7];
+    const C_INK     = [17, 24, 39];
+    const C_MUTED   = [107, 114, 128];
+    const C_BORDER  = [209, 213, 219];
+    const C_BGALT   = [248, 250, 252];
+    const C_BGSEC   = [241, 245, 249];
+    const C_WHITE   = [255, 255, 255];
+    const C_RED     = [185, 28, 28];
+    const C_GREEN   = [21, 128, 61];
+    const C_BLUE    = [37, 99, 235];
+    const C_ORANGE  = [194, 65, 12];
+    // keep backward-compat aliases so existing page code works
+    const white = C_WHITE;
+    const black = C_INK;
+    const msSteelBlue = C_STEEL;
+    const msOrange = C_AMBER;
+    const msRed = C_RED;
+    const msGreen = C_GREEN;
+    const msGray = C_MUTED;
+    const msDarkGray = C_INK;
+    const msLightGray = C_BGALT;
 
     let pageNum = 0;
 
@@ -6633,94 +6649,120 @@ async function exportPDF() {
 
     // ── Morningstar Helpers ──
     function msRunningHeader() {
-      doc.setFillColor(...msLightGray);
+      doc.setFillColor(...C_BGALT);
       doc.rect(0, 0, W, 7, 'F');
-      doc.setTextColor(...msGray);
-      doc.setFontSize(6);
+      doc.setDrawColor(...C_BORDER);
+      doc.setLineWidth(0.2);
+      doc.line(0, 7, W, 7);
+      doc.setTextColor(...C_MUTED);
+      doc.setFontSize(5.5);
       doc.setFont('helvetica', 'normal');
-      doc.text('SGI Equity Analyst Report  |  Report as of ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) + '  |  NYSE: SGI  |  For Institutional Use Only', 10, 4.5);
+      doc.text('SGI Equity Research  |  NYSE: SGI  |  ' + new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '  |  Institutional Use Only', 10, 4.5);
       doc.text('Page ' + pageNum + ' of 35', W - 10, 4.5, {align:'right'});
     }
 
     function msTitleBar() {
-      doc.setTextColor(...black);
-      doc.setFontSize(14);
+      // Company name
+      doc.setTextColor(...C_INK);
+      doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
-      doc.text('Somnigroup International Inc.', 10, 16);
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(...msGray);
-      doc.text('SGI', 98, 16); // positioned after company name at 14pt bold
-      doc.setTextColor(...msOrange);
+      doc.text('Somnigroup International Inc.', 10, 15);
+      // Ticker chip
+      doc.setFillColor(...C_BGALT);
+      doc.setDrawColor(...C_BORDER);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(97, 10, 14, 6, 1, 1, 'FD');
+      doc.setTextColor(...C_STEEL);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text('SGI', 104, 14.5, {align:'center'});
+      // Stars rating right-aligned
+      doc.setTextColor(...C_AMBER);
       doc.setFontSize(8);
-      doc.text('4 Stars', W - 10, 16, {align:'right'});
+      doc.text('4 Stars', W - 10, 14.5, {align:'right'});
     }
 
-    function msKPIStrip(livePrice) {
-      const price = livePrice || '$69.37';
+    function msKPIStrip() {
       const kpis = [
-        {lbl:'Last Price', val:price, sub:'Mar 31, 2026'},
-        {lbl:'Fair Value Est.', val:'$100.00', sub:'Base Case DCF'},
-        {lbl:'Price / FVE', val:'0.69', sub:'31% discount'},
-        {lbl:'Market Cap', val:'$14.6B', sub:'Mar 31, 2026'},
-        {lbl:'Moat', val:'Narrow', sub:'Developing wide'},
-        {lbl:'Uncertainty', val:'High', sub:'Peak leverage'},
-        {lbl:'Capital Alloc.', val:'Standard', sub:'Debt focus'},
-        {lbl:'Rating', val:'LONG', sub:'+44% upside'},
+        {lbl:'LAST PRICE',   val:'$69.37',   sub:'Mar 31, 2026',    vc: C_INK},
+        {lbl:'FAIR VALUE',   val:'$100.00',  sub:'Base Case DCF',   vc: C_STEEL},
+        {lbl:'PRICE / FVE',  val:'0.69x',    sub:'31% discount',    vc: C_CRIMSON},
+        {lbl:'MARKET CAP',   val:'$14.6B',   sub:'Mar 31, 2026',    vc: C_INK},
+        {lbl:'MOAT',         val:'Narrow',   sub:'Developing Wide', vc: C_STEEL},
+        {lbl:'UNCERTAINTY',  val:'High',     sub:'Peak leverage',   vc: C_CRIMSON},
+        {lbl:'CAPITAL ALLOC',val:'Standard', sub:'Debt focus',      vc: C_AMBER},
+        {lbl:'RATING',       val:'LONG',     sub:'+44% upside',     vc: C_EMERALD},
       ];
+      const ky = 19, kh = 12;
       const kw = (W - 20) / kpis.length;
-      const ky = 19;
+      // Outer border
+      doc.setFillColor(...C_WHITE);
+      doc.setDrawColor(...C_BORDER);
       doc.setLineWidth(0.3);
-      doc.setDrawColor(...msLightGray);
-      doc.rect(10, ky, W - 20, 12, 'S');
+      doc.rect(10, ky, W - 20, kh, 'FD');
       kpis.forEach((k, i) => {
         const kx = 10 + i * kw;
-        if (i > 0) { doc.setDrawColor(...msLightGray); doc.setLineWidth(0.2); doc.line(kx, ky, kx, ky + 12); }
-        doc.setTextColor(...msGray);
+        if (i > 0) {
+          doc.setDrawColor(...C_BORDER);
+          doc.setLineWidth(0.2);
+          doc.line(kx, ky + 1, kx, ky + kh - 1);
+        }
+        // Label
+        doc.setTextColor(...C_MUTED);
         doc.setFontSize(5);
         doc.setFont('helvetica', 'normal');
-        doc.text(k.lbl.toUpperCase(), kx + kw/2, ky + 3.5, {align:'center'});
-        const valColor = k.val==='LONG' ? msGreen : k.val==='High' ? msRed : black;
-        doc.setTextColor(...valColor);
-        doc.setFontSize(k.val.length > 8 ? 6.5 : 8);
+        doc.text(k.lbl, kx + kw/2, ky + 3.5, {align:'center'});
+        // Value
+        doc.setTextColor(...k.vc);
+        doc.setFontSize(k.val.length > 7 ? 6.5 : 8);
         doc.setFont('helvetica', 'bold');
         doc.text(k.val, kx + kw/2, ky + 8, {align:'center'});
-        doc.setTextColor(...msGray);
+        // Sub
+        doc.setTextColor(...C_MUTED);
         doc.setFontSize(4.5);
         doc.setFont('helvetica', 'normal');
-        doc.text(k.sub, kx + kw/2, ky + 11.5, {align:'center'});
+        doc.text(k.sub, kx + kw/2, ky + 11, {align:'center'});
       });
-      doc.setDrawColor(...msSteelBlue);
-      doc.setLineWidth(0.4);
-      doc.line(10, 32, W - 10, 32);
+      // Bottom accent line
+      doc.setFillColor(...C_STEEL);
+      doc.rect(10, ky + kh, W - 20, 0.6, 'F');
     }
 
     function msSectionHead(text, y) {
-      doc.setTextColor(...msSteelBlue);
-      doc.setFontSize(10);
+      // Left accent bar
+      doc.setFillColor(...C_STEEL);
+      doc.rect(10, y, 2.5, 7, 'F');
+      // Section title
+      doc.setTextColor(...C_STEEL);
+      doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text(text, 10, y);
-      doc.setFillColor(...msSteelBlue);
-      doc.rect(10, y + 1.5, W - 20, 0.5, 'F');
-      return y + 8;
+      doc.text(text, 15, y + 5.5);
+      // Thin underline
+      doc.setDrawColor(...C_BORDER);
+      doc.setLineWidth(0.3);
+      doc.line(15, y + 7.5, W - 10, y + 7.5);
+      return y + 12;
     }
 
     function msBody(text, x, y, maxW) {
-      doc.setTextColor(...msDarkGray);
-      doc.setFontSize(8.5);
+      doc.setTextColor(...C_INK);
+      doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       const lines = doc.splitTextToSize(text, maxW || W - 20);
       doc.text(lines, x, y);
-      return y + lines.length * 4.8;
+      return y + lines.length * 4.5;
     }
 
     function msFooter() {
-      doc.setFillColor(...msLightGray);
+      doc.setFillColor(...C_BGALT);
       doc.rect(0, H - 8, W, 8, 'F');
-      doc.setTextColor(...msGray);
+      doc.setDrawColor(...C_BORDER);
+      doc.setLineWidth(0.2);
+      doc.line(0, H - 8, W, H - 8);
+      doc.setTextColor(...C_MUTED);
       doc.setFontSize(5.5);
       doc.setFont('helvetica', 'normal');
-      doc.text('(c) Investment Research Analysis 2026. All Rights Reserved. For institutional use only. The information herein does not constitute investment advice.', W/2, H - 3, {align:'center', maxWidth: W - 20});
+      doc.text('Investment Research Analysis 2026. All Rights Reserved. For institutional use only. Not investment advice.', W/2, H - 3.5, {align:'center', maxWidth: W - 20});
     }
 
     function msTableRow(cols, xs, y, rowH, isHeader, isAlt) {
@@ -6776,113 +6818,202 @@ async function exportPDF() {
     // ============================================================
     newPage();
     msRunningHeader();
-    msTitleBar();
-    msKPIStrip();
-    msFooter();
-    // Two independent columns — left: ToC/disclosure, right: analyst note
-    const lx = 10, lw = 62;
-    const rx = 76, rw = 124;
-    let ly = 34;  // left column y-tracker
-    let ry = 34;  // right column y-tracker
 
-    // Draw section head only in left column (constrained width heading)
-    doc.setTextColor(...msSteelBlue);
-    doc.setFontSize(10); doc.setFont('helvetica','bold');
-    doc.text('Table of Contents', lx, ly);
-    doc.setFillColor(...msSteelBlue);
-    doc.rect(lx, ly + 1.5, lw, 0.5, 'F');  // Only left column width
-    ly += 8;
+    // ── Full-bleed navy cover band (replaces msTitleBar + msKPIStrip) ──
+    doc.setFillColor(...C_NAVY);
+    doc.rect(0, 7, W, 32, 'F');
+    // Accent stripe
+    doc.setFillColor(...C_STEEL);
+    doc.rect(0, 39, W, 1.5, 'F');
+
+    // Company name in banner
+    doc.setTextColor(...C_WHITE);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Somnigroup International Inc.', 12, 19);
+
+    // Ticker badge
+    doc.setFillColor(...C_STEEL);
+    doc.roundedRect(118, 13, 18, 7, 1.5, 1.5, 'F');
+    doc.setTextColor(...C_WHITE);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('NYSE: SGI', 127, 18, {align:'center'});
+
+    // Rating badge
+    doc.setFillColor(...C_EMERALD);
+    doc.roundedRect(140, 13, 18, 7, 1.5, 1.5, 'F');
+    doc.setFontSize(7);
+    doc.text('LONG', 149, 18, {align:'center'});
+
+    // Stars
+    doc.setTextColor(...C_AMBER);
+    doc.setFontSize(8);
+    doc.text('4 Stars', W - 12, 19, {align:'right'});
+
+    // Sub-headline in banner
+    doc.setTextColor(180, 200, 230);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Consumer Cyclical | Specialty Retail | Home Furnishings  |  Updated: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}), 12, 28);
+
+    // Analyst
+    doc.setFontSize(6.5);
+    doc.text('SGI Research Desk  |  Coverage: Consumer Cyclical / Specialty Retail  |  FVE: $100.00  |  Price: $69.37  |  Upside: +44%', 12, 35.5);
+
+    // ── KPI grid below banner (4 cards x 2 rows) ──
+    const kpiCoverData = [
+      {lbl:'Last Price',   val:'$69.37',   sub:'Mar 31, 2026',    vc:C_INK},
+      {lbl:'Fair Value',   val:'$100.00',  sub:'Base Case DCF',   vc:C_STEEL},
+      {lbl:'Price / FVE',  val:'0.69x',    sub:'31% discount',    vc:C_CRIMSON},
+      {lbl:'Market Cap',   val:'$14.6B',   sub:'Mar 31, 2026',    vc:C_INK},
+      {lbl:'Economic Moat',val:'Narrow',   sub:'Developing Wide', vc:C_STEEL},
+      {lbl:'Uncertainty',  val:'High',     sub:'Peak leverage',   vc:C_CRIMSON},
+      {lbl:'Capital Alloc',val:'Standard', sub:'Debt focus',      vc:C_AMBER},
+      {lbl:'Net Debt/EBITDA',val:'7.8x',  sub:'Post-acquisition', vc:C_ORANGE},
+    ];
+    const cgW = (W - 22) / 4, cgH = 16, cgStartY = 43;
+    kpiCoverData.forEach((k, i) => {
+      const col = i % 4, row = Math.floor(i / 4);
+      const cx = 11 + col * (cgW + 0.5);
+      const cy = cgStartY + row * (cgH + 1.5);
+      doc.setFillColor(...C_WHITE);
+      doc.setDrawColor(...C_BORDER);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(cx, cy, cgW, cgH, 1, 1, 'FD');
+      // Color top accent
+      doc.setFillColor(...k.vc);
+      doc.rect(cx, cy, cgW, 1.2, 'F');
+      doc.setTextColor(...C_MUTED);
+      doc.setFontSize(5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(k.lbl.toUpperCase(), cx + cgW/2, cy + 5.5, {align:'center'});
+      doc.setTextColor(...k.vc);
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'bold');
+      doc.text(k.val, cx + cgW/2, cy + 11, {align:'center'});
+      doc.setTextColor(...C_MUTED);
+      doc.setFontSize(4.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(k.sub, cx + cgW/2, cy + 14.5, {align:'center'});
+    });
+    msFooter();
+
+    // Content zone starts at y=80
+    const lx = 10, lw = 62, rx = 76, rw = 124;
+    let ly = 80, ry = 80;
+
+    // Left col: ToC
+    doc.setFillColor(...C_BGALT);
+    doc.rect(lx, ly - 2, lw, 3.5, 'F');
+    doc.setTextColor(...C_STEEL);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TABLE OF CONTENTS', lx + 2, ly + 1);
+    ly += 6;
+    doc.setDrawColor(...C_BORDER);
+    doc.setLineWidth(0.2);
+    doc.line(lx, ly, lx + lw, ly);
+    ly += 3;
+
     const tocItems = [
       'Pg 1  — Cover / Analyst Note',
-      'Pg 2  — Business Description & Strategy',
-      'Pg 3  — Competitors & Peer Comparison',
-      'Pg 4  — Economic Moat Analysis',
-      'Pg 5  — Fair Value & Profit Drivers',
+      'Pg 2  — Business Description',
+      'Pg 3  — Competitors & Peers',
+      'Pg 4  — Economic Moat',
+      'Pg 5  — Fair Value & Drivers',
       'Pg 6  — Risk & Uncertainty',
       'Pg 7  — Capital Allocation',
-      'Pg 8  — Bulls Say / Bears Say',
+      'Pg 8  — Bulls / Bears',
       'Pg 9  — Income Statement',
       'Pg 10 — Balance Sheet',
-      'Pg 11 — Cash Flow Statement',
-      'Pg 12 — Key Financial Ratios',
+      'Pg 11 — Cash Flow',
+      'Pg 12 — Financial Ratios',
       'Pg 13 — Segment Analysis',
-      'Pg 14 — Quarterly Performance',
+      'Pg 14 — Quarterly Data',
       'Pg 15 — Valuation Analysis',
-      'Pg 16 — DCF Model (5-Year)',
+      'Pg 16 — DCF Model',
       'Pg 17 — Technical Analysis',
-      'Pg 18 — Trading Comps (Full)',
+      'Pg 18 — Trading Comps',
       'Pg 19 — Analyst Consensus',
       'Pg 20 — Investment Case',
       'Pg 21 — Macro Dashboard',
-      'Pg 22 — ML & Sentiment Analysis',
-      'Pg 23 — Quantitative Risk Metrics',
+      'Pg 22 — ML & Sentiment',
+      'Pg 23 — Quant Risk',
       'Pg 24 — Regulatory Filings',
       'Pg 25 — References',
+      'Pg 26 — ESG Profile',
+      'Pg 27 — Institutional Owners',
+      'Pg 28 — Management Team',
+      'Pg 29 — Analyst Notes',
+      'Pg 30 — Price vs Fair Value',
+      'Pg 31 — 10-Year History',
+      'Pg 32 — Dividend History',
+      'Pg 33 — Synergy Tracker',
+      'Pg 34 — Industry Position',
+      'Pg 35 — Regulatory History',
     ];
-    tocItems.forEach(item => {
-      doc.setTextColor(...msDarkGray);
-      doc.setFontSize(6.5);
-      doc.setFont('helvetica', 'normal');
-      doc.text(item, lx, ly);
-      ly += 5;
+    tocItems.forEach((item, idx) => {
+      if (ly > H - 30) return;
+      doc.setTextColor(idx % 2 === 0 ? C_INK : C_MUTED);
+      doc.setFontSize(6);
+      doc.setFont('helvetica', idx < 1 ? 'bold' : 'normal');
+      doc.text(item, lx + 2, ly);
+      ly += 4.8;
     });
 
-    ly += 3;
-    doc.setFillColor(245, 247, 250);
-    doc.rect(lx, ly, lw, 30, 'F');
-    doc.setDrawColor(...msLightGray);
-    doc.rect(lx, ly, lw, 30, 'S');
-    doc.setTextColor(...msSteelBlue);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.text('IMPORTANT DISCLOSURES', lx + 2, ly + 5);
-    doc.setTextColor(...msGray);
-    doc.setFontSize(5.5);
-    doc.setFont('helvetica', 'normal');
-    const discText = 'This report is for institutional and professional investors only. Not investment advice. Past performance does not guarantee future results. SGI equity analyst coverage initiated Feb 2025. Fair value estimates are forward-looking and subject to change.';
-    const discLines = doc.splitTextToSize(discText, lw - 4);
-    doc.text(discLines, lx + 2, ly + 10);
-    ly += 35;
+    // Disclosure box
+    ly += 2;
+    if (ly < H - 40) {
+      doc.setFillColor(...C_BGSEC);
+      doc.setDrawColor(...C_BORDER);
+      doc.roundedRect(lx, ly, lw, 28, 1, 1, 'FD');
+      doc.setFillColor(...C_STEEL);
+      doc.rect(lx, ly, lw, 4, 'F');
+      doc.setTextColor(...C_WHITE);
+      doc.setFontSize(6);
+      doc.setFont('helvetica', 'bold');
+      doc.text('IMPORTANT DISCLOSURES', lx + lw/2, ly + 3, {align:'center'});
+      doc.setTextColor(...C_INK);
+      doc.setFontSize(5.5);
+      doc.setFont('helvetica', 'normal');
+      const discText = 'For institutional and professional investors only. Not investment advice. Past performance does not guarantee future results. Analyst coverage initiated Feb 2025. Fair value estimates are forward-looking and subject to change.';
+      const discLines = doc.splitTextToSize(discText, lw - 4);
+      doc.text(discLines, lx + 2, ly + 9);
+    }
 
-    doc.setFillColor(245, 247, 250);
-    doc.rect(lx, ly, lw, 22, 'F');
-    doc.setDrawColor(...msLightGray);
-    doc.rect(lx, ly, lw, 22, 'S');
-    doc.setTextColor(...msSteelBlue);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ANALYST DETAILS', lx + 2, ly + 5);
-    doc.setTextColor(...msDarkGray);
+    // Right col: Analyst note
+    // Section label
+    doc.setFillColor(...C_NAVY);
+    doc.rect(rx, ry - 2, rw, 5, 'F');
+    doc.setTextColor(...C_WHITE);
     doc.setFontSize(6);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Lead: SGI Research Desk', lx + 2, ly + 11);
-    doc.text('Coverage: Consumer Cyclical / Specialty Retail', lx + 2, ly + 16);
-    doc.text('Updated: ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}), lx + 2, ly + 21);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ANALYST NOTE', rx + 3, ry + 1.5);
+    ry += 8;
 
-    // Right column — Analyst note (ry already declared above as 34)
-    doc.setTextColor(...msSteelBlue);
-    doc.setFontSize(12);
+    doc.setTextColor(...C_NAVY);
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     const headlineText = 'SGI: Post-Acquisition Integration Ahead of Schedule — Maintaining $100 Fair Value Estimate';
     const headLines = doc.splitTextToSize(headlineText, rw);
     doc.text(headLines, rx, ry);
-    ry += headLines.length * 6 + 4;
+    ry += headLines.length * 6 + 3;
 
-    doc.setFillColor(...msOrange);
+    doc.setFillColor(...C_STEEL);
     doc.rect(rx, ry, rw, 0.5, 'F');
     ry += 5;
 
     const bodyParas = [
-      'WHY WE ARE BULLISH: Somnigroup International (SGI) has successfully completed the $4.0 billion acquisition of Mattress Firm, creating the world\'s largest vertically integrated sleep products company with $7.5 billion in FY2025 revenue. Integration is running at least 6 months ahead of the original 24-month schedule, with Q4 2025 adj. EBITDA margin expanding to 18.8% — well above our initial 17.5% estimate.',
-      'SYNERGY ACCELERATION: We previously modeled $120M in year-one synergies; management is tracking toward $145M. The primary drivers are: (1) SKU rationalization eliminating 2,100 low-margin retail lines, (2) logistics consolidation reducing the distribution node count from 47 to 31 facilities, and (3) direct-to-consumer digital revenue running $240M annualized in Q4 2025 (+38% above our model). We now forecast the full $200M synergy run-rate will be achieved by Q3 2026, 9 months earlier than our prior estimate.',
-      'Q4 2025 BEAT: SGI reported Q4 2025 adj. EPS of $0.79, beating consensus of $0.75 by $0.04 (+5.3%). Revenue of $1,868M was +55% YoY (Mattress Firm consolidation) and adj. EBITDA of $350M represented a 18.7% margin — the highest post-acquisition margin in any quarter. The beat was driven by gross margin expansion of +160bps as polyurethane foam costs normalized to pre-2021 levels.',
-      'FORWARD GUIDANCE STRONG: Management guided FY2026 revenue of $7.9-8.1B (+6-8% organic growth), adj. EBITDA of $1.47-1.51B (18.5-19.0% margin), and adj. EPS of $4.75-4.90. This compares favorably to the Street at $4.82 adj. EPS. We see upside to guidance if housing starts recover toward the historical 1.5M+ threshold, which could add $180M+ in incremental revenue.',
-      'BOTTOM LINE: At $69.37, SGI trades at 14.4x FY2026E EPS and 15.3x FY2026E EV/EBITDA — a 25-35% discount to specialty retail and home furnishings peers despite a significantly superior EPS growth trajectory (24% CAGR vs. 8-12% peer average). Our $100 fair value estimate implies 44% upside over 12 months. Reiterate LONG with High Uncertainty and Standard Capital Allocation ratings.',
+      'WHY WE ARE BULLISH: Somnigroup International (SGI) has successfully completed the $4.0 billion acquisition of Mattress Firm, creating the world\'s largest vertically integrated sleep products company with $7.5 billion in FY2025 revenue. Integration is running at least 6 months ahead of schedule, with Q4 2025 adj. EBITDA margin expanding to 18.8%.',
+      'SYNERGY ACCELERATION: We previously modeled $120M in year-one synergies; management is tracking toward $145M. Full $200M synergy run-rate expected by Q3 2026, 9 months ahead of our prior estimate. Key drivers: (1) SKU rationalization, (2) logistics consolidation from 47 to 31 facilities, (3) D2C digital revenue $240M annualized (+38% above our model).',
+      'Q4 2025 BEAT: Adj. EPS of $0.79 vs. consensus $0.75 (+5.3%). Revenue of $1,868M was +55% YoY. Adj. EBITDA of $350M = 18.7% margin — highest post-acquisition margin in any quarter. Gross margin expanded +160bps as polyurethane foam costs normalized.',
+      'BOTTOM LINE: At $69.37, SGI trades at 14.4x FY2026E EPS and 15.3x FY2026E EV/EBITDA — a 25-35% discount to peers despite 24% EPS CAGR. Our $100 fair value implies 44% upside. Reiterate LONG with High Uncertainty and Standard Capital Allocation.',
     ];
     bodyParas.forEach(para => {
+      if (ry > H - 16) return;
       ry = msBody(para, rx, ry, rw);
-      ry += 3;
-      ry = checkY(ry, 20);
+      ry += 4;
     });
 
     // ============================================================
@@ -12443,166 +12574,222 @@ function exportSlides() {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [297, 167] });
   const W = 297, H = 167;
 
-  // ── Design-system palette ──────────────────────────────────────
-  const white     = [255, 255, 255];
-  const offWhite  = [248, 250, 252];
-  const navy      = [10,  22,  40];
-  const navyMid   = [22,  45,  78];
-  const teal      = [0,   144, 181];
-  const tealDark  = [0,   100, 130];
-  const gold      = [184, 134, 11];
+  // ── Professional Bloomberg/GS Design System ──────────────────
+  const C_NAVY    = [8, 24, 58];
+  const C_STEEL   = [26, 82, 118];
+  const C_CRIMSON = [185, 28, 28];
+  const C_EMERALD = [21, 128, 61];
+  const C_AMBER   = [161, 98, 7];
+  const C_INK     = [17, 24, 39];
+  const C_MUTED   = [107, 114, 128];
+  const C_BORDER  = [209, 213, 219];
+  const C_BGALT   = [248, 250, 252];
+  const C_WHITE   = [255, 255, 255];
+  const C_TEAL    = [14, 116, 144];
+  const C_GOLD    = [161, 98, 7];
+  // backward-compat aliases
+  const white = C_WHITE; const navy = C_NAVY; const teal = C_TEAL;
+  const gold = [184,134,11]; const green = C_EMERALD; const red = C_CRIMSON;
+  const gray = C_MUTED; const lightGray = C_BGALT; const midGray = C_MUTED;
+  const amber = C_AMBER;
+  const offWhite = C_BGALT;
+  const navyMid = [22, 45, 78];
+  const tealDark = [0, 100, 130];
   const goldLight = [251, 243, 213];
-  const green     = [5,   150, 105];
-  const greenBg   = [209, 250, 229];
-  const red       = [220, 38,  38];
-  const redBg     = [254, 226, 226];
-  const gray      = [75,  85,  99];
-  const lightGray = [243, 244, 246];
-  const midGray   = [156, 163, 175];
-  const amber     = [217, 119, 6];
-  const purple    = [109, 40,  217];
+  const greenBg = [209, 250, 229];
+  const redBg = [254, 226, 226];
+  const purple = [109, 40, 217];
 
   // ── Legacy helpers (kept for backward compat) ──────────────────
-  function whiteBg() { doc.setFillColor(...white); doc.rect(0,0,W,H,'F'); }
+  function whiteBg() { doc.setFillColor(...C_WHITE); doc.rect(0,0,W,H,'F'); }
   function headerBar(title, sub) {
-    doc.setFillColor(...navy); doc.rect(0,0,W,28,'F');
-    doc.setDrawColor(...teal); doc.setLineWidth(0.8); doc.line(0,28,W,28);
-    doc.setTextColor(...teal); doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.setFillColor(...C_NAVY); doc.rect(0,0,W,28,'F');
+    doc.setDrawColor(...C_TEAL); doc.setLineWidth(0.8); doc.line(0,28,W,28);
+    doc.setTextColor(...C_TEAL); doc.setFontSize(7); doc.setFont('helvetica','bold');
     doc.text('SOMNIGROUP INTERNATIONAL | NYSE: SGI', 16, 10);
-    doc.setTextColor(...white); doc.setFontSize(16); doc.setFont('helvetica','bold');
+    doc.setTextColor(...C_WHITE); doc.setFontSize(16); doc.setFont('helvetica','bold');
     doc.text(title, 16, 22);
-    if (sub) { doc.setFontSize(8); doc.setTextColor(...midGray); doc.setFont('helvetica','normal'); doc.text(sub, 16, 38); }
+    if (sub) { doc.setFontSize(8); doc.setTextColor(...C_MUTED); doc.setFont('helvetica','normal'); doc.text(sub, 16, 38); }
   }
   function footer(num) {
-    doc.setFillColor(245,247,250); doc.rect(0,H-11,W,11,'F');
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.2); doc.line(0,H-11,W,H-11);
-    doc.setTextColor(...gray); doc.setFontSize(7); doc.setFont('helvetica','normal');
+    doc.setFillColor(...C_BGALT); doc.rect(0,H-11,W,11,'F');
+    doc.setDrawColor(...C_BORDER); doc.setLineWidth(0.2); doc.line(0,H-11,W,H-11);
+    doc.setTextColor(...C_MUTED); doc.setFontSize(7); doc.setFont('helvetica','normal');
     doc.text('SGI | Research Report', 8, H-4);
     doc.text(num+' / '+doc.getNumberOfPages(), W-12, H-4, {align:'right'});
   }
   function kpiBox(x,y,w,h,label,value,color) {
-    doc.setFillColor(...lightGray); doc.setDrawColor(...midGray); doc.setLineWidth(0.2);
+    doc.setFillColor(...C_BGALT); doc.setDrawColor(...C_BORDER); doc.setLineWidth(0.2);
     doc.roundedRect(x,y,w,h,2,2,'FD');
-    doc.setTextColor(...gray); doc.setFontSize(6); doc.setFont('helvetica','normal');
+    doc.setTextColor(...C_MUTED); doc.setFontSize(6); doc.setFont('helvetica','normal');
     doc.text(label.toUpperCase(), x+w/2, y+7, {align:'center'});
-    doc.setTextColor(...(color||navy)); doc.setFontSize(13); doc.setFont('helvetica','bold');
+    doc.setTextColor(...(color||C_NAVY)); doc.setFontSize(13); doc.setFont('helvetica','bold');
     doc.text(value, x+w/2, y+17, {align:'center'});
   }
   function bullet(x,y,text,color) {
     if (y>H-16) return y;
-    doc.setFillColor(...(color||teal)); doc.circle(x+1,y-1,1,'F');
-    doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica','normal');
+    doc.setFillColor(...(color||C_TEAL)); doc.circle(x+1,y-1,1,'F');
+    doc.setTextColor(...C_INK); doc.setFontSize(8.5); doc.setFont('helvetica','normal');
     const lines = doc.splitTextToSize(text, W-x-20);
     doc.text(lines, x+5, y);
     return y + lines.length*5.5;
   }
   function dividerLine(y) {
-    doc.setDrawColor(...teal); doc.setLineWidth(0.6); doc.line(16,y,W-16,y);
+    doc.setDrawColor(...C_TEAL); doc.setLineWidth(0.6); doc.line(16,y,W-16,y);
   }
   function tblRow(cols,widths,y,rowH,isHeader,isHighlight) {
     if (isHeader) {
-      doc.setFillColor(...navy); doc.rect(10,y,W-20,rowH,'F');
-      doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica','bold');
+      doc.setFillColor(...C_NAVY); doc.rect(10,y,W-20,rowH,'F');
+      doc.setTextColor(...C_WHITE); doc.setFontSize(7); doc.setFont('helvetica','bold');
     } else if (isHighlight) {
-      doc.setFillColor(224,242,254); doc.rect(10,y,W-20,rowH,'F');
-      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
-    } else { doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal'); }
+      doc.setFillColor(...C_BGALT); doc.rect(10,y,W-20,rowH,'F');
+      doc.setTextColor(...C_NAVY); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    } else { doc.setTextColor(...C_INK); doc.setFontSize(7.5); doc.setFont('helvetica','normal'); }
     let cx=12; cols.forEach((c,i)=>{ doc.text(String(c),cx,y+rowH-3); cx+=widths[i]; });
-    doc.setDrawColor(...midGray); doc.setLineWidth(0.15); doc.line(10,y+rowH,W-10,y+rowH);
+    doc.setDrawColor(...C_BORDER); doc.setLineWidth(0.15); doc.line(10,y+rowH,W-10,y+rowH);
   }
 
-  // ── NEW premium helpers ────────────────────────────────────────
+  // ── Premium helpers (redesigned) ──────────────────────────────
   function slideBg() {
-    doc.setFillColor(...offWhite); doc.rect(0,0,W,H,'F');
-    doc.setFillColor(...navy);  doc.rect(0,0,3,H,'F');
-    doc.setFillColor(...teal);  doc.rect(3,0,1.5,H,'F');
+    doc.setFillColor(...C_WHITE);
+    doc.rect(0,0,W,H,'F');
+    // Left side navy bar 3mm
+    doc.setFillColor(...C_NAVY);
+    doc.rect(0,0,3,H,'F');
+    // Teal accent 1.5mm
+    doc.setFillColor(...C_TEAL);
+    doc.rect(3,0,1.5,H,'F');
   }
 
-  function premiumHeader(title, sub, slideLabel) {
-    doc.setFillColor(...navy); doc.rect(0,0,W,32,'F');
-    doc.setFillColor(...teal); doc.rect(0,32,W,1.5,'F');
-    doc.setFillColor(...gold); doc.circle(W-16,8,3,'F');
-    doc.setTextColor(...teal); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
-    doc.text('SOMNIGROUP INTERNATIONAL  \xB7  NYSE: SGI  \xB7  LONG RECOMMENDATION', 8, 9);
-    doc.setTextColor(...white); doc.setFontSize(15); doc.setFont('helvetica','bold');
-    doc.text(title, 8, 24);
-    if (sub) {
-      doc.setFontSize(7.5); doc.setTextColor(...midGray); doc.setFont('helvetica','normal');
-      doc.text(sub, W-8, 24, {align:'right'});
+  function premiumHeader(title, subtitle, badge) {
+    doc.setFillColor(...C_NAVY);
+    doc.rect(0, 0, W, 22, 'F');
+    doc.setFillColor(...C_TEAL);
+    doc.rect(0, 22, W, 1.2, 'F');
+    // Left edge bar
+    doc.setFillColor(...C_TEAL);
+    doc.rect(0, 0, 3, H, 'F');
+    // Company tag
+    doc.setTextColor(150, 180, 210);
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text('SOMNIGROUP INTERNATIONAL  |  NYSE: SGI  |  EQUITY RESEARCH', 8, 8);
+    // Title
+    doc.setTextColor(...C_WHITE);
+    doc.setFontSize(14); doc.setFont('helvetica','bold');
+    doc.text(title, 8, 17.5);
+    // Subtitle
+    if (subtitle) {
+      doc.setFontSize(7); doc.setFont('helvetica','normal');
+      doc.setTextColor(180, 200, 230);
+      doc.text(subtitle, W/2, 17.5, {align:'center'});
     }
-    if (slideLabel) {
-      doc.setFillColor(...teal); doc.setDrawColor(...tealDark); doc.setLineWidth(0.3);
-      doc.roundedRect(W-32,3,28,8,2,2,'FD');
-      doc.setTextColor(...white); doc.setFontSize(6); doc.setFont('helvetica','bold');
-      doc.text(slideLabel, W-18, 8.5, {align:'center'});
+    // Badge
+    if (badge) {
+      doc.setFillColor(...C_STEEL);
+      doc.roundedRect(W-28, 7, 24, 9, 1.5, 1.5, 'F');
+      doc.setTextColor(...C_WHITE);
+      doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+      doc.text(badge, W-16, 13, {align:'center'});
     }
   }
 
   function premiumFooter(num, total) {
-    const tot = total||23;
-    doc.setFillColor(236,239,244); doc.rect(0,H-12,W,12,'F');
-    doc.setFillColor(210,218,230); doc.rect(0,H-12,W,1.5,'F');
-    doc.setFillColor(...teal); doc.rect(0,H-12,W*(num/tot),1.5,'F');
-    doc.setTextColor(...gray); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
-    doc.text('SGI Investment Analysis  \xB7  March 2026  \xB7  Confidential', 8, H-4);
-    doc.setTextColor(...teal); doc.setFont('helvetica','bold');
-    doc.text(num+' / '+tot, W-8, H-4, {align:'right'});
+    doc.setFillColor(...C_BGALT);
+    doc.rect(0, H-10, W, 10, 'F');
+    doc.setDrawColor(...C_BORDER);
+    doc.setLineWidth(0.2);
+    doc.line(0, H-10, W, H-10);
+    doc.setTextColor(...C_MUTED);
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+    doc.text('SGI Investment Research  |  Institutional Use Only  |  Not Investment Advice', 8, H-4);
+    doc.setFontSize(6.5);
+    doc.text(num+' / '+(total||35), W-10, H-4, {align:'right'});
   }
 
-  function kpiCard(x,y,w,h,label,value,sub,accentColor) {
-    accentColor = accentColor||teal;
-    doc.setFillColor(...white); doc.setDrawColor(220,225,235); doc.setLineWidth(0.3);
-    doc.roundedRect(x,y,w,h,2,2,'FD');
-    doc.setFillColor(...accentColor); doc.roundedRect(x,y,w,1.8,1,0,'F');
-    doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+  function kpiCard(x,y,w,h,label,value,sub,color) {
+    const c = color || C_STEEL;
+    doc.setFillColor(...C_WHITE);
+    doc.setDrawColor(...C_BORDER);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(x,y,w,h,1.5,1.5,'FD');
+    // Color top bar
+    doc.setFillColor(...c);
+    doc.rect(x,y,w,1.5,'F');
+    doc.setTextColor(...C_MUTED); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
     doc.text(label.toUpperCase(), x+w/2, y+7, {align:'center'});
-    doc.setTextColor(...accentColor); doc.setFontSize(14); doc.setFont('helvetica','bold');
-    doc.text(value, x+w/2, y+h-6, {align:'center'});
+    doc.setTextColor(...c); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text(value, x+w/2, y+14, {align:'center'});
     if (sub) {
-      doc.setTextColor(...midGray); doc.setFontSize(5); doc.setFont('helvetica','normal');
-      doc.text(sub, x+w/2, y+h-1.5, {align:'center'});
+      doc.setTextColor(...C_MUTED); doc.setFontSize(5); doc.setFont('helvetica','normal');
+      doc.text(sub, x+w/2, y+h-2, {align:'center'});
     }
   }
 
   function sectionDivider(y) {
-    doc.setDrawColor(...teal); doc.setLineWidth(0.4); doc.line(8,y,W-8,y);
+    doc.setDrawColor(...C_BORDER); doc.setLineWidth(0.4); doc.line(8,y,W-8,y);
   }
 
-  function insightBox(x,y,w,text,color) {
-    color = color||teal;
-    const lines = doc.splitTextToSize(text, w-16);
-    const bh = lines.length*4.8+8;
-    doc.setFillColor(240,248,253);
-    if (color===gold) doc.setFillColor(...goldLight);
-    if (color===green) doc.setFillColor(...greenBg);
-    doc.roundedRect(x,y,w,bh,2,2,'F');
-    doc.setFillColor(...color); doc.rect(x,y,2.5,bh,'F');
-    doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-    doc.text(lines, x+6, y+6);
+  function insightBox(x,y,w,h,title,body,accentColor) {
+    // Support old 5-arg signature: insightBox(x,y,w,text,color)
+    // and new 7-arg signature: insightBox(x,y,w,h,title,body,accentColor)
+    let ac, bh, titleStr, bodyStr;
+    if (typeof h === 'number' && typeof title === 'string' && typeof body === 'string') {
+      // new 7-arg form
+      ac = accentColor || C_STEEL;
+      bh = h;
+      titleStr = title;
+      bodyStr = body;
+    } else {
+      // old 5-arg form: h=text, title=color
+      ac = title || C_TEAL;
+      const lines2 = doc.splitTextToSize(String(h), w-16);
+      bh = lines2.length*4.8+8;
+      titleStr = null;
+      bodyStr = String(h);
+    }
+    doc.setFillColor(...C_BGALT);
+    doc.setDrawColor(...C_BORDER);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x,y,w,bh,1,1,'FD');
+    // Left accent
+    doc.setFillColor(...ac);
+    doc.rect(x,y,2,bh,'F');
+    if (titleStr) {
+      doc.setTextColor(...ac); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+      doc.text(titleStr, x+5, y+6);
+    }
+    if (bodyStr) {
+      doc.setTextColor(...C_INK); doc.setFontSize(7); doc.setFont('helvetica','normal');
+      const lines3 = doc.splitTextToSize(bodyStr, w-8);
+      doc.text(lines3, x+5, y+(titleStr?12:6));
+    }
     return y+bh+4;
   }
 
-  function dataRow(cols,xs,y,rowH,opts) {
-    opts = opts||{};
+  function dataRow(cols, xs, y, rowH, opts) {
+    opts = opts || {};
+    const colWidths = xs.map((x,i) => (xs[i+1] || (W-8)) - x - 1);
     if (opts.header) {
-      doc.setFillColor(...navy); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F');
-      doc.setTextColor(...white); doc.setFontSize(7); doc.setFont('helvetica','bold');
-    } else if (opts.highlight) {
-      doc.setFillColor(224,242,254); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F');
-      doc.setFillColor(...teal); doc.rect(xs[0]-2,y,2.5,rowH,'F');
-      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+      doc.setFillColor(...C_NAVY);
+      doc.rect(xs[0]-1, y, (W-8)-xs[0]+1, rowH, 'F');
+      doc.setTextColor(...C_WHITE); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
     } else {
-      if (opts.altBg) { doc.setFillColor(...lightGray); doc.rect(xs[0]-2,y,W-(xs[0]-2)-8,rowH,'F'); }
-      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      if (opts.altBg) { doc.setFillColor(...C_BGALT); doc.rect(xs[0]-1,y,(W-8)-xs[0]+1,rowH,'F'); }
+      doc.setTextColor(...C_INK); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
     }
-    cols.forEach((c,i)=>{
-      const colColor = opts.colColors&&opts.colColors[i];
-      if (colColor) doc.setTextColor(...colColor);
-      doc.text(String(c), xs[i], y+rowH-2.5);
-      if (colColor) doc.setTextColor(...navy);
+    cols.forEach((c,i) => {
+      const txt = String(c||'');
+      if (!opts.header) {
+        const num = parseFloat(txt.replace(/[$,%x()]/g,''));
+        if (!isNaN(num) && txt.startsWith('+')) doc.setTextColor(...C_EMERALD);
+        else if (!isNaN(num) && (txt.startsWith('-')||txt.startsWith('('))) doc.setTextColor(...C_CRIMSON);
+        else doc.setTextColor(...C_INK);
+      }
+      const lines = doc.splitTextToSize(txt, colWidths[i]);
+      doc.text(lines[0]||'', xs[i], y+rowH-2);
     });
-    doc.setDrawColor(220,225,235); doc.setLineWidth(0.15);
-    doc.line(xs[0]-2, y+rowH, W-8, y+rowH);
+    doc.setDrawColor(...C_BORDER); doc.setLineWidth(0.15);
+    doc.line(xs[0]-1, y+rowH, W-8, y+rowH);
   }
 
   // ══════════════════════════════════════════════════════════════
