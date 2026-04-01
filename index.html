@@ -4577,17 +4577,6 @@ async function exportPDF() {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('March 2026', W / 2, 145, { align: 'center' });
-
-    // Disclaimer
-    doc.setFillColor(255, 252, 232);
-    doc.setDrawColor(253, 224, 71);
-    doc.setLineWidth(0.3);
-    doc.roundedRect(15, 152, 180, 12, 2, 2, 'FD');
-    doc.setTextColor(120, 100, 10);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'italic');
-    // disclaimer removed
-
     // Analyst summary
     doc.setTextColor(...gray);
     doc.setFontSize(8);
@@ -4869,14 +4858,7 @@ async function exportPDF() {
       addChartToPDF(doc, pngFin, 10, y, W-20, 62);
       y += 65;
       // Plain-English callout
-      const finLines = doc.splitTextToSize(
-        '📈  Plain English: Revenue nearly doubled in FY2025 due to the Mattress Firm acquisition. The key story is profit (EBITDA, green bars) growing even faster than revenue going forward — from $1.0B in 2025 to $1.9B by 2028. That profit growth is what drives the stock price.',
-        W-28);
-      doc.setFillColor(240, 253, 244); doc.roundedRect(10, y, W-20, finLines.length*4.5+8, 2, 2, 'F');
-      doc.setFillColor(...green); doc.rect(10, y, 2.5, finLines.length*4.5+8, 'F');
-      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-      doc.text(finLines, 15, y+6);
-      y += finLines.length*4.5+12;
+
     }
 
     footer('');
@@ -5095,14 +5077,7 @@ async function exportPDF() {
       y = checkY(y, 60);
       addChartToPDF(doc, pngBS, 10, y, W-20, 58);
       y += 61;
-      const bsLines = doc.splitTextToSize(
-        '⚠️  Plain English: The red bars show debt spiked massively in 2025 due to the acquisition. The green bars show SGI generates strong cash each year — $633M in FY2025. That cash goes toward paying down the red bars. Think of it like a big mortgage with a high monthly income: uncomfortable at first, manageable over time.',
-        W-28);
-      doc.setFillColor(255,251,235); doc.roundedRect(10,y,W-20,bsLines.length*4.5+8,2,2,'F');
-      doc.setFillColor(...gold); doc.rect(10,y,2.5,bsLines.length*4.5+8,'F');
-      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-      doc.text(bsLines,15,y+6);
-      y += bsLines.length*4.5+12;
+
     }
 
     footer('');
@@ -5943,14 +5918,7 @@ async function exportPDF() {
       y = checkY(y, 64);
       addChartToPDF(doc, pngEPS, 10, y, W-20, 62);
       y += 65;
-      const epsLines = doc.splitTextToSize(
-        '📉➡📈  Plain English: The dip to -$0.17 EPS in Q1 2025 looks alarming, but it\'s entirely explained by one-time acquisition costs. Strip those out (Adj EPS = $0.35) and the underlying business was profitable. From Q2 2025 onwards, both reported and adjusted EPS recovered strongly, confirming the core business is healthy.',
-        W-28);
-      doc.setFillColor(224,242,254); doc.roundedRect(10,y,W-20,epsLines.length*4.5+8,2,2,'F');
-      doc.setFillColor(...teal); doc.rect(10,y,2.5,epsLines.length*4.5+8,'F');
-      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-      doc.text(epsLines,15,y+6);
-      y += epsLines.length*4.5+12;
+
     }
 
     footer('');
@@ -6347,44 +6315,31 @@ async function exportPDF() {
     y += 4;
 
     // Macro plain-English box
-    const mpLines = doc.splitTextToSize('💡  Key Insight: The macro environment is mixed but transitioning constructively for SGI. Rates are elevated (compressing the multiple) but normalizing — every 50bps decline in the 10-yr adds ~$4/share to our DCF. Housing starts at 1.38M are 300K below the historic norm; recovery is not in estimates — it\'s pure upside. Consumer confidence at 98.3 vs. pre-COVID 125 represents structural pent-up demand.', W-28);
-    doc.setFillColor(255,251,235); doc.roundedRect(10,y,W-20,mpLines.length*4.5+8,2,2,'F');
-    doc.setFillColor(...gold); doc.rect(10,y,2.5,mpLines.length*4.5+8,'F');
-    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-    doc.text(mpLines,15,y+6); y += mpLines.length*4.5+12;
+    {
+      const mpLines = doc.splitTextToSize('Key Insight: The macro environment is transitioning constructively for SGI. Rates are elevated but normalizing — every 50bps decline in the 10-yr adds ~$4/share to our DCF. Housing starts at 1.38M are 300K below historic norm; recovery is pure upside not in estimates. Consumer confidence at 98.3 vs. pre-COVID avg 125 represents structural pent-up demand.', W-28);
+      doc.setFillColor(255,251,235); doc.roundedRect(10,y,W-20,mpLines.length*4.5+8,2,2,'F');
+      doc.setFillColor(...gold); doc.rect(10,y,2.5,mpLines.length*4.5+8,'F');
+      doc.setTextColor(...navy); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+      doc.text('Key Macro Insight:', 15, y+6);
+      doc.setFont('helvetica','normal'); doc.setTextColor(...gray);
+      const mpLines2 = doc.splitTextToSize('The macro environment is transitioning constructively for SGI. Rates are elevated but normalizing — every 50bps decline in the 10-yr adds ~$4/share to our DCF. Housing starts at 1.38M are 300K below historic norm; recovery is pure upside not in estimates. Consumer confidence at 98.3 vs. pre-COVID avg 125 represents structural pent-up demand.', W-28);
+      doc.text(mpLines2,15,y+13); y += mpLines2.length*4.5+16;
+    }
     footer('');
 
     // ══════════════════════════════════════════
-    // PAGE 21  -  DISCLAIMER & REFERENCES
+    // PAGE 21  -  REFERENCES
     // ══════════════════════════════════════════
     newPage();
     y = 15;
-    y = sectionTitle('Disclaimer & References', y);
+    y = sectionTitle('References (APA 7th Edition)', y);
     y += 2;
-
-    // Disclaimer
-    doc.setFillColor(255, 252, 232);
-    doc.setDrawColor(253, 224, 71);
-    doc.setLineWidth(0.5);
-    doc.roundedRect(10, y, W - 20, 35, 2, 2, 'FD');
-    doc.setTextColor(...navy);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'bold');
-    doc.text('IMPORTANT DISCLAIMER', 14, y + 8);
-    doc.setTextColor(...gray);
-    doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    const disclaimerText = 'This research report is produced for informational and educational purposes only. The information contained herein is believed to be accurate but is not guaranteed. The author may hold positions in the securities discussed.';
-    const dLines = doc.splitTextToSize(disclaimerText, W - 28);
-    doc.text(dLines, 14, y + 15);
-    y += 40;
 
     // References
     doc.setTextColor(...teal);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text('References (APA 7th Edition) — 50 sources · 7 categories · Last updated March 2026', 10, y);
-    y += 6;
+    y += 2;
 
     const refs = [
       ['1.', 'IBISWorld. (2025). Mattress manufacturing in the US (NAICS 33791). IBISWorld Industry Report. https://my.ibisworld.com/us/en/industry/33791'],
