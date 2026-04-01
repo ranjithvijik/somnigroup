@@ -3706,6 +3706,14 @@ function toggleTheme() {
 }
 
 // ===== PDF EXPORT =====
+// ===== SHARED TIMESTAMP HELPER =====
+function getTimestamp() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) +
+         pad(d.getHours()) + pad(d.getMinutes());
+}
+
 async function exportPDF() {
   const btn = document.querySelector('[onclick="exportPDF()"]');
   if (btn) btn.textContent = '... Generating...';
@@ -3750,6 +3758,13 @@ async function exportPDF() {
       doc.setFont('helvetica', 'normal');
       doc.text('SGI | Research Report', 10, H - 3.5);
       doc.text('Page ' + pageNum, W - 10, H - 3.5, { align: 'right' });
+    }
+
+    // Guard: if y would overflow, start new page
+    function checkY(y, needed) {
+      needed = needed || 20;
+      if (y + needed > H - 14) { newPage(); return 15; }
+      return y;
     }
 
     function sectionTitle(txt, y) {
@@ -4774,6 +4789,7 @@ async function exportPDF() {
     y = 15;
     y = sectionTitle('Investment Case - Three Compounding Catalysts', y);
     y += 3;
+    // Overflow guard for dense bullet sections
 
     const p15_pillars = [
       {
@@ -4926,6 +4942,7 @@ async function exportPDF() {
     doc.text('Simulation inputs: WACC range 7.5-10.5%, revenue growth range 2-9%, terminal growth 2-4%, synergy realization 60-110% of plan.', 10, y, { maxWidth: W - 20 });
     y += 10;
 
+    y = checkY(y, 55);
     // Residual Income / EVA Note
     doc.setTextColor(...teal);
     doc.setFontSize(9);
@@ -4955,6 +4972,8 @@ async function exportPDF() {
     y = 15;
     y = sectionTitle('Machine Learning Analysis & Price Prediction', y);
     y += 2;
+    // Auto page-break for dense ML sections
+    function mlCheckY(threshold) { y = checkY(y, threshold); }
 
     // ML Model Summary Table
     doc.setTextColor(...teal);
@@ -5416,7 +5435,7 @@ async function exportPDF() {
 
     footer('');
 
-    doc.save('SGI_Investment_Research_Report.pdf');
+    doc.save('SGI_Investment_Research_Report_' + getTimestamp() + '.pdf');
   } catch(e) { alert('PDF export failed: ' + e.message); console.error(e); }
   finally { if (btn) btn.textContent = '⬇ Export PDF'; }
 }
@@ -5447,7 +5466,7 @@ async function exportSection(sectionId) {
       pdf.addImage(imgData, 'PNG', 10, 10 - p * pageContentH, imgW, imgH);
     }
   }
-  pdf.save('SGI_' + sectionId + '.pdf');
+  pdf.save('SGI_' + sectionId + '_' + getTimestamp() + '.pdf');
 }
 
 // ===== XLSX EXPORT (ExcelJS) =====
@@ -6471,13 +6490,371 @@ async function exportXLSX() {
 
   ws13.autoFilter = { from:'A1', to:{row:1,column:topicHeaders.length} };
 
+
+  // ── CHARTS (canvas-rendered PNG embedded into Excel) ────────────────────────
+  // Helper: draw a bar/line chart on a hidden canvas and return base64 PNG dataURL
+  function makeChartCanvas(chartCfg) {
+    const { title, type, labels, datasets, width=900, height=420 } = chartCfg;
+    const canvas = document.createElement('canvas');
+    canvas.width  = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    const PAD_TOP = 50, PAD_BOTTOM = 70, PAD_LEFT = 80, PAD_RIGHT = 30;
+    const chartW = width  - PAD_LEFT - PAD_RIGHT;
+    const chartH = height - PAD_TOP  - PAD_BOTTOM;
+    const n = labels.length;
+
+    // Title
+    ctx.fillStyle = '#0A1628';
+    ctx.font = 'bold 15px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(title, width/2, 28);
+
+    // Axis lines
+    ctx.strokeStyle = '#CBD5E1';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PAD_LEFT, PAD_TOP);
+    ctx.lineTo(PAD_LEFT, PAD_TOP + chartH);
+    ctx.lineTo(PAD_LEFT + chartW, PAD_TOP + chartH);
+    ctx.stroke();
+
+    // Compute value range across all datasets
+    let minV = 0, maxV = 0;
+    datasets.forEach(ds => ds.data.forEach(v => {
+      if (v != null) { if (v < minV) minV = v; if (v > maxV) maxV = v; }
+    }));
+    if (type === 'stacked') {
+      // For stacked, max is sum across datasets per label
+      const sums = labels.map((_,i) => datasets.reduce((s,ds) => s + (ds.data[i]||0), 0));
+      maxV = Math.max(...sums);
+    }
+    const rawRange = maxV - minV;
+    const tickCount = 5;
+    const step = Math.pow(10, Math.floor(Math.log10(rawRange/tickCount))) * (rawRange/tickCount > 5 ? 2 : 1);
+    const axisMin = Math.floor(minV / step) * step;
+    const axisMax = Math.ceil(maxV / step) * step;
+    const axisRange = axisMax - axisMin || 1;
+
+    function valToY(v) {
+      return PAD_TOP + chartH - ((v - axisMin) / axisRange) * chartH;
+    }
+
+    // Y gridlines + labels
+    ctx.textAlign = 'right';
+    ctx.font = '10px Arial';
+    for (let t = 0; t <= tickCount; t++) {
+      const tv = axisMin + (axisRange / tickCount) * t;
+      const ty = valToY(tv);
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(PAD_LEFT, ty); ctx.lineTo(PAD_LEFT + chartW, ty); ctx.stroke();
+      ctx.fillStyle = '#64748B';
+      const label = Math.abs(tv) >= 1000 ? (tv/1000).toFixed(1)+'K' : tv.toFixed(tv%1===0?0:1);
+      ctx.fillText(label, PAD_LEFT - 6, ty + 4);
+    }
+
+    // X labels
+    ctx.textAlign = 'center';
+    ctx.font = '10px Arial';
+    ctx.fillStyle = '#475569';
+
+    const PALETTE = ['#1A4080','#0E7490','#166534','#92400E','#5B21B6','#C2410C'];
+
+    if (type === 'line') {
+      datasets.forEach((ds, di) => {
+        const color = ds.color || PALETTE[di % PALETTE.length];
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        let started = false;
+        ds.data.forEach((v, i) => {
+          if (v == null) return;
+          const x = PAD_LEFT + (i + 0.5) * (chartW / n);
+          const y = valToY(v);
+          if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        // Dots
+        ctx.fillStyle = color;
+        ds.data.forEach((v, i) => {
+          if (v == null) return;
+          const x = PAD_LEFT + (i + 0.5) * (chartW / n);
+          const y = valToY(v);
+          ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+        });
+      });
+    } else if (type === 'stacked') {
+      const barW = (chartW / n) * 0.72;
+      labels.forEach((lbl, i) => {
+        const bx = PAD_LEFT + i * (chartW / n) + (chartW / n - barW) / 2;
+        let stackY = valToY(0);
+        datasets.forEach((ds, di) => {
+          const v = ds.data[i] || 0;
+          const color = ds.color || PALETTE[di % PALETTE.length];
+          const barH = (v / axisRange) * chartH;
+          ctx.fillStyle = color;
+          ctx.fillRect(bx, stackY - barH, barW, barH);
+          stackY -= barH;
+        });
+      });
+    } else { // clustered bar
+      const groupW  = chartW / n;
+      const numDS   = datasets.length;
+      const barW    = Math.min(groupW * 0.72 / numDS, 32);
+      const groupPad = (groupW - barW * numDS) / 2;
+      datasets.forEach((ds, di) => {
+        const color = ds.color || PALETTE[di % PALETTE.length];
+        ctx.fillStyle = color;
+        ds.data.forEach((v, i) => {
+          if (v == null) return;
+          const bx = PAD_LEFT + i * groupW + groupPad + di * barW;
+          const baseY = valToY(Math.max(0, axisMin));
+          const topY  = valToY(v);
+          ctx.fillRect(bx, Math.min(baseY, topY), barW, Math.abs(baseY - topY));
+        });
+      });
+    }
+
+    // X-axis labels
+    labels.forEach((lbl, i) => {
+      const x = PAD_LEFT + (i + 0.5) * (chartW / n);
+      ctx.fillStyle = '#475569';
+      ctx.font = '10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(lbl, x, PAD_TOP + chartH + 16);
+    });
+
+    // Legend (bottom)
+    let lx = PAD_LEFT;
+    const ly = PAD_TOP + chartH + 38;
+    datasets.forEach((ds, di) => {
+      const color = ds.color || PALETTE[di % PALETTE.length];
+      ctx.fillStyle = color;
+      ctx.fillRect(lx, ly - 8, 14, 10);
+      ctx.fillStyle = '#374151';
+      ctx.font = '10px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillText(ds.label, lx + 18, ly);
+      lx += ctx.measureText(ds.label).width + 40;
+    });
+
+    return canvas.toDataURL('image/png');
+  }
+
+  // Helper: embed a chart PNG into a worksheet at a given cell anchor
+  async function embedChart(ws, pngDataUrl, fromRow, fromCol, toRow, toCol) {
+    // Strip data URL prefix
+    const base64 = pngDataUrl.replace(/^data:image\/png;base64,/, '');
+    const imageId = wb.addImage({ base64, extension: 'png' });
+    ws.addImage(imageId, {
+      tl: { row: fromRow - 1, col: fromCol - 1 },
+      br: { row: toRow - 1,   col: toCol - 1 },
+      editAs: 'oneCell'
+    });
+  }
+
+  // ── Chart 1: Revenue, EBITDA & Net Income Trend ──────────────────────────────
+  const wsC1 = wb.addWorksheet('Chart - Revenue & EBITDA', { properties:{tabColor:{argb:'FF0F4C81'}} });
+  setCols(wsC1, [12,16,16,16,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsC1.getRow(1).height = 28;
+  ['Year','Revenue ($M)','EBITDA ($M)','Net Income ($M)'].forEach((h,i) => {
+    const cell = wsC1.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.navyBg, C.navyFg));
+  });
+  const c1Data = [
+    ['FY2021',4930.8,1003.5,624.5],['FY2022',4921.2,807.3,455.7],
+    ['FY2023',4925.4,739.3,368.1],['FY2024',4930.9,804.2,384.3],
+    ['FY2025',7476.5,1040.5,384.1],['FY2026E',7952.0,1478.0,711.0],
+    ['FY2027E',8369.0,1673.0,881.0],['FY2028E',8881.0,1886.0,1055.0],
+  ];
+  c1Data.forEach((row, ri) => {
+    const isEst = String(row[0]).endsWith('E');
+    const altBg = isEst ? C.goldLight : (ri%2===0 ? C.gray1 : 'FFFFFF');
+    wsC1.getRow(ri+2).height = 18;
+    row.forEach((val, ci) => {
+      const cell = wsC1.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) styleCell(cell, labelStyle(altBg, isEst));
+      else { styleCell(cell, dataStyle(altBg)); if(typeof val==='number') cell.numFmt='#,##0.0'; }
+    });
+  });
+  await embedChart(wsC1,
+    makeChartCanvas({ title:'Revenue, EBITDA & Net Income (FY2021–FY2028E)', type:'bar',
+      labels: c1Data.map(r=>r[0]),
+      datasets: [
+        { label:'Revenue ($M)',    data: c1Data.map(r=>r[1]), color:'#1A4080' },
+        { label:'EBITDA ($M)',     data: c1Data.map(r=>r[2]), color:'#0E7490' },
+        { label:'Net Income ($M)', data: c1Data.map(r=>r[3]), color:'#166534' },
+      ]
+    }), 2, 6, 28, 20);
+
+  // ── Chart 2: EPS Trend ────────────────────────────────────────────────────────
+  const wsC2 = wb.addWorksheet('Chart - EPS Trend', { properties:{tabColor:{argb:'FF065F46'}} });
+  setCols(wsC2, [12,14,14,14,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsC2.getRow(1).height = 28;
+  ['Quarter','EPS (Diluted)','Adj EPS','Consensus Est'].forEach((h,i) => {
+    const cell = wsC2.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('065F46','FFFFFF'));
+  });
+  const c2Data = [
+    ['Q3 2023',0.64,0.75,0.60],['Q4 2023',0.43,0.55,0.46],
+    ['Q1 2024',0.43,0.56,0.45],['Q2 2024',0.60,0.70,0.57],
+    ['Q3 2024',0.73,0.84,0.68],['Q4 2024',0.40,0.53,0.44],
+    ['Q1 2025',-0.17,0.35,0.10],['Q2 2025',0.47,0.65,0.43],
+    ['Q3 2025',0.83,0.97,0.78],['Q4 2025',0.66,0.79,0.63],
+  ];
+  c2Data.forEach((row, ri) => {
+    const isNeg = row[1] < 0;
+    const altBg = isNeg ? C.redBg : (ri%2===0 ? C.gray1 : 'FFFFFF');
+    wsC2.getRow(ri+2).height = 18;
+    row.forEach((val, ci) => {
+      const cell = wsC2.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) styleCell(cell, labelStyle(altBg));
+      else {
+        styleCell(cell, dataStyle(altBg));
+        cell.numFmt = '#,##0.00';
+        if (typeof val==='number' && val<0) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red},bold:true};
+        else if (typeof val==='number' && val>0) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green}};
+      }
+    });
+  });
+  await embedChart(wsC2,
+    makeChartCanvas({ title:'Quarterly EPS: Reported vs Adj vs Consensus', type:'line',
+      labels: c2Data.map(r=>r[0]),
+      datasets: [
+        { label:'EPS (Diluted)',  data: c2Data.map(r=>r[1]), color:'#1A4080' },
+        { label:'Adj EPS',        data: c2Data.map(r=>r[2]), color:'#0E7490' },
+        { label:'Consensus Est',  data: c2Data.map(r=>r[3]), color:'#92400E' },
+      ]
+    }), 2, 6, 28, 20);
+
+  // ── Chart 3: FCF & OCF ────────────────────────────────────────────────────────
+  const wsC3 = wb.addWorksheet('Chart - Cash Flow', { properties:{tabColor:{argb:'FF166534'}} });
+  setCols(wsC3, [12,14,14,14,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsC3.getRow(1).height = 28;
+  ['Year','OCF ($M)','FCF ($M)','CapEx ($M)'].forEach((h,i) => {
+    const cell = wsC3.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('166534','FFFFFF'));
+  });
+  const c3Data = [
+    ['FY2021',711.0,599.8,111.2],['FY2022',218.7,72.3,146.4],
+    ['FY2023',519.8,384.9,134.9],['FY2024',698.0,569.2,128.8],
+    ['FY2025',789.0,633.2,155.8],
+  ];
+  c3Data.forEach((row, ri) => {
+    const altBg = ri%2===0 ? C.greenBg : 'F0FDF4';
+    wsC3.getRow(ri+2).height = 18;
+    row.forEach((val, ci) => {
+      const cell = wsC3.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) styleCell(cell, labelStyle(altBg));
+      else { styleCell(cell, dataStyle(altBg)); cell.numFmt='#,##0.0'; }
+    });
+  });
+  await embedChart(wsC3,
+    makeChartCanvas({ title:'OCF vs FCF vs CapEx (FY2021–FY2025)', type:'bar',
+      labels: c3Data.map(r=>r[0]),
+      datasets: [
+        { label:'OCF ($M)',  data: c3Data.map(r=>r[1]), color:'#166534' },
+        { label:'FCF ($M)',  data: c3Data.map(r=>r[2]), color:'#0E7490' },
+        { label:'CapEx ($M)',data: c3Data.map(r=>r[3]), color:'#DC2626' },
+      ]
+    }), 2, 6, 24, 20);
+
+  // ── Chart 4: Valuation Range ──────────────────────────────────────────────────
+  const wsC4 = wb.addWorksheet('Chart - Valuation', { properties:{tabColor:{argb:'FF065F46'}} });
+  setCols(wsC4, [30,12,14,12,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsC4.getRow(1).height = 28;
+  ['Method','Low ($)','Base ($)','High ($)'].forEach((h,i) => {
+    const cell = wsC4.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('065F46','FFFFFF'));
+  });
+  const c4Data = [
+    ['DCF (WACC 9.5%)',74,88,106],['Forward P/E',82,99,120],
+    ['EV/EBITDA',52,62,74],['SOTP',85,100,118],
+    ['Analyst Consensus',83,100,115],['Monte Carlo',67,94,115],
+    ['Current Price',69,69,69],
+  ];
+  c4Data.forEach((row, ri) => {
+    const isPrice = row[0]==='Current Price';
+    const altBg = isPrice ? C.amberBg : (ri%2===0?C.gray1:'FFFFFF');
+    wsC4.getRow(ri+2).height = 20;
+    row.forEach((val, ci) => {
+      const cell = wsC4.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) styleCell(cell, labelStyle(altBg, isPrice));
+      else {
+        styleCell(cell, dataStyle(altBg, ci===2 ? C.green : (ci===1 ? C.red : '1E293B'), 'center'));
+        cell.numFmt = '"$"#,##0';
+      }
+    });
+  });
+  await embedChart(wsC4,
+    makeChartCanvas({ title:'Valuation Range by Method — Low / Base / High ($)', type:'bar',
+      labels: c4Data.map(r=>r[0]),
+      datasets: [
+        { label:'Low ($)',  data: c4Data.map(r=>r[1]), color:'#DC2626' },
+        { label:'Base ($)', data: c4Data.map(r=>r[2]), color:'#065F46' },
+        { label:'High ($)', data: c4Data.map(r=>r[3]), color:'#166534' },
+      ]
+    }), 2, 6, 24, 20);
+
+  // ── Chart 5: Topic Frequency Stacked ─────────────────────────────────────────
+  const wsC5 = wb.addWorksheet('Chart - Topics', { properties:{tabColor:{argb:'FF7C3AED'}} });
+  setCols(wsC5, [32,10,10,10,10,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsC5.getRow(1).height = 28;
+  ['Topic','Q1 2025','Q2 2025','Q3 2025','Q4 2025'].forEach((h,i) => {
+    const cell = wsC5.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('7C3AED','FFFFFF'));
+  });
+  const c5Data = [
+    ['Synergy',4,13,28,51],['Mattress Firm',53,45,151,198],
+    ['Integration',38,22,19,12],['Tariff',19,4,26,26],
+    ['International',22,19,31,35],['Margin',18,27,39,44],
+    ['Leverage/Debt',31,24,18,14],['Deleveraging',8,14,21,28],
+    ['Brand',19,22,34,41],['Innovation',11,16,24,29],
+  ];
+  c5Data.forEach((row, ri) => {
+    const altBg = ri%2===0 ? C.purpleLight : 'F5F3FF';
+    wsC5.getRow(ri+2).height = 18;
+    row.forEach((val, ci) => {
+      const cell = wsC5.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) styleCell(cell, labelStyle(altBg));
+      else { styleCell(cell, dataStyle(altBg)); if(typeof val==='number') cell.numFmt='#,##0'; }
+    });
+  });
+  await embedChart(wsC5,
+    makeChartCanvas({ title:'Earnings Call Topic Frequency — Q1–Q4 2025 (Stacked)', type:'stacked',
+      labels: c5Data.map(r=>r[0]),
+      datasets: [
+        { label:'Q1 2025', data: c5Data.map(r=>r[1]), color:'#5B21B6' },
+        { label:'Q2 2025', data: c5Data.map(r=>r[2]), color:'#7C3AED' },
+        { label:'Q3 2025', data: c5Data.map(r=>r[3]), color:'#A78BFA' },
+        { label:'Q4 2025', data: c5Data.map(r=>r[4]), color:'#C4B5FD' },
+      ]
+    }), 2, 7, 30, 22);
+
   // ── GENERATE & DOWNLOAD ──────────────────────────────────────────────────────
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'SGI_Financial_Data_2026.xlsx';
+  a.download = 'SGI_Financial_Data_' + getTimestamp() + '.xlsx';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -7691,7 +8068,7 @@ function exportSlides() {
     doc.setFontSize(7);
     doc.setFont('helvetica', 'normal');
     doc.text('SGI | Research Report', 8, H - 4);
-    doc.text(num + ' / 23', W - 12, H - 4, { align: 'right' });
+    doc.text(num + ' / ' + doc.getNumberOfPages(), W - 12, H - 4, { align: 'right' });
   }
 
   function kpiBox(x, y, w, h, label, value, color) {
@@ -7710,6 +8087,7 @@ function exportSlides() {
   }
 
   function bullet(x, y, text, color) {
+    if (y > H - 16) return y; // guard: don't draw below footer
     doc.setFillColor(...(color || teal));
     doc.circle(x + 1, y - 1, 1, 'F');
     doc.setTextColor(...navy);
@@ -8931,7 +9309,7 @@ function exportSlides() {
   doc.text('All data as of March 31, 2026.', W / 2, H - 17, { align: 'center', maxWidth: W - 30 });
   footer(23);
 
-  doc.save('SGI_Investment_Slides_March2026.pdf');
+  doc.save('SGI_Investment_Slides_' + getTimestamp() + '.pdf');
 }
 
 // ═══════════════════════════════════════════════════════════════════
