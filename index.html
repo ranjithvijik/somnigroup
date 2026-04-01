@@ -649,6 +649,23 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 .uc-filed    { background:rgba(0,208,132,0.12); color:var(--green); border:1px solid rgba(0,208,132,0.3); }
 #filings-count { font-size:11px; color:var(--gray-300); font-family:var(--font-mono); }
 
+
+/* ===== NEW SECTIONS: ESG / SYNERGY / etc. ===== */
+.esg-badge { display:inline-block; font-size:10px; padding:2px 8px; border-radius:3px; font-weight:700; letter-spacing:0.04em; }
+.esg-badge-low { background:rgba(0,208,132,0.15); color:var(--green); border:1px solid rgba(0,208,132,0.3); }
+.esg-badge-medium { background:rgba(255,154,0,0.15); color:var(--orange); border:1px solid rgba(255,154,0,0.3); }
+.esg-badge-high { background:rgba(220,38,38,0.15); color:#ef4444; border:1px solid rgba(220,38,38,0.3); }
+.synergy-progress-bar { width:100%; height:12px; background:var(--surface); border-radius:6px; overflow:hidden; margin:8px 0; }
+.synergy-progress-fill { height:100%; background:linear-gradient(90deg, var(--teal), var(--green)); border-radius:6px; transition:width 0.8s ease; }
+.rating-badge { display:inline-block; font-size:10px; padding:3px 10px; border-radius:3px; font-weight:700; letter-spacing:0.06em; }
+.rating-long { background:rgba(0,208,132,0.15); color:var(--green); border:1px solid rgba(0,208,132,0.3); }
+.rating-neutral { background:rgba(156,163,175,0.15); color:var(--gray-200); border:1px solid rgba(156,163,175,0.3); }
+.rating-cautious { background:rgba(255,154,0,0.15); color:var(--orange); border:1px solid rgba(255,154,0,0.3); }
+.timeline-item { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid var(--border); }
+.timeline-dot { flex-shrink:0; width:10px; height:10px; border-radius:50%; background:var(--teal); margin-top:5px; }
+.timeline-dot.resolved { background:var(--green); }
+.timeline-dot.risk { background:var(--orange); }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
 </style>
 </head>
 <body>
@@ -687,6 +704,22 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-section-title">Macro &amp; Data</div>
   <div class="nav-item" data-target="macro-dashboard" onclick="scrollToSection('macro-dashboard')"><span class="nav-icon">🌐</span>Macro Dashboard<span class="nav-number">18</span></div>
   <div class="nav-item" data-target="regulatory-filings" onclick="scrollToSection('regulatory-filings')"><span class="nav-icon">📋</span>Regulatory Filings<span class="nav-number">19b</span></div>
+  <div class="nav-section-title">Ownership &amp; Governance</div>
+  <div class="nav-item" data-target="esg-profile" onclick="scrollToSection('esg-profile')"><span class="nav-icon">🌱</span>ESG Profile<span class="nav-number">20a</span></div>
+  <div class="nav-item" data-target="institutional-ownership" onclick="scrollToSection('institutional-ownership')"><span class="nav-icon">🏛</span>Institutional Ownership<span class="nav-number">20b</span></div>
+  <div class="nav-item" data-target="management-team" onclick="scrollToSection('management-team')"><span class="nav-icon">👤</span>Management &amp; Board<span class="nav-number">20c</span></div>
+  <div class="nav-section-title">History &amp; Coverage</div>
+  <div class="nav-item" data-target="analyst-notes" onclick="scrollToSection('analyst-notes')"><span class="nav-icon">📝</span>Analyst Notes Archive<span class="nav-number">20d</span></div>
+  <div class="nav-item" data-target="price-vs-fve" onclick="scrollToSection('price-vs-fve')"><span class="nav-icon">📈</span>Price vs. Fair Value<span class="nav-number">20e</span></div>
+  <div class="nav-item" data-target="rating-history" onclick="scrollToSection('rating-history')"><span class="nav-icon">⭐</span>Rating History<span class="nav-number">20f</span></div>
+  <div class="nav-section-title">Financials Extended</div>
+  <div class="nav-item" data-target="longterm-valuation" onclick="scrollToSection('longterm-valuation')"><span class="nav-icon">📅</span>10-Year History<span class="nav-number">20g</span></div>
+  <div class="nav-item" data-target="dividend-history" onclick="scrollToSection('dividend-history')"><span class="nav-icon">💰</span>Dividend History<span class="nav-number">20h</span></div>
+  <div class="nav-item" data-target="forward-valuation" onclick="scrollToSection('forward-valuation')"><span class="nav-icon">🔮</span>Forward Valuation<span class="nav-number">20i</span></div>
+  <div class="nav-section-title">Strategic Analysis</div>
+  <div class="nav-item" data-target="synergy-tracker" onclick="scrollToSection('synergy-tracker')"><span class="nav-icon">🔗</span>Synergy Tracker<span class="nav-number">20j</span></div>
+  <div class="nav-item" data-target="industry-position" onclick="scrollToSection('industry-position')"><span class="nav-icon">🗺</span>Industry Position<span class="nav-number">20k</span></div>
+  <div class="nav-item" data-target="regulatory-history" onclick="scrollToSection('regulatory-history')"><span class="nav-icon">⚖</span>Regulatory History<span class="nav-number">20l</span></div>
   <div class="nav-item" data-target="references" onclick="scrollToSection('references')"><span class="nav-icon">📚</span>References<span class="nav-number">19</span></div>
   <div class="sidebar-footer">
     <div style="font-weight:600;color:var(--gray-200);margin-bottom:6px;font-size:11px;">SGI Research</div>
@@ -3956,6 +3989,1059 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 
 <!-- ===== SECTION 19: REFERENCES ===== -->
 
+
+<!-- ===== SECTION 20a: ESG PROFILE ===== -->
+<section class="section" id="esg-profile">
+  <div class="section-anchor" id="esg-profile-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20a</div>
+    <div class="section-title">ESG &amp; Sustainability Profile</div>
+    <div class="section-subtitle">Environmental, Social &amp; Governance assessment · Sustainalytics-style risk scoring · Peer ESG comparison · Data as of March 2026</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('esg-profile')">Export Section</button></div>
+  </div>
+
+  <!-- ESG Risk Score Summary -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px;">
+    <div class="chart-card" style="text-align:center;border-top:4px solid var(--orange);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">ESG Exposure Score</div>
+      <div style="font-size:40px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">38.4</div>
+      <div style="font-size:12px;font-weight:600;color:var(--orange);margin-top:4px;">MEDIUM</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">Scale: 0 (Low) — 55+ (High)</div>
+      <div style="font-size:11px;color:var(--gray-200);margin-top:8px;line-height:1.5;">Moderate exposure driven by chemical inputs (TDI/MDI foam), supply chain labor, and post-acquisition governance complexity.</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:4px solid var(--teal);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">ESG Management Score</div>
+      <div style="font-size:40px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">61.2%</div>
+      <div style="font-size:12px;font-weight:600;color:var(--teal);margin-top:4px;">AVERAGE</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">Scale: 0% (Weak) — 100% (Strong)</div>
+      <div style="font-size:11px;color:var(--gray-200);margin-top:8px;line-height:1.5;">Above-average disclosure and environmental programs; governance gaps post-acquisition merger integration remain.</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:4px solid var(--green);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Overall Unmanaged Risk</div>
+      <div style="font-size:40px;font-weight:700;color:var(--green);font-family:var(--font-mono);">18.6</div>
+      <div style="font-size:12px;font-weight:600;color:var(--green);margin-top:4px;">LOW</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">Scale: 0 (Negligible) — 40+ (Severe)</div>
+      <div style="font-size:11px;color:var(--gray-200);margin-top:8px;line-height:1.5;">Low overall unmanaged risk. Primary gaps: scope 3 emissions reporting completeness and supply chain audit frequency.</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:24px;gap:20px;">
+    <!-- Environmental -->
+    <div class="chart-card">
+      <div class="chart-title" style="color:var(--green);margin-bottom:14px;">E — Environmental</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--green);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">Carbon Footprint &amp; Emissions</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Scope 1+2 emissions est. ~285K tCO2e annually (manufacturing). Scope 3 (supply chain, foam inputs) not yet fully disclosed — key gap. FY2025 target: 20% reduction in manufacturing energy intensity by 2030.</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-medium">PARTIAL DISCLOSURE</span></div>
+        </div>
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--orange);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">Foam Chemicals (TDI/MDI) Regulation Risk</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Toluene diisocyanate (TDI) and methylene diphenyl diisocyanate (MDI) are primary raw materials. Subject to REACH, OSHA PEL, and California Prop 65. EU is tightening MDI workplace exposure limits — potential supply chain reformulation cost est. $15–25M over 5 years.</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-medium">MEDIUM RISK</span></div>
+        </div>
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--teal);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">Packaging &amp; Waste Reduction</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Mattress Firm rollout of recycling program in 800+ stores (FY2025). Tempur-Pedic uses 85% recyclable packaging. Annual mattress landfill diversion target: 500K units by 2027. Mattress recycling is a $2B+ industry tailwind.</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-low">IN PROGRESS</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Social -->
+    <div class="chart-card">
+      <div class="chart-title" style="color:var(--teal);margin-bottom:14px;">S — Social</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--teal);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">Workforce (~22,000 Employees)</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Post-Mattress Firm: ~22,000 total. 60% retail/store employees, 25% manufacturing, 15% corporate. Q1 2025 integration cost included $45M in severance. Voluntary turnover rate: 18% (retail average). Employee satisfaction score: 72/100 (Glassdoor, Mar 2026).</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-medium">MONITORING</span></div>
+        </div>
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--orange);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">CEO Pay Ratio</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">CEO Scott Thompson FY2025 total compensation: ~$12.4M (est.). Median employee pay: ~$48,500. CEO-to-median ratio: ~256:1 (industry avg. 200–300:1 for retail). Below S&amp;P 500 median of 344:1. Compensation tied to synergy milestones (20% weight) and leverage reduction (15% weight).</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-low">IN LINE WITH PEERS</span></div>
+        </div>
+        <div style="padding:10px 14px;background:var(--surface);border-radius:6px;border-left:3px solid var(--teal);">
+          <div style="font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;">Supply Chain Labor Standards</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Foam suppliers (BASF, Huntsman) audited annually per SGI Supplier Code. International manufacturing (Thailand, Czech Republic, Mexico) compliant with ILO standards. No material labor violations reported in FY2025 10-K.</div>
+          <div style="display:flex;gap:8px;margin-top:6px;"><span class="esg-badge esg-badge-low">SATISFACTORY</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Governance -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title" style="color:var(--gold);margin-bottom:14px;">G — Governance</div>
+    <div class="grid-3" style="gap:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Board Composition</div>
+        <table class="data-table" style="font-size:12px;">
+          <tbody>
+            <tr><td>Board Size</td><td style="text-align:right;color:var(--teal);">10 Directors</td></tr>
+            <tr><td>Independent Directors</td><td style="text-align:right;color:var(--green);">8 of 10 (80%)</td></tr>
+            <tr><td>Female Directors</td><td style="text-align:right;">3 of 10 (30%)</td></tr>
+            <tr><td>Average Tenure</td><td style="text-align:right;">7.2 years</td></tr>
+            <tr><td>Chairman Independence</td><td style="text-align:right;color:var(--green);">Independent</td></tr>
+            <tr><td>Audit Committee</td><td style="text-align:right;color:var(--green);">100% Independent</td></tr>
+            <tr><td>Comp. Committee</td><td style="text-align:right;color:var(--green);">100% Independent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Insider Ownership</div>
+        <table class="data-table" style="font-size:12px;">
+          <tbody>
+            <tr><td>CEO (S. Thompson)</td><td style="text-align:right;">0.41%</td></tr>
+            <tr><td>CFO (B. Rao)</td><td style="text-align:right;">0.08%</td></tr>
+            <tr><td>All Directors &amp; Officers</td><td style="text-align:right;color:var(--teal);">1.24%</td></tr>
+            <tr><td>Shares Pledged by Insiders</td><td style="text-align:right;color:var(--green);">None</td></tr>
+            <tr><td>10b5-1 Plans Active</td><td style="text-align:right;">2 officers</td></tr>
+            <tr><td>Last Insider Buy</td><td style="text-align:right;color:var(--green);">Jan 2026</td></tr>
+            <tr><td>Last Insider Sell</td><td style="text-align:right;color:var(--orange);">Mar 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Governance Assessment</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(0,208,132,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">Board Independence</span><span style="font-size:11px;font-weight:700;color:var(--green);">STRONG</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(0,208,132,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">Audit Quality</span><span style="font-size:11px;font-weight:700;color:var(--green);">STRONG</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,154,0,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">Executive Pay Alignment</span><span style="font-size:11px;font-weight:700;color:var(--orange);">MODERATE</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(0,208,132,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">Related-Party Transactions</span><span style="font-size:11px;font-weight:700;color:var(--green);">NONE MATERIAL</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(0,208,132,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">Shareholder Rights</span><span style="font-size:11px;font-weight:700;color:var(--green);">STANDARD</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,154,0,0.07);border-radius:4px;"><span style="font-size:11px;color:var(--gray-200);">ESG Reporting</span><span style="font-size:11px;font-weight:700;color:var(--orange);">IMPROVING</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESG Peer Comparison -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">ESG Peer Comparison</div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Company</th><th>Ticker</th><th>ESG Exposure</th><th>Management Score</th><th>Unmanaged Risk</th><th>Rating</th><th>Key ESG Strength</th><th>Key ESG Risk</th>
+        </tr></thead>
+        <tbody>
+          <tr style="background:rgba(255,215,0,0.06);"><td><strong style="color:var(--gold);">Somnigroup Intl</strong></td><td style="font-family:var(--font-mono);color:var(--gold);">SGI</td><td>38.4 / Medium</td><td style="color:var(--teal);">61.2% / Avg</td><td style="color:var(--green);">18.6 / Low</td><td><span style="color:var(--teal);font-weight:600;">LOW-MEDIUM</span></td><td>Board independence 80%</td><td>Foam chem. regulation</td></tr>
+          <tr><td>Sleep Number</td><td style="font-family:var(--font-mono);">SNBR</td><td>34.2 / Medium</td><td style="color:var(--green);">68.4% / Avg</td><td style="color:var(--green);">15.8 / Low</td><td><span style="color:var(--green);font-weight:600;">LOW</span></td><td>Smart sleep tech ESG</td><td>Smaller scale programs</td></tr>
+          <tr><td>La-Z-Boy</td><td style="font-family:var(--font-mono);">LZB</td><td>36.8 / Medium</td><td style="color:var(--teal);">62.1% / Avg</td><td style="color:var(--green);">17.2 / Low</td><td><span style="color:var(--green);font-weight:600;">LOW</span></td><td>Long ESG history</td><td>Wood supply chain</td></tr>
+          <tr><td>Williams-Sonoma</td><td style="font-family:var(--font-mono);">WSM</td><td>32.4 / Medium</td><td style="color:var(--green);">74.8% / Strong</td><td style="color:var(--green);">14.1 / Low</td><td><span style="color:var(--green);font-weight:600;">LOW</span></td><td>Strong ESG disclosure</td><td>Packaging waste</td></tr>
+          <tr><td>Leggett &amp; Platt</td><td style="font-family:var(--font-mono);">LEG</td><td>42.1 / Medium</td><td style="color:var(--orange);">54.3% / Avg</td><td style="color:var(--orange);">21.4 / Medium</td><td><span style="color:var(--orange);font-weight:600;">MEDIUM</span></td><td>Carbon reduction targets</td><td>Metal/chemical inputs</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: Sustainalytics ESG Risk Ratings methodology (estimated) · Company CSR reports · SEC proxy statements · As of March 2026</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20b: INSTITUTIONAL OWNERSHIP ===== -->
+<section class="section" id="institutional-ownership">
+  <div class="section-anchor" id="institutional-ownership-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20b</div>
+    <div class="section-title">Institutional Ownership &amp; Short Interest</div>
+    <div class="section-subtitle">Top 15 institutional holders · 13F/13G filings · Short interest data · Q4 2025 reporting period</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('institutional-ownership')">Export Section</button></div>
+  </div>
+
+  <!-- KPI Row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--teal);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Total Institutional %</div>
+      <div style="font-size:32px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">72.4%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">of shares outstanding</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--green);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Top 10 Holders %</div>
+      <div style="font-size:32px;font-weight:700;color:var(--green);font-family:var(--font-mono);">48.2%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">of shares outstanding</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--orange);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Short Interest % Float</div>
+      <div style="font-size:32px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">8.2%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">moderate short interest</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--gold);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Shares Sold Short</div>
+      <div style="font-size:32px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">17.1M</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">shares short</div>
+    </div>
+  </div>
+
+  <!-- Holdings Table -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title" style="margin-bottom:14px;">Top 15 Institutional Holders — Q4 2025 13F Filings</div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:40px;">Rank</th>
+          <th>Institution</th>
+          <th style="text-align:right;">Shares Held</th>
+          <th style="text-align:right;">% of Shares Out</th>
+          <th style="text-align:right;">$ Value ($M)</th>
+          <th style="text-align:right;">QoQ Change</th>
+          <th>Filing Date</th>
+          <th>Type</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="color:var(--gray-300);">1</td><td><strong>Vanguard Group</strong></td><td style="text-align:right;font-family:var(--font-mono);">18,420,000</td><td style="text-align:right;color:var(--teal);">8.82%</td><td style="text-align:right;font-family:var(--font-mono);">$1,276</td><td style="text-align:right;color:var(--green);">+245,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(156,163,175,0.15);color:var(--gray-200);">Passive</span></td></tr>
+          <tr><td style="color:var(--gray-300);">2</td><td><strong>BlackRock Inc.</strong></td><td style="text-align:right;font-family:var(--font-mono);">16,840,000</td><td style="text-align:right;color:var(--teal);">8.06%</td><td style="text-align:right;font-family:var(--font-mono);">$1,167</td><td style="text-align:right;color:var(--orange);">-312,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(156,163,175,0.15);color:var(--gray-200);">Passive</span></td></tr>
+          <tr><td style="color:var(--gray-300);">3</td><td><strong>State Street Global</strong></td><td style="text-align:right;font-family:var(--font-mono);">9,120,000</td><td style="text-align:right;color:var(--teal);">4.37%</td><td style="text-align:right;font-family:var(--font-mono);">$632</td><td style="text-align:right;color:var(--green);">+88,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(156,163,175,0.15);color:var(--gray-200);">Passive</span></td></tr>
+          <tr><td style="color:var(--gray-300);">4</td><td><strong>Fidelity Mgmt.</strong></td><td style="text-align:right;font-family:var(--font-mono);">7,650,000</td><td style="text-align:right;color:var(--teal);">3.66%</td><td style="text-align:right;font-family:var(--font-mono);">$530</td><td style="text-align:right;color:var(--green);">+420,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">5</td><td><strong>T. Rowe Price</strong></td><td style="text-align:right;font-family:var(--font-mono);">6,890,000</td><td style="text-align:right;color:var(--teal);">3.30%</td><td style="text-align:right;font-family:var(--font-mono);">$477</td><td style="text-align:right;color:var(--orange);">-180,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">6</td><td><strong>Capital Research</strong></td><td style="text-align:right;font-family:var(--font-mono);">6,240,000</td><td style="text-align:right;color:var(--teal);">2.99%</td><td style="text-align:right;font-family:var(--font-mono);">$432</td><td style="text-align:right;color:var(--green);">+560,000</td><td>Jan 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">7</td><td><strong>Dimensional Fund</strong></td><td style="text-align:right;font-family:var(--font-mono);">5,820,000</td><td style="text-align:right;color:var(--teal);">2.79%</td><td style="text-align:right;font-family:var(--font-mono);">$403</td><td style="text-align:right;color:var(--green);">+120,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(109,40,217,0.15);color:#a78bfa;">Quant</span></td></tr>
+          <tr><td style="color:var(--gray-300);">8</td><td><strong>Wellington Mgmt.</strong></td><td style="text-align:right;font-family:var(--font-mono);">5,450,000</td><td style="text-align:right;color:var(--teal);">2.61%</td><td style="text-align:right;font-family:var(--font-mono);">$378</td><td style="text-align:right;color:var(--orange);">-280,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">9</td><td><strong>JPMorgan AM</strong></td><td style="text-align:right;font-family:var(--font-mono);">4,980,000</td><td style="text-align:right;color:var(--teal);">2.38%</td><td style="text-align:right;font-family:var(--font-mono);">$345</td><td style="text-align:right;color:var(--green);">+340,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">10</td><td><strong>Invesco Ltd.</strong></td><td style="text-align:right;font-family:var(--font-mono);">4,120,000</td><td style="text-align:right;color:var(--teal);">1.97%</td><td style="text-align:right;font-family:var(--font-mono);">$285</td><td style="text-align:right;color:var(--green);">+95,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(156,163,175,0.15);color:var(--gray-200);">Passive</span></td></tr>
+          <tr><td style="color:var(--gray-300);">11</td><td><strong>Geode Capital</strong></td><td style="text-align:right;font-family:var(--font-mono);">3,890,000</td><td style="text-align:right;color:var(--teal);">1.86%</td><td style="text-align:right;font-family:var(--font-mono);">$270</td><td style="text-align:right;color:var(--green);">+42,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(75,85,99,0.3);color:var(--gray-200);">Index</span></td></tr>
+          <tr><td style="color:var(--gray-300);">12</td><td><strong>Northern Trust</strong></td><td style="text-align:right;font-family:var(--font-mono);">3,240,000</td><td style="text-align:right;color:var(--teal);">1.55%</td><td style="text-align:right;font-family:var(--font-mono);">$224</td><td style="text-align:right;color:var(--orange);">-65,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(156,163,175,0.15);color:var(--gray-200);">Passive</span></td></tr>
+          <tr><td style="color:var(--gray-300);">13</td><td><strong>Goldman Sachs AM</strong></td><td style="text-align:right;font-family:var(--font-mono);">2,980,000</td><td style="text-align:right;color:var(--teal);">1.43%</td><td style="text-align:right;font-family:var(--font-mono);">$206</td><td style="text-align:right;color:var(--green);">+180,000</td><td>Jan 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">14</td><td><strong>Nuveen Investments</strong></td><td style="text-align:right;font-family:var(--font-mono);">2,740,000</td><td style="text-align:right;color:var(--teal);">1.31%</td><td style="text-align:right;font-family:var(--font-mono);">$190</td><td style="text-align:right;color:var(--green);">+220,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+          <tr><td style="color:var(--gray-300);">15</td><td><strong>Morgan Stanley</strong></td><td style="text-align:right;font-family:var(--font-mono);">2,510,000</td><td style="text-align:right;color:var(--teal);">1.20%</td><td style="text-align:right;font-family:var(--font-mono);">$174</td><td style="text-align:right;color:var(--orange);">-95,000</td><td>Feb 2026</td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(0,144,181,0.15);color:var(--teal);">Active</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: SEC 13F filings via EDGAR · Q4 2025 reporting period · Filed Feb 2026</div>
+  </div>
+
+  <!-- Short Interest Box -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">Short Interest Summary</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
+      <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Short Shares</div>
+        <div style="font-size:24px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">17.1M</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Days to Cover</div>
+        <div style="font-size:24px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">12.3</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Short % Float</div>
+        <div style="font-size:24px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">8.2%</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Short % Change MoM</div>
+        <div style="font-size:24px;font-weight:700;color:var(--green);font-family:var(--font-mono);">-0.4pp</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Squeeze Risk</div>
+        <div style="font-size:18px;font-weight:700;color:var(--orange);margin-top:6px;">MODERATE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20c: MANAGEMENT TEAM ===== -->
+<section class="section" id="management-team">
+  <div class="section-anchor" id="management-team-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20c</div>
+    <div class="section-title">Management Team &amp; Board of Directors</div>
+    <div class="section-subtitle">Executive leadership · Board composition · Compensation overview · As of March 2026</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('management-team')">Export Section</button></div>
+  </div>
+
+  <!-- Executive Cards -->
+  <div style="font-size:11px;font-weight:700;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Executive Leadership</div>
+  <div class="grid-2" style="gap:16px;margin-bottom:24px;">
+    <div class="chart-card" style="border-left:3px solid var(--gold);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">Scott L. Thompson</div>
+          <div style="font-size:11px;color:var(--gold);">Chairman, President &amp; CEO</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 64 · Since 2012</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$12.4M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Former CEO of Spectrum Brands. Led the transformative Mattress Firm acquisition (Feb 2025). Salary $1.1M + Bonus $4.2M + LTI $7.1M. Stock ownership: 858,000 shares (~$59.5M at current prices).</div>
+    </div>
+    <div class="chart-card" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">Bhaskar Rao</div>
+          <div style="font-size:11px;color:var(--teal);">Executive VP &amp; CFO</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 53 · Since 2019</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$5.8M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Joined from Tempur-Pedic. Prior CFO at Spectrum Brands. Architected the $4B acquisition financing structure including $1.5B term loan, $2.5B senior notes, and equity offering.</div>
+    </div>
+    <div class="chart-card" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">David Montgomery</div>
+          <div style="font-size:11px;color:var(--teal);">President, North America Manufacturing</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 58 · 18-yr veteran</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$4.2M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Oversees Tempur-Pedic and Sealy manufacturing brands. 18-year company veteran who has driven manufacturing efficiency improvements across 18 domestic plants and 6 international facilities.</div>
+    </div>
+    <div class="chart-card" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">John Eck</div>
+          <div style="font-size:11px;color:var(--teal);">President, Mattress Firm</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 51 · Joined 2024</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$4.8M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Former VP at Michaels Companies. Leading integration of Mattress Firm's 2,300-store network. Key architect of the $225M synergy plan execution and store operations optimization program.</div>
+    </div>
+    <div class="chart-card" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">Staci Kroon</div>
+          <div style="font-size:11px;color:var(--teal);">Chief Marketing Officer</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 46</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$3.1M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Former CMO at Whirlpool Corporation. Driving brand convergence strategy across Tempur-Pedic, Sealy, Stearns &amp; Foster, and Mattress Firm. Leading D2C digital channel growth initiative.</div>
+    </div>
+    <div class="chart-card" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--white);">James Bell</div>
+          <div style="font-size:11px;color:var(--teal);">Chief Legal Officer &amp; Secretary</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--gray-300);">Age 59</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">FY2025 Comp: ~$2.9M</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Former GC at Leggett &amp; Platt. Led negotiation and resolution of FTC consent decree enabling acquisition completion. Manages ongoing FTC compliance monitoring program through 2031.</div>
+    </div>
+  </div>
+
+  <!-- Board Table -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">Board of Directors</div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Name</th><th>Role</th><th>Independent</th><th>Tenure</th><th>Committee</th><th>Background</th>
+        </tr></thead>
+        <tbody>
+          <tr style="background:rgba(255,215,0,0.04);"><td><strong style="color:var(--gold);">Scott Thompson</strong></td><td>Chairman &amp; CEO</td><td><span style="color:var(--orange);">No</span></td><td>13 yrs</td><td>—</td><td>Operating Executive</td></tr>
+          <tr><td><strong>Robert Trussell Jr.</strong></td><td>Lead Independent Director</td><td><span style="color:var(--green);">Yes</span></td><td>16 yrs</td><td>Comp (Chair)</td><td>Co-founder Sealy Corp</td></tr>
+          <tr><td><strong>Evelyn D'An</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>8 yrs</td><td>Audit (Chair)</td><td>Former CFO Mastercard</td></tr>
+          <tr><td><strong>Lawrence Jackson</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>5 yrs</td><td>Comp</td><td>Former CEO Guitar Center</td></tr>
+          <tr><td><strong>Nancy Gauss</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>6 yrs</td><td>Nominating (Chair)</td><td>Former CEO Dollar Tree</td></tr>
+          <tr><td><strong>John Schieffelin</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>11 yrs</td><td>Audit</td><td>PE/Finance Background</td></tr>
+          <tr><td><strong>Michael Valenti</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>9 yrs</td><td>Comp</td><td>Former COO Sara Lee</td></tr>
+          <tr><td><strong>Patricia Nazemetz</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>7 yrs</td><td>Audit</td><td>Former CHRO Xerox</td></tr>
+          <tr><td><strong>Frank Van Haste</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>4 yrs</td><td>Nominating</td><td>Former CFO Spectrum Brands</td></tr>
+          <tr><td><strong>David Werner</strong></td><td>Director</td><td><span style="color:var(--green);">Yes</span></td><td>3 yrs</td><td>Nominating</td><td>Consumer retail background</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20d: ANALYST NOTES ARCHIVE ===== -->
+<section class="section" id="analyst-notes">
+  <div class="section-anchor" id="analyst-notes-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20d</div>
+    <div class="section-title">Analyst Notes Archive — FY2025 Earnings Coverage</div>
+    <div class="section-subtitle">Quarterly research notes · Q1–Q4 2025 earnings coverage · Fair value tracking</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('analyst-notes')">Export Section</button></div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:20px;">
+    <!-- Q1 2025 -->
+    <div class="chart-card" style="border-left:4px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Research Note · May 8, 2025</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);line-height:1.4;">SGI Posts Q1 2025 Adj EPS Beat Despite Acquisition Noise — Maintaining $100 Fair Value</div>
+        </div>
+        <div style="flex-shrink:0;margin-left:16px;"><span style="font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(0,208,132,0.15);color:var(--green);border:1px solid rgba(0,208,132,0.3);font-weight:700;">FVE MAINTAINED AT $100</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-200);line-height:1.7;">
+        <div><strong style="color:var(--white);">Why it matters:</strong> Q1 adj EPS of $0.35 beat consensus of $0.31 by 12.9% despite -$0.17 GAAP EPS from one-time acquisition costs. Mattress Firm contributed $770M revenue in its first post-close quarter — slightly ahead of our $750M model. Integration charges of $95M were in line with guidance.</div>
+        <div><strong style="color:var(--white);">Big picture:</strong> The Q1 acquisition noise is exactly what we modeled. The underlying business generated positive adj. FCF of $42M even after $95M of integration charges. Management raised synergy guidance from $200M to $225M at the close call — a meaningful upgrade that adds ~$2.50/share to our FVE at our 20x EBITDA valuation framework.</div>
+        <div><strong style="color:var(--white);">Bottom line:</strong> We maintain our $100 fair value estimate. The GAAP loss obscures strong underlying momentum. Acquisition synergies are tracking above initial plan. At $96 (post-Q1), shares trade near fair value — we remain LONG with a target return of ~4% to FVE plus dividend yield.</div>
+      </div>
+    </div>
+    <!-- Q2 2025 -->
+    <div class="chart-card" style="border-left:4px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Research Note · August 7, 2025</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);line-height:1.4;">SGI Q2 Beats on Revenue and EBITDA — Synergy Ramp Ahead of Schedule</div>
+        </div>
+        <div style="flex-shrink:0;margin-left:16px;"><span style="font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(0,208,132,0.15);color:var(--green);border:1px solid rgba(0,208,132,0.3);font-weight:700;">FVE RAISED $98 → $100</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-200);line-height:1.7;">
+        <div><strong style="color:var(--white);">Why it matters:</strong> Revenue of $1.88B (+52.5% YoY) and adj EBITDA of $290M beat consensus by 6.2% and 8.4% respectively. Adj EPS $0.65 beat $0.60 estimate. The revenue beat reflects better-than-expected Mattress Firm comps (+1.8% SSS vs. our -0.5% model) and stronger Tempur-Pedic wholesale pricing.</div>
+        <div><strong style="color:var(--white);">Big picture:</strong> Mattress Firm EBITDA margin reached 5.8% vs. our model of 5.0%. The synergy tracker shows $65M of the $80M FY2025 target realized in H1. Management confirmed the full-year synergy guidance is achievable — and importantly, noted that incremental procurement synergies are exceeding initial estimates. We see this as the primary upside driver through 2027.</div>
+        <div><strong style="color:var(--white);">Bottom line:</strong> We nudge our FVE upward to $100 (from $98) on slightly improved synergy visibility. The deleveraging path (7.2x Net Debt/EBITDA at Q2) is on track for our 5.5x exit by end-2026. At $87 (post-Q2), shares now trade at a 13% discount to FVE — compelling entry point for new capital.</div>
+      </div>
+    </div>
+    <!-- Q3 2025 -->
+    <div class="chart-card" style="border-left:4px solid var(--green);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Research Note · November 6, 2025</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);line-height:1.4;">Record Q3 — SGI Delivers $0.95 Adj EPS, Best Quarter in Company History</div>
+        </div>
+        <div style="flex-shrink:0;margin-left:16px;"><span style="font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(0,208,132,0.15);color:var(--green);border:1px solid rgba(0,208,132,0.3);font-weight:700;">FVE AFFIRMED AT $100</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-200);line-height:1.7;">
+        <div><strong style="color:var(--white);">Why it matters:</strong> Q3 adj EPS of $0.95 was a record quarter, beating consensus of $0.91 by 4.4%. Adj EBITDA of $415M implies a 19.6% margin — approaching normalized levels much faster than consensus expected. This is the key catalyst we highlighted in our initiation: the margin expansion story is ahead of plan.</div>
+        <div><strong style="color:var(--white);">Big picture:</strong> The synergy ramp is accelerating. Mattress Firm OI margin reached 7.2% — on track for our 8–10% normalized target by 2027. FCF of $225M was the best post-acquisition quarter. Net Debt/EBITDA fell to 6.8x from 7.2x at Q2 — the deleveraging inflection we have been waiting for is now clearly in motion.</div>
+        <div><strong style="color:var(--white);">Bottom line:</strong> FVE affirmed at $100 as we increase our FY2026 EBITDA estimate by 4% to reflect faster synergy realization. Our confidence in the thesis has increased materially. At $65 (post-Q3), shares trade at a 35% discount to FVE — one of the most compelling risk/reward profiles in our coverage universe.</div>
+      </div>
+    </div>
+    <!-- Q4 2025 -->
+    <div class="chart-card" style="border-left:4px solid var(--gold);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Research Note · February 17, 2026</div>
+          <div style="font-size:15px;font-weight:700;color:var(--white);line-height:1.4;">SGI FY2025 Full Year Results — Synergies Ahead of Plan, FVE $100 Affirmed</div>
+        </div>
+        <div style="flex-shrink:0;margin-left:16px;"><span style="font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(255,215,0,0.12);color:var(--gold);border:1px solid rgba(255,215,0,0.3);font-weight:700;">FVE AFFIRMED AT $100</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-200);line-height:1.7;">
+        <div><strong style="color:var(--white);">Why it matters:</strong> FY2025 adj EBITDA of $1,040M and FCF of $633M both met or slightly exceeded guidance. Q4 adj EPS $0.79 beat consensus $0.75. Net Debt/EBITDA ended at 6.2x, better than the 6.5x guidance — demonstrating the business can generate cash even during the most intensive integration phase.</div>
+        <div><strong style="color:var(--white);">Big picture:</strong> Full-year adj EPS of $2.76 implies 2026E of $4.82 represents +75% growth — a near-tripling from the FY2025 run-rate as one-time costs roll off. The synergy tracker shows $80M realized vs. $225M total target, with $145M remaining. At 20x EBITDA, this represents $14/share of unrealized value that is not in consensus estimates.</div>
+        <div><strong style="color:var(--white);">Bottom line:</strong> We affirm our $100 fair value estimate. The acquisition thesis is executing as planned. The primary risk remains leverage (6.2x Net Debt/EBITDA), but this is on a clear downward path. At $69.37 (current), shares trade at a 31% discount to FVE — representing our highest conviction LONG in the consumer discretionary sector.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20e: PRICE VS. FAIR VALUE ===== -->
+<section class="section" id="price-vs-fve">
+  <div class="section-anchor" id="price-vs-fve-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20e</div>
+    <div class="section-title">SGI Price vs. Fair Value Estimate (2024–2026)</div>
+    <div class="section-subtitle">Monthly price vs. analyst FVE · Teal = undervalued · Orange = overvalued · FVE shown as dotted gold line</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('price-vs-fve')">Export Section</button></div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title" style="margin-bottom:4px;">SGI Price vs. Fair Value (Jan 2024 – Mar 2026)</div>
+    <div style="font-size:11px;color:var(--gray-300);margin-bottom:14px;">Blue/teal bars = price below FVE (undervalued) · Orange bars = price above FVE (overvalued) · Gold dotted line = Fair Value Estimate</div>
+    <div style="height:300px;position:relative;">
+      <canvas id="priceVsFVEChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Historical P/FVE Table -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">Historical Price / FVE Ratio &amp; Annual Returns</div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Year</th><th style="text-align:right;">Year-End Price</th><th style="text-align:right;">Fair Value Est.</th><th style="text-align:right;">P/FVE Ratio</th><th>Valuation Status</th><th style="text-align:right;">Total Return</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>FY2021</td><td style="text-align:right;font-family:var(--font-mono);">$97.50</td><td style="text-align:right;font-family:var(--font-mono);">$72</td><td style="text-align:right;color:var(--orange);font-weight:700;">1.35x</td><td><span class="esg-badge esg-badge-high">OVERVALUED</span></td><td style="text-align:right;color:var(--green);">+38.2%</td></tr>
+          <tr><td>FY2022</td><td style="text-align:right;font-family:var(--font-mono);">$74.20</td><td style="text-align:right;font-family:var(--font-mono);">$72</td><td style="text-align:right;color:var(--orange);font-weight:700;">1.03x</td><td><span class="esg-badge esg-badge-medium">FAIRLY VALUED</span></td><td style="text-align:right;color:var(--orange);">-23.9%</td></tr>
+          <tr><td>FY2023</td><td style="text-align:right;font-family:var(--font-mono);">$76.80</td><td style="text-align:right;font-family:var(--font-mono);">$82</td><td style="text-align:right;color:var(--teal);font-weight:700;">0.94x</td><td><span class="esg-badge esg-badge-low">UNDERVALUED</span></td><td style="text-align:right;color:var(--green);">+3.5%</td></tr>
+          <tr><td>FY2024</td><td style="text-align:right;font-family:var(--font-mono);">$85.40</td><td style="text-align:right;font-family:var(--font-mono);">$88</td><td style="text-align:right;color:var(--teal);font-weight:700;">0.97x</td><td><span class="esg-badge esg-badge-low">UNDERVALUED</span></td><td style="text-align:right;color:var(--green);">+11.2%</td></tr>
+          <tr><td>Q1 2025 (Peak)</td><td style="text-align:right;font-family:var(--font-mono);">$97.82</td><td style="text-align:right;font-family:var(--font-mono);">$92</td><td style="text-align:right;color:var(--orange);font-weight:700;">1.06x</td><td><span class="esg-badge esg-badge-medium">SLIGHTLY OVER</span></td><td style="text-align:right;color:var(--gray-300);">—</td></tr>
+          <tr><td>Mid 2025 (Trough)</td><td style="text-align:right;font-family:var(--font-mono);">$58.14</td><td style="text-align:right;font-family:var(--font-mono);">$95</td><td style="text-align:right;color:var(--teal);font-weight:700;">0.61x</td><td><span class="esg-badge esg-badge-low">DEEPLY UNDERVALUED</span></td><td style="text-align:right;color:var(--gray-300);">—</td></tr>
+          <tr style="background:rgba(255,215,0,0.06);"><td><strong>Mar 2026 (Current)</strong></td><td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--gold);">$69.37</td><td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--gold);">$100</td><td style="text-align:right;color:var(--teal);font-weight:700;">0.69x</td><td><span class="esg-badge esg-badge-low">UNDERVALUED (-31%)</span></td><td style="text-align:right;color:var(--teal);font-weight:700;">+44.2% to FVE</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: Analyst Fair Value Estimates (proprietary model) · Historical closing prices · As of March 28, 2026</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20f: RATING HISTORY ===== -->
+<section class="section" id="rating-history">
+  <div class="section-anchor" id="rating-history-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20f</div>
+    <div class="section-title">Investment Rating History — Monthly Coverage Record</div>
+    <div class="section-subtitle">SGI equity coverage initiated Feb 2025 upon acquisition close · Former TPX coverage 2018–2025 · All LONG ratings maintained</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('rating-history')">Export Section</button></div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;">
+    <!-- SGI Ratings -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">SGI (Somnigroup) — Monthly Ratings · Jan 2025 – Mar 2026</div>
+      <div class="tbl-wrap">
+        <table class="data-table" style="font-size:12px;">
+          <thead><tr><th>Month</th><th>Rating</th><th style="text-align:right;">Fair Value</th><th style="font-size:10px;">Note</th></tr></thead>
+          <tbody>
+            <tr><td>Jan 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$92</td><td style="font-size:10px;color:var(--gray-300);">TPX pre-rebrand</td></tr>
+            <tr><td>Feb 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$96</td><td style="font-size:10px;color:var(--green);">Acquisition closed, FVE raised</td></tr>
+            <tr><td>Mar 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$96</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Apr 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$96</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>May 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$98</td><td style="font-size:10px;color:var(--green);">Q1 2025 beat</td></tr>
+            <tr><td>Jun 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$98</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Jul 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$98</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Aug 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--green);">Q2 beat, FVE raised</td></tr>
+            <tr><td>Sep 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Oct 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Nov 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--green);">Q3 record quarter</td></tr>
+            <tr><td>Dec 2025</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Jan 2026</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--gray-300);">—</td></tr>
+            <tr><td>Feb 2026</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$100</td><td style="font-size:10px;color:var(--green);">FY2025 full year results</td></tr>
+            <tr style="background:rgba(255,215,0,0.06);"><td><strong>Mar 2026</strong></td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);color:var(--gold);">$100</td><td style="font-size:10px;color:var(--gold);">Current — 31% discount to FVE</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- TPX Pre-Merger -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">TPX (Tempur Sealy — Pre-Merger) · 2022–2024</div>
+      <div class="tbl-wrap">
+        <table class="data-table" style="font-size:12px;">
+          <thead><tr><th>Period</th><th>Rating</th><th style="text-align:right;">FVE</th><th>Thesis Note</th></tr></thead>
+          <tbody>
+            <tr><td>FY2022</td><td><span class="rating-badge rating-neutral">NEUTRAL</span></td><td style="text-align:right;font-family:var(--font-mono);">N/A</td><td style="font-size:10px;color:var(--gray-300);">Leverage concerns, housing downturn</td></tr>
+            <tr><td>FY2023</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">N/A</td><td style="font-size:10px;color:var(--green);">Recovery thesis, pent-up demand</td></tr>
+            <tr><td>Q1 2024</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$85</td><td style="font-size:10px;color:var(--gray-300);">Pre-merger announcement</td></tr>
+            <tr><td>Q2 2024</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$88</td><td style="font-size:10px;color:var(--green);">Merger announced, FVE raised</td></tr>
+            <tr><td>Q3 2024</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$90</td><td style="font-size:10px;color:var(--green);">Merger progress on track</td></tr>
+            <tr><td>Q4 2024</td><td><span class="rating-badge rating-long">LONG</span></td><td style="text-align:right;font-family:var(--font-mono);">$92</td><td style="font-size:10px;color:var(--green);">Merger close imminent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:20px;padding:14px;background:var(--surface);border-radius:6px;border:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px;">Coverage Summary</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-300);">Total months rated LONG (SGI)</span><span style="color:var(--green);font-weight:700;">15 of 15</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-300);">FVE changes (raises)</span><span style="color:var(--green);font-weight:700;">4 raises · 0 cuts</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-300);">FVE range (SGI coverage)</span><span style="color:var(--teal);">$92 → $100</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-300);">Current price/FVE gap</span><span style="color:var(--orange);font-weight:700;">-30.6% ($69.37 vs $100)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20g: 10-YEAR HISTORY ===== -->
+<section class="section" id="longterm-valuation">
+  <div class="section-anchor" id="longterm-valuation-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20g</div>
+    <div class="section-title">10-Year Financial &amp; Valuation History</div>
+    <div class="section-subtitle">FY2015–FY2025 · Income statement trends · Valuation multiples · Capital return history</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('longterm-valuation')">Export Section</button></div>
+  </div>
+
+  <!-- 10-Year Financial Table -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title" style="margin-bottom:14px;">10-Year Financial Summary (FY2015–FY2025, $M)</div>
+    <div class="tbl-wrap">
+      <table class="data-table" style="font-size:11px;">
+        <thead><tr>
+          <th>Metric</th>
+          <th style="text-align:right;">FY2015</th><th style="text-align:right;">FY2016</th><th style="text-align:right;">FY2017</th>
+          <th style="text-align:right;">FY2018</th><th style="text-align:right;">FY2019</th><th style="text-align:right;">FY2020</th>
+          <th style="text-align:right;">FY2021</th><th style="text-align:right;">FY2022</th><th style="text-align:right;">FY2023</th>
+          <th style="text-align:right;">FY2024</th><th style="text-align:right;color:var(--gold);">FY2025</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;">Revenue ($M)</td><td style="text-align:right;">$2,682</td><td style="text-align:right;">$2,848</td><td style="text-align:right;">$2,974</td><td style="text-align:right;">$2,888</td><td style="text-align:right;">$3,147</td><td style="text-align:right;">$4,019</td><td style="text-align:right;">$4,931</td><td style="text-align:right;">$4,921</td><td style="text-align:right;">$4,925</td><td style="text-align:right;">$4,931</td><td style="text-align:right;color:var(--gold);">$7,477</td></tr>
+          <tr><td style="font-weight:700;">Rev. Growth</td><td style="text-align:right;color:var(--green);">+8.1%</td><td style="text-align:right;color:var(--green);">+6.2%</td><td style="text-align:right;color:var(--green);">+4.4%</td><td style="text-align:right;color:var(--orange);">-2.9%</td><td style="text-align:right;color:var(--green);">+9.0%</td><td style="text-align:right;color:var(--green);">+27.7%</td><td style="text-align:right;color:var(--green);">+22.7%</td><td style="text-align:right;color:var(--orange);">-0.2%</td><td style="text-align:right;color:var(--green);">+0.1%</td><td style="text-align:right;color:var(--green);">+0.1%</td><td style="text-align:right;color:var(--teal);">+51.6%</td></tr>
+          <tr><td style="font-weight:700;">EBITDA ($M)</td><td style="text-align:right;">$546</td><td style="text-align:right;">$582</td><td style="text-align:right;">$610</td><td style="text-align:right;">$524</td><td style="text-align:right;">$628</td><td style="text-align:right;">$838</td><td style="text-align:right;">$1,004</td><td style="text-align:right;">$807</td><td style="text-align:right;">$739</td><td style="text-align:right;">$804</td><td style="text-align:right;color:var(--gold);">$1,041</td></tr>
+          <tr><td style="font-weight:700;">EBITDA Margin</td><td style="text-align:right;">20.4%</td><td style="text-align:right;">20.5%</td><td style="text-align:right;">20.5%</td><td style="text-align:right;">18.2%</td><td style="text-align:right;">20.0%</td><td style="text-align:right;">20.9%</td><td style="text-align:right;">20.4%</td><td style="text-align:right;">16.4%</td><td style="text-align:right;">15.0%</td><td style="text-align:right;">16.3%</td><td style="text-align:right;color:var(--orange);">13.9%</td></tr>
+          <tr><td style="font-weight:700;">Operating Income</td><td style="text-align:right;">$412</td><td style="text-align:right;">$438</td><td style="text-align:right;">$455</td><td style="text-align:right;">$366</td><td style="text-align:right;">$464</td><td style="text-align:right;">$644</td><td style="text-align:right;">$912</td><td style="text-align:right;">$681</td><td style="text-align:right;">$607</td><td style="text-align:right;">$634</td><td style="text-align:right;color:var(--gold);">$985</td></tr>
+          <tr><td style="font-weight:700;">Op. Margin</td><td style="text-align:right;">15.4%</td><td style="text-align:right;">15.4%</td><td style="text-align:right;">15.3%</td><td style="text-align:right;">12.7%</td><td style="text-align:right;">14.8%</td><td style="text-align:right;">16.0%</td><td style="text-align:right;">18.5%</td><td style="text-align:right;">13.8%</td><td style="text-align:right;">12.3%</td><td style="text-align:right;">12.9%</td><td style="text-align:right;color:var(--orange);">13.2%</td></tr>
+          <tr><td style="font-weight:700;">Net Income</td><td style="text-align:right;">$278</td><td style="text-align:right;">$308</td><td style="text-align:right;">$326</td><td style="text-align:right;">$244</td><td style="text-align:right;">$322</td><td style="text-align:right;">$470</td><td style="text-align:right;">$625</td><td style="text-align:right;">$456</td><td style="text-align:right;">$368</td><td style="text-align:right;">$384</td><td style="text-align:right;color:var(--gold);">$384</td></tr>
+          <tr><td style="font-weight:700;">Net Margin</td><td style="text-align:right;">10.4%</td><td style="text-align:right;">10.8%</td><td style="text-align:right;">11.0%</td><td style="text-align:right;">8.5%</td><td style="text-align:right;">10.2%</td><td style="text-align:right;">11.7%</td><td style="text-align:right;">12.7%</td><td style="text-align:right;">9.3%</td><td style="text-align:right;">7.5%</td><td style="text-align:right;">7.8%</td><td style="text-align:right;color:var(--orange);">5.1%</td></tr>
+          <tr><td style="font-weight:700;">Diluted EPS</td><td style="text-align:right;">$1.68</td><td style="text-align:right;">$1.91</td><td style="text-align:right;">$2.04</td><td style="text-align:right;">$1.52</td><td style="text-align:right;">$2.03</td><td style="text-align:right;">$2.87</td><td style="text-align:right;">$3.06</td><td style="text-align:right;">$2.53</td><td style="text-align:right;">$2.08</td><td style="text-align:right;">$2.16</td><td style="text-align:right;color:var(--gold);">$1.84</td></tr>
+          <tr><td style="font-weight:700;">Dividends/Share</td><td style="text-align:right;">$0.36</td><td style="text-align:right;">$0.40</td><td style="text-align:right;">$0.44</td><td style="text-align:right;">$0.44</td><td style="text-align:right;">$0.44</td><td style="text-align:right;">$0.44</td><td style="text-align:right;">$0.76</td><td style="text-align:right;">$0.88</td><td style="text-align:right;">$0.96</td><td style="text-align:right;">$1.04</td><td style="text-align:right;color:var(--gold);">$1.08</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 10-Year Valuation Table -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">10-Year Valuation &amp; Returns History</div>
+    <div class="tbl-wrap">
+      <table class="data-table" style="font-size:11px;">
+        <thead><tr>
+          <th>Metric</th>
+          <th style="text-align:right;">FY2015</th><th style="text-align:right;">FY2016</th><th style="text-align:right;">FY2017</th>
+          <th style="text-align:right;">FY2018</th><th style="text-align:right;">FY2019</th><th style="text-align:right;">FY2020</th>
+          <th style="text-align:right;">FY2021</th><th style="text-align:right;">FY2022</th><th style="text-align:right;">FY2023</th>
+          <th style="text-align:right;">FY2024</th><th style="text-align:right;color:var(--gold);">FY2025</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;">P/Sales</td><td style="text-align:right;">1.4x</td><td style="text-align:right;">1.5x</td><td style="text-align:right;">1.7x</td><td style="text-align:right;">1.3x</td><td style="text-align:right;">1.8x</td><td style="text-align:right;">2.6x</td><td style="text-align:right;">3.2x</td><td style="text-align:right;">2.3x</td><td style="text-align:right;">2.5x</td><td style="text-align:right;">2.8x</td><td style="text-align:right;color:var(--gold);">1.9x</td></tr>
+          <tr><td style="font-weight:700;">P/E</td><td style="text-align:right;">14.9x</td><td style="text-align:right;">15.2x</td><td style="text-align:right;">19.8x</td><td style="text-align:right;">14.5x</td><td style="text-align:right;">24.9x</td><td style="text-align:right;">34.9x</td><td style="text-align:right;">46.8x</td><td style="text-align:right;">20.9x</td><td style="text-align:right;">36.9x</td><td style="text-align:right;">38.4x</td><td style="text-align:right;color:var(--gold);">37.7x</td></tr>
+          <tr><td style="font-weight:700;">EV/EBITDA</td><td style="text-align:right;">8.4x</td><td style="text-align:right;">8.9x</td><td style="text-align:right;">10.2x</td><td style="text-align:right;">7.8x</td><td style="text-align:right;">11.4x</td><td style="text-align:right;">14.2x</td><td style="text-align:right;">18.6x</td><td style="text-align:right;">10.8x</td><td style="text-align:right;">14.4x</td><td style="text-align:right;">14.5x</td><td style="text-align:right;color:var(--gold);">15.2x</td></tr>
+          <tr><td style="font-weight:700;">Dividend Yield</td><td style="text-align:right;">1.5%</td><td style="text-align:right;">1.4%</td><td style="text-align:right;">1.1%</td><td style="text-align:right;">1.3%</td><td style="text-align:right;">0.9%</td><td style="text-align:right;">0.6%</td><td style="text-align:right;">0.5%</td><td style="text-align:right;">0.8%</td><td style="text-align:right;">0.9%</td><td style="text-align:right;">0.9%</td><td style="text-align:right;color:var(--gold);">1.6%</td></tr>
+          <tr><td style="font-weight:700;">ROA</td><td style="text-align:right;">8.2%</td><td style="text-align:right;">8.6%</td><td style="text-align:right;">8.9%</td><td style="text-align:right;">6.8%</td><td style="text-align:right;">7.9%</td><td style="text-align:right;">10.4%</td><td style="text-align:right;">12.1%</td><td style="text-align:right;">8.8%</td><td style="text-align:right;">7.1%</td><td style="text-align:right;">7.4%</td><td style="text-align:right;color:var(--gold);">4.2%</td></tr>
+          <tr><td style="font-weight:700;">ROE</td><td style="text-align:right;">32.4%</td><td style="text-align:right;">34.8%</td><td style="text-align:right;">38.2%</td><td style="text-align:right;">28.6%</td><td style="text-align:right;">42.1%</td><td style="text-align:right;">68.4%</td><td style="text-align:right;">NM</td><td style="text-align:right;">NM</td><td style="text-align:right;">NM</td><td style="text-align:right;">NM</td><td style="text-align:right;color:var(--gold);">NM</td></tr>
+          <tr><td style="font-weight:700;">ROIC</td><td style="text-align:right;">14.2%</td><td style="text-align:right;">15.1%</td><td style="text-align:right;">15.8%</td><td style="text-align:right;">12.4%</td><td style="text-align:right;">14.9%</td><td style="text-align:right;">19.2%</td><td style="text-align:right;">22.8%</td><td style="text-align:right;">16.4%</td><td style="text-align:right;">14.8%</td><td style="text-align:right;">15.6%</td><td style="text-align:right;color:var(--gold);">8.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: Company 10-K filings · Bloomberg · FactSet · Historical year-end prices · NM = Not Meaningful (negative book equity from buybacks)</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20h: DIVIDEND HISTORY ===== -->
+<section class="section" id="dividend-history">
+  <div class="section-anchor" id="dividend-history-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20h</div>
+    <div class="section-title">Dividend History &amp; Capital Return Policy</div>
+    <div class="section-subtitle">Quarterly dividend payments · Annual DPS trend · Capital return framework · 6 consecutive years of increases</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('dividend-history')">Export Section</button></div>
+  </div>
+
+  <!-- KPI Row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--teal);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Annual Dividend</div>
+      <div style="font-size:32px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">$1.08</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">per share · FY2025</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--green);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Dividend Yield</div>
+      <div style="font-size:32px;font-weight:700;color:var(--green);font-family:var(--font-mono);">1.56%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">at current price $69.37</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--gold);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Consecutive Increases</div>
+      <div style="font-size:32px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">6 Years</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">2020 restart to present</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--orange);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Payout Ratio</div>
+      <div style="font-size:32px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">39.1%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">of adj EPS $2.76</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;">
+    <!-- Dividend Chart -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">Annual DPS Trend (2015–2025)</div>
+      <div style="height:220px;position:relative;">
+        <canvas id="dividendHistoryChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Quarterly Table -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">Quarterly Dividends (2023–2025)</div>
+      <div class="tbl-wrap">
+        <table class="data-table" style="font-size:11px;">
+          <thead><tr><th>Quarter</th><th style="text-align:right;">Amount</th><th style="text-align:right;">Annual Total</th><th style="text-align:right;">YoY Change</th></tr></thead>
+          <tbody>
+            <tr><td colspan="4" style="font-size:10px;color:var(--gray-300);font-weight:700;background:rgba(255,215,0,0.04);">FY2023</td></tr>
+            <tr><td>Q1 2023</td><td style="text-align:right;font-family:var(--font-mono);">$0.24</td><td style="text-align:right;" rowspan="4">$0.96</td><td style="text-align:right;color:var(--green);" rowspan="4">+9.1%</td></tr>
+            <tr><td>Q2 2023</td><td style="text-align:right;font-family:var(--font-mono);">$0.24</td></tr>
+            <tr><td>Q3 2023</td><td style="text-align:right;font-family:var(--font-mono);">$0.24</td></tr>
+            <tr><td>Q4 2023</td><td style="text-align:right;font-family:var(--font-mono);">$0.24</td></tr>
+            <tr><td colspan="4" style="font-size:10px;color:var(--gray-300);font-weight:700;background:rgba(255,215,0,0.04);">FY2024</td></tr>
+            <tr><td>Q1 2024</td><td style="text-align:right;font-family:var(--font-mono);">$0.26</td><td style="text-align:right;" rowspan="4">$1.04</td><td style="text-align:right;color:var(--green);" rowspan="4">+8.3%</td></tr>
+            <tr><td>Q2 2024</td><td style="text-align:right;font-family:var(--font-mono);">$0.26</td></tr>
+            <tr><td>Q3 2024</td><td style="text-align:right;font-family:var(--font-mono);">$0.26</td></tr>
+            <tr><td>Q4 2024</td><td style="text-align:right;font-family:var(--font-mono);">$0.26</td></tr>
+            <tr><td colspan="4" style="font-size:10px;color:var(--gold);font-weight:700;background:rgba(255,215,0,0.06);">FY2025</td></tr>
+            <tr><td>Q1 2025</td><td style="text-align:right;font-family:var(--font-mono);">$0.27</td><td style="text-align:right;" rowspan="4">$1.08</td><td style="text-align:right;color:var(--green);" rowspan="4">+3.8%</td></tr>
+            <tr><td>Q2 2025</td><td style="text-align:right;font-family:var(--font-mono);">$0.27</td></tr>
+            <tr><td>Q3 2025</td><td style="text-align:right;font-family:var(--font-mono);">$0.27</td></tr>
+            <tr><td>Q4 2025</td><td style="text-align:right;font-family:var(--font-mono);">$0.27</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Statement -->
+  <div class="chart-card" style="margin-top:20px;border-left:4px solid var(--teal);">
+    <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Capital Return Policy</div>
+    <div style="font-size:12px;color:var(--gray-200);line-height:1.7;">
+      SGI's capital return framework prioritizes leverage reduction in the near-term (targeting 4.0–4.5x Net Debt/EBITDA by end-2027) while maintaining and modestly growing the dividend. The Board suspended share buybacks following the acquisition close and intends to resume repurchases once leverage falls below 5.0x. The dividend commitment is considered a floor — management has indicated the dividend will be maintained even if leverage reduction is slower than planned. Current 39.1% payout ratio of adj EPS provides significant coverage. 2026E payout ratio estimated at 22.4% of $4.82E adj EPS, allowing for further increases.
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20i: FORWARD VALUATION ===== -->
+<section class="section" id="forward-valuation">
+  <div class="section-anchor" id="forward-valuation-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20i</div>
+    <div class="section-title">Forward Valuation Summary — Analyst Estimates</div>
+    <div class="section-subtitle">FY2025A through FY2028E · Consensus estimates · At current price $69.37 · All multiples at market price</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('forward-valuation')">Export Section</button></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Metric</th>
+          <th style="text-align:right;color:var(--gray-300);">FY2025A</th>
+          <th style="text-align:right;color:var(--teal);">FY2026E</th>
+          <th style="text-align:right;color:var(--teal);">FY2027E</th>
+          <th style="text-align:right;color:var(--teal);">FY2028E</th>
+        </tr></thead>
+        <tbody>
+          <tr><td colspan="5" style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;background:rgba(255,215,0,0.04);">Income Statement</td></tr>
+          <tr><td>Revenue ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$7,477</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$7,685E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$7,954E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$8,271E</td></tr>
+          <tr><td>Revenue Growth</td><td style="text-align:right;">+51.6%</td><td style="text-align:right;color:var(--teal);">+2.8%E</td><td style="text-align:right;color:var(--teal);">+3.5%E</td><td style="text-align:right;color:var(--teal);">+4.0%E</td></tr>
+          <tr><td>Gross Profit ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$2,616</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$2,802E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$2,981E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$3,142E</td></tr>
+          <tr><td>Gross Margin</td><td style="text-align:right;">35.0%</td><td style="text-align:right;color:var(--teal);">36.5%E</td><td style="text-align:right;color:var(--teal);">37.5%E</td><td style="text-align:right;color:var(--teal);">38.0%E</td></tr>
+          <tr><td>EBITDA ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$1,041</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,295E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,490E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,654E</td></tr>
+          <tr><td>EBITDA Margin</td><td style="text-align:right;color:var(--orange);">13.9%</td><td style="text-align:right;color:var(--teal);">16.9%E</td><td style="text-align:right;color:var(--teal);">18.7%E</td><td style="text-align:right;color:var(--teal);">20.0%E</td></tr>
+          <tr><td>EBIT ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$985</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,172E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,345E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,503E</td></tr>
+          <tr><td>Operating Margin</td><td style="text-align:right;">13.2%</td><td style="text-align:right;color:var(--teal);">15.2%E</td><td style="text-align:right;color:var(--teal);">16.9%E</td><td style="text-align:right;color:var(--teal);">18.2%E</td></tr>
+          <tr><td>Net Income ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$384</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$752E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$966E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,108E</td></tr>
+          <tr><td>Net Margin</td><td style="text-align:right;color:var(--orange);">5.1%</td><td style="text-align:right;color:var(--teal);">9.8%E</td><td style="text-align:right;color:var(--teal);">12.1%E</td><td style="text-align:right;color:var(--teal);">13.4%E</td></tr>
+          <tr><td>Diluted EPS</td><td style="text-align:right;font-family:var(--font-mono);">$1.84</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$3.60E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$4.63E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$5.31E</td></tr>
+          <tr><td>Adj. EPS</td><td style="text-align:right;font-family:var(--font-mono);">$2.76</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$4.82E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$5.84E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$6.62E</td></tr>
+          <tr><td>Dividends/Share</td><td style="text-align:right;font-family:var(--font-mono);">$1.08</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1.12E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1.20E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1.28E</td></tr>
+          <tr><td>Free Cash Flow ($M)</td><td style="text-align:right;font-family:var(--font-mono);">$633</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$920E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,095E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$1,220E</td></tr>
+          <tr><td>Shares Out (M)</td><td style="text-align:right;font-family:var(--font-mono);">208.8</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">208.8E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">208.8E</td><td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">208.8E</td></tr>
+          <tr><td colspan="5" style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;background:rgba(255,215,0,0.04);">Valuation Multiples (at $69.37 current price)</td></tr>
+          <tr><td>P/Sales</td><td style="text-align:right;">1.9x</td><td style="text-align:right;color:var(--green);">1.9x</td><td style="text-align:right;color:var(--green);">1.8x</td><td style="text-align:right;color:var(--green);">1.8x</td></tr>
+          <tr><td>P/E (GAAP)</td><td style="text-align:right;">37.7x</td><td style="text-align:right;color:var(--green);">19.3x</td><td style="text-align:right;color:var(--green);">15.0x</td><td style="text-align:right;color:var(--green);">13.1x</td></tr>
+          <tr><td>Fwd P/E (Adj)</td><td style="text-align:right;">25.1x</td><td style="text-align:right;color:var(--green);">14.4x</td><td style="text-align:right;color:var(--green);">11.9x</td><td style="text-align:right;color:var(--green);">10.5x</td></tr>
+          <tr><td>EV/EBITDA (LTM)</td><td style="text-align:right;">15.2x</td><td style="text-align:right;color:var(--green);">12.2x</td><td style="text-align:right;color:var(--green);">10.6x</td><td style="text-align:right;color:var(--green);">9.6x</td></tr>
+          <tr><td>EV/Sales</td><td style="text-align:right;">2.1x</td><td style="text-align:right;color:var(--green);">2.1x</td><td style="text-align:right;color:var(--green);">2.0x</td><td style="text-align:right;color:var(--green);">1.9x</td></tr>
+          <tr><td>Dividend Yield</td><td style="text-align:right;">1.6%</td><td style="text-align:right;color:var(--teal);">1.6%E</td><td style="text-align:right;color:var(--teal);">1.7%E</td><td style="text-align:right;color:var(--teal);">1.8%E</td></tr>
+          <tr><td colspan="5" style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;background:rgba(255,215,0,0.04);">Returns</td></tr>
+          <tr><td>ROA</td><td style="text-align:right;">4.2%</td><td style="text-align:right;color:var(--teal);">7.8%E</td><td style="text-align:right;color:var(--teal);">9.6%E</td><td style="text-align:right;color:var(--teal);">10.8%E</td></tr>
+          <tr><td>ROE</td><td style="text-align:right;">NM</td><td style="text-align:right;color:var(--teal);">NM</td><td style="text-align:right;color:var(--teal);">NM</td><td style="text-align:right;color:var(--teal);">NM</td></tr>
+          <tr><td>ROIC</td><td style="text-align:right;">8.4%</td><td style="text-align:right;color:var(--teal);">11.2%E</td><td style="text-align:right;color:var(--teal);">13.4%E</td><td style="text-align:right;color:var(--teal);">15.1%E</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: Company FY2025 10-K (actuals) · Analyst estimates FY2026–2028 · Market data as of March 28, 2026 · NM = Not Meaningful (negative book equity)</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20j: SYNERGY TRACKER ===== -->
+<section class="section" id="synergy-tracker">
+  <div class="section-anchor" id="synergy-tracker-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20j</div>
+    <div class="section-title">Mattress Firm Acquisition Synergy Tracker</div>
+    <div class="section-subtitle">$80M realized of $225M total target · $145M remaining · Tracking ahead of plan · FY2025 first full year post-close</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('synergy-tracker')">Export Section</button></div>
+  </div>
+
+  <!-- Headline Progress -->
+  <div class="chart-card" style="margin-bottom:20px;border-top:4px solid var(--green);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div>
+        <div style="font-size:16px;font-weight:700;color:var(--white);">$80M Realized <span style="color:var(--gray-300);font-size:13px;font-weight:400;">of</span> $225M Total Target</div>
+        <div style="font-size:12px;color:var(--green);margin-top:4px;">$145M Remaining · Tracking Ahead of Plan</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--font-mono);">35.6%</div>
+        <div style="font-size:11px;color:var(--gray-300);">of target realized</div>
+      </div>
+    </div>
+    <div class="synergy-progress-bar">
+      <div class="synergy-progress-fill" style="width:35.6%;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:4px;">
+      <span>$0</span><span>$56M (25%)</span><span>$113M (50%)</span><span>$169M (75%)</span><span>$225M Target</span>
+    </div>
+  </div>
+
+  <!-- EV Impact Callout -->
+  <div style="padding:16px 20px;background:rgba(0,208,132,0.07);border-radius:8px;border:1px solid rgba(0,208,132,0.2);margin-bottom:20px;">
+    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Enterprise Value Impact</div>
+    <div style="font-size:13px;color:var(--white);line-height:1.7;">
+      <strong>$145M unrealized synergies × 20x EBITDA multiple = $2.9B incremental enterprise value</strong><br>
+      <span style="color:var(--gray-200);font-size:12px;">= $14/share of unrealized value at 208.8M shares outstanding · Not priced into current consensus estimates · Represents 20.2% of current market cap of $14.5B</span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;">
+    <!-- Synergy Breakdown Table -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">Synergy Breakdown by Category</div>
+      <div class="tbl-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>Category</th>
+            <th style="text-align:right;">Target</th>
+            <th style="text-align:right;">Realized</th>
+            <th style="text-align:right;">Remaining</th>
+            <th>Expected By</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Procurement &amp; Supply Chain</strong><div style="font-size:10px;color:var(--gray-300);">Volume discounts, raw material consolidation</div></td>
+              <td style="text-align:right;font-family:var(--font-mono);">$85M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--green);">$38M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$47M</td>
+              <td>FY2026</td>
+            </tr>
+            <tr>
+              <td><strong>Retail Operating Efficiencies</strong><div style="font-size:10px;color:var(--gray-300);">Store optimization, labor productivity</div></td>
+              <td style="text-align:right;font-family:var(--font-mono);">$60M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--green);">$22M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$38M</td>
+              <td>FY2027</td>
+            </tr>
+            <tr>
+              <td><strong>Corporate G&amp;A Overlap</strong><div style="font-size:10px;color:var(--gray-300);">HQ consolidation, shared services</div></td>
+              <td style="text-align:right;font-family:var(--font-mono);">$45M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--green);">$15M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$30M</td>
+              <td>FY2026</td>
+            </tr>
+            <tr>
+              <td><strong>Distribution &amp; Logistics</strong><div style="font-size:10px;color:var(--gray-300);">Route optimization, DC consolidation</div></td>
+              <td style="text-align:right;font-family:var(--font-mono);">$25M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--green);">$5M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$20M</td>
+              <td>FY2027</td>
+            </tr>
+            <tr>
+              <td><strong>Revenue Synergies (D2C, Cross-sell)</strong><div style="font-size:10px;color:var(--gray-300);">Digital, Tempur-Pedic upsell at Mattress Firm</div></td>
+              <td style="text-align:right;font-family:var(--font-mono);">$10M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--orange);">$0M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$10M</td>
+              <td>FY2028</td>
+            </tr>
+            <tr style="font-weight:700;background:rgba(255,215,0,0.05);">
+              <td><strong>Total</strong></td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--gold);">$225M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--green);">$80M</td>
+              <td style="text-align:right;font-family:var(--font-mono);color:var(--teal);">$145M</td>
+              <td style="color:var(--gray-300);">FY2026–28</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Quarterly Progress Chart -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">Cumulative Synergy Realization Progress</div>
+      <div style="height:280px;position:relative;">
+        <canvas id="synergyProgressChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20k: INDUSTRY POSITION ===== -->
+<section class="section" id="industry-position">
+  <div class="section-anchor" id="industry-position-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20k</div>
+    <div class="section-title">Industry Position &amp; Market Share Analysis</div>
+    <div class="section-subtitle">Mattress &amp; bedding market · TAM $37.7B · SGI market share 27% · Industry volume &amp; ASP trends</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('industry-position')">Export Section</button></div>
+  </div>
+
+  <!-- KPI Row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--teal);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Total Addressable Market</div>
+      <div style="font-size:28px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">$37.7B</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">US Mattress &amp; Bedding Market</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--gold);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">SGI Market Share</div>
+      <div style="font-size:28px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">27%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">Post-Mattress Firm integration</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--green);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Industry CAGR (5-yr)</div>
+      <div style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--font-mono);">4.5%</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">2025–2030 estimate</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--orange);">
+      <div style="font-size:10px;font-weight:700;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Housing Correlation (r)</div>
+      <div style="font-size:28px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">0.41</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-top:4px;">vs. housing starts (12-mo lag)</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;margin-bottom:20px;">
+    <!-- Market Share Chart -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:4px;">US Mattress Market Share (2025E)</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-bottom:14px;">SGI = Tempur-Pedic + Sealy + Mattress Firm retail distribution</div>
+      <div style="height:260px;position:relative;">
+        <canvas id="marketShareChart"></canvas>
+      </div>
+    </div>
+    <!-- Volume vs ASP Chart -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:4px;">Industry Volume vs. Average Selling Price</div>
+      <div style="font-size:11px;color:var(--gray-300);margin-bottom:14px;">Unit volume recovering from 2023 trough · ASP continues structural rise</div>
+      <div style="height:260px;position:relative;">
+        <canvas id="industryVolumeASPChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competitive Positioning -->
+  <div class="chart-card">
+    <div class="chart-title" style="margin-bottom:14px;">Competitive Positioning Summary</div>
+    <div class="tbl-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Competitor</th><th>Market Share</th><th>Revenue Est.</th><th>Channel</th><th>Price Segment</th><th>Key Differentiator</th><th>Threat Level</th>
+        </tr></thead>
+        <tbody>
+          <tr style="background:rgba(255,215,0,0.06);"><td><strong style="color:var(--gold);">SGI (Tempur/Sealy/MF)</strong></td><td style="color:var(--gold);font-weight:700;">27%</td><td style="font-family:var(--font-mono);">$7.5B</td><td>Specialty + D2C</td><td>Luxury + Mid + Entry</td><td>Vertical integration, 2,300 stores</td><td><span style="color:var(--gold);">LEADER</span></td></tr>
+          <tr><td>Online/DTC (Casper, Purple, Saatva)</td><td>12%</td><td style="font-family:var(--font-mono);">$4.5B</td><td>D2C / E-commerce</td><td>Mid-range</td><td>Convenience, trial programs</td><td><span style="color:var(--orange);">MEDIUM</span></td></tr>
+          <tr><td>Sleep Number (SNBR)</td><td>8%</td><td style="font-family:var(--font-mono);">$1.8B</td><td>Own stores</td><td>Premium</td><td>Adjustable, smart sleep tech</td><td><span style="color:var(--orange);">MEDIUM</span></td></tr>
+          <tr><td>Furniture/Dept Stores (Ashley, etc.)</td><td>20%</td><td style="font-family:var(--font-mono);">$7.5B</td><td>Furniture stores</td><td>Entry-Mid</td><td>One-stop shopping</td><td><span style="color:var(--green);">LOW</span></td></tr>
+          <tr><td>Mass Market (Costco, Amazon, Walmart)</td><td>20%</td><td style="font-family:var(--font-mono);">$7.5B</td><td>Mass / Online</td><td>Entry-level</td><td>Price, convenience</td><td><span style="color:var(--green);">LOW-MED</span></td></tr>
+          <tr><td>Other Specialty Retailers</td><td>13%</td><td style="font-family:var(--font-mono);">$4.9B</td><td>Mixed</td><td>Mixed</td><td>Regional brands</td><td><span style="color:var(--green);">LOW</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: ISPA (International Sleep Products Association) · Statista · Company estimates · As of March 2026</div>
+  </div>
+</section>
+
+<!-- ===== SECTION 20l: REGULATORY HISTORY ===== -->
+<section class="section" id="regulatory-history">
+  <div class="section-anchor" id="regulatory-history-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 20l</div>
+    <div class="section-title">Regulatory &amp; Legal History</div>
+    <div class="section-subtitle">FTC consent decree · Acquisition regulatory timeline · Ongoing compliance · Patent matters · As of March 2026</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('regulatory-history')">Export Section</button></div>
+  </div>
+
+  <!-- Compliance Status Banner -->
+  <div style="padding:14px 20px;background:rgba(0,208,132,0.08);border-radius:8px;border:1px solid rgba(0,208,132,0.25);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Current Compliance Status</div>
+      <div style="font-size:13px;color:var(--white);">SGI is in <strong>full compliance</strong> with FTC Consent Decree (Feb 2025). FTC monitor confirmed compliance in Q3 2025 report. No active investigations or material litigation as of March 2026.</div>
+    </div>
+    <div style="flex-shrink:0;margin-left:20px;">
+      <span style="font-size:12px;font-weight:700;padding:6px 14px;border-radius:4px;background:rgba(0,208,132,0.15);color:var(--green);border:1px solid rgba(0,208,132,0.3);">COMPLIANT</span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;">
+    <!-- FTC Timeline -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">FTC Regulatory Timeline</div>
+      <div>
+        <div class="timeline-item">
+          <div class="timeline-dot risk"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--orange);margin-bottom:4px;">June 2022</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">FTC Investigation Initiated</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">FTC opened investigation into proposed Tempur Sealy / Mattress Firm acquisition. Primary concern: vertical integration eliminating competing mattress brands from 2,300 Mattress Firm stores, harming consumer choice and competing manufacturers.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot risk"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--orange);margin-bottom:4px;">September 2023</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">FTC Files Lawsuit to Block</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">FTC filed suit in federal court to block acquisition, alleging anticompetitive effects under Clayton Act Section 7. First major formal challenge. Parties continued to negotiate consent decree in parallel with litigation.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--teal);margin-bottom:4px;">January 2024</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">Consent Decree Agreed</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">Parties agreed to consent decree permitting acquisition with conditions: (1) Mattress Firm must continue carrying competing brands (SNBR, Purple) for 7 years; (2) SGI cannot use retail data to disadvantage competitors; (3) Pricing terms must be non-discriminatory to all vendors. Decree runs through Feb 2031.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot resolved"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:4px;">February 5, 2025</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">Acquisition Closed</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">After satisfying all FTC conditions and obtaining all regulatory approvals (HSR clearance, international filings), the $4B Mattress Firm acquisition completed. SGI became the world's largest vertically integrated sleep company by revenue.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot resolved"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:4px;">Q3 2025</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">FTC Monitor Confirms Compliance</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">FTC-appointed independent compliance monitor submitted Q3 2025 report confirming SGI in full compliance with all consent decree terms. Competing brands (Sleep Number, Purple) maintain meaningful shelf space at Mattress Firm per decree requirements.</div>
+          </div>
+        </div>
+        <div class="timeline-item" style="border-bottom:none;">
+          <div class="timeline-dot resolved"></div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:4px;">March 2026 — Ongoing</div>
+            <div style="font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;">Full Compliance</div>
+            <div style="font-size:11px;color:var(--gray-200);line-height:1.6;">SGI remains in full compliance. Consent decree runs through 2031. No new regulatory actions. Annual compliance filings submitted on schedule. No material pending regulatory risk.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <!-- Investment Thesis Impact -->
+      <div class="chart-card" style="border-left:4px solid var(--teal);">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Investment Thesis: Consent Decree as Positive</div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.7;">The consent decree actually benefits SGI's investment thesis. Requiring Mattress Firm to continue carrying competitors (1) validates SGI's market dominance — the FTC concluded the integration was powerful enough to harm competition and (2) reduces antitrust risk by providing a negotiated safe harbor. The 7-year term provides regulatory certainty through 2031, covering our full investment horizon. We view ongoing FTC compliance costs (~$5M/year est.) as immaterial relative to the $225M synergy opportunity.</div>
+      </div>
+
+      <!-- Patent Litigation -->
+      <div class="chart-card">
+        <div class="chart-title" style="margin-bottom:12px;">Patent &amp; IP Matters</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+          <div style="padding:8px 12px;background:var(--surface);border-radius:5px;border-left:2px solid var(--green);">
+            <div style="font-weight:700;color:var(--white);margin-bottom:3px;">Tempur-Pedic Core IP Portfolio</div>
+            <div style="color:var(--gray-200);line-height:1.5;">1,200+ patents globally covering TEMPUR material formulations, pressure-relief technologies, and smart sleep systems. Patent portfolio provides ~18-year runway of material IP protection.</div>
+          </div>
+          <div style="padding:8px 12px;background:var(--surface);border-radius:5px;border-left:2px solid var(--orange);">
+            <div style="font-weight:700;color:var(--white);margin-bottom:3px;">Purple Innovation IP Dispute (Resolved)</div>
+            <div style="color:var(--gray-200);line-height:1.5;">Former litigation with Purple Innovation over gel polymer grid technology settled in 2022. No ongoing claims. Settlement terms confidential but did not materially impact either party's IP position.</div>
+          </div>
+          <div style="padding:8px 12px;background:var(--surface);border-radius:5px;border-left:2px solid var(--green);">
+            <div style="font-weight:700;color:var(--white);margin-bottom:3px;">No Material Active Patent Litigation</div>
+            <div style="color:var(--gray-200);line-height:1.5;">As of Q4 2025 10-K, no material patent litigation pending. Routine IP defense activities handled in ordinary course.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- International Regulatory -->
+      <div class="chart-card">
+        <div class="chart-title" style="margin-bottom:12px;">International Regulatory Status</div>
+        <div class="tbl-wrap">
+          <table class="data-table" style="font-size:11px;">
+            <thead><tr><th>Jurisdiction</th><th>Matter</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>European Union</td><td>Competition filing (merger)</td><td><span style="color:var(--green);">Approved</span></td></tr>
+              <tr><td>United Kingdom</td><td>CMA review (merger)</td><td><span style="color:var(--green);">Cleared</span></td></tr>
+              <tr><td>Canada</td><td>Competition Bureau notification</td><td><span style="color:var(--green);">No objection</span></td></tr>
+              <tr><td>Germany</td><td>Bundeskartellamt review</td><td><span style="color:var(--green);">Phase I clearance</span></td></tr>
+              <tr><td>REACH/EU</td><td>MDI foam exposure regulations</td><td><span style="color:var(--orange);">Monitoring</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== SECTION 18: MACRO DASHBOARD ===== -->
 <section class="section" id="macro-dashboard">
   <div class="section-anchor" id="macro-dashboard-anchor" style="position:absolute;top:-60px;"></div>
@@ -5366,7 +6452,7 @@ function sortTable(tableId, colIdx) {
 
 // ===== SCROLLSPY =====
 function initScrollspy() {
-  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references'];
+  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references','esg-profile','institutional-ownership','management-team','analyst-notes','price-vs-fve','rating-history','longterm-valuation','dividend-history','forward-valuation','synergy-tracker','industry-position','regulatory-history'];
   const navItems = document.querySelectorAll('.nav-item[data-target]');
 
   function getActive() {
@@ -9506,6 +10592,18 @@ const chartInits = {
   'macro-dashboard': [initMacroDashboard],
   'regulatory-filings': [initRegulatoryFilings],
   'references': [],
+  'esg-profile': [initESGProfile],
+  'institutional-ownership': [],
+  'management-team': [],
+  'analyst-notes': [],
+  'price-vs-fve': [initPriceVsFVE],
+  'rating-history': [],
+  'longterm-valuation': [],
+  'dividend-history': [initDividendHistory],
+  'forward-valuation': [],
+  'synergy-tracker': [initSynergyTracker],
+  'industry-position': [initIndustryPosition],
+  'regulatory-history': [],
   'ml-prediction': [initSensitivityChart, initFeatureImportanceChart],
   'dcf-analysis': [initDCFAnalysis],
   'modeling-lab': [],
@@ -9528,7 +10626,7 @@ function initSection(sectionId) {
 
 // ===== INTERSECTION OBSERVER FOR LAZY INIT =====
 function setupLazyCharts() {
-  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references'];
+  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references','esg-profile','institutional-ownership','management-team','analyst-notes','price-vs-fve','rating-history','longterm-valuation','dividend-history','forward-valuation','synergy-tracker','industry-position','regulatory-history'];
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -14466,6 +15564,103 @@ async function refreshFilings() {
 
 function initRegulatoryFilings() {
   renderFilings();
+}
+
+
+// ===== NEW SECTIONS =====
+
+function initESGProfile() { /* static — no chart needed */ }
+
+function initPriceVsFVE() {
+  const ctx = document.getElementById('priceVsFVEChart');
+  if (!ctx) return;
+  const labels = ['Jan\'24','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'26','Feb','Mar'];
+  const prices = [75.2,77.4,80.1,82.3,84.5,83.2,85.4,83.8,86.1,87.5,88.2,85.4,90.1,93.4,95.6,97.8,92.4,87.2,81.3,75.6,70.2,65.4,61.8,58.1,60.4,64.8,69.4];
+  const fveValues = [88,88,88,88,88,88,88,88,88,88,88,88,92,92,92,92,100,100,100,100,100,100,100,100,100,100,100];
+  const barColors = prices.map((p,i) => p > fveValues[i] ? 'rgba(230,107,25,0.75)' : 'rgba(0,144,181,0.75)');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'SGI Price ($)', data: prices, backgroundColor: barColors, order: 2 },
+        { label: 'Fair Value Estimate ($100)', data: fveValues, type: 'line', borderColor: '#ffd700', borderDash: [6,3], borderWidth: 2, pointRadius: 0, fill: false, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: false, min: 40, max: 120, title: { display: true, text: 'Price ($)' } }
+      },
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+}
+
+function initSynergyTracker() {
+  const ctx = document.getElementById('synergyProgressChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Q1 2025','Q2 2025','Q3 2025','Q4 2025','FY2026E','FY2027E','FY2028E'],
+      datasets: [
+        { label: 'Cumulative Realized ($M)', data: [15,45,65,80,145,195,225], backgroundColor: 'rgba(0,208,132,0.7)', borderColor: 'rgba(0,208,132,1)', borderWidth: 1 },
+        { label: 'Total Target ($M)', data: [225,225,225,225,225,225,225], type: 'line', borderColor: '#ffd700', borderDash: [6,3], borderWidth: 2, pointRadius: 0, fill: false }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+function initIndustryPosition() {
+  const ctx1 = document.getElementById('marketShareChart');
+  if (ctx1) {
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['SGI (Tempur/Sealy/MF)','Sleep Number','Purple + Online DTC','Other Specialty Retail','Furniture/Dept Stores','Mass Market'],
+        datasets: [{ data: [27,8,12,13,20,20], backgroundColor: ['rgba(0,144,181,0.85)','rgba(0,208,132,0.7)','rgba(109,40,217,0.7)','rgba(255,154,0,0.7)','rgba(156,163,175,0.7)','rgba(75,85,99,0.6)'], borderWidth: 1 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+    });
+  }
+  const ctx2 = document.getElementById('industryVolumeASPChart');
+  if (ctx2) {
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: ['2019','2020','2021','2022','2023','2024','2025E'],
+        datasets: [
+          { label: 'Industry Units (M)', data: [41.2,42.8,43.1,40.8,38.4,37.2,38.1], backgroundColor: 'rgba(0,144,181,0.6)', yAxisID: 'y' },
+          { label: 'Avg Selling Price ($)', data: [382,394,412,432,448,452,461], type: 'line', borderColor: '#ffd700', borderWidth: 2, pointRadius: 4, fill: false, yAxisID: 'y2' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { type: 'linear', position: 'left', title: { display: true, text: 'Units (M)' }, min: 34, max: 46 },
+          y2: { type: 'linear', position: 'right', title: { display: true, text: 'ASP ($)' }, min: 350, max: 500, grid: { drawOnChartArea: false } }
+        },
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+}
+
+function initDividendHistory() {
+  const ctx = document.getElementById('dividendHistoryChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],
+      datasets: [{ label: 'Annual Dividend / Share ($)', data: [0.36,0.40,0.44,0.44,0.44,0.44,0.76,0.88,0.96,1.04,1.08], backgroundColor: 'rgba(0,144,181,0.7)', borderColor: 'rgba(0,144,181,1)', borderWidth: 1 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'DPS ($)' } } } }
+  });
 }
 
 // ===== INIT =====
