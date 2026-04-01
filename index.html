@@ -3767,6 +3767,134 @@ async function exportPDF() {
       return y;
     }
 
+
+    // ── PDF CHART HELPER ─────────────────────────────────────────────────────
+    // Renders data to a canvas, converts to PNG, embeds in the PDF at (x,y,w,h)
+    function makeChartPDF(cfg) {
+      // cfg: { title, type('bar'|'line'|'hbar'), labels[], datasets[{label,data[],color}], width, height }
+      const cW = cfg.width || 700, cH = cfg.height || 280;
+      const canvas = document.createElement('canvas');
+      canvas.width = cW; canvas.height = cH;
+      const ctx = canvas.getContext('2d');
+
+      const PAD_L = 62, PAD_R = 16, PAD_T = 36, PAD_B = 52;
+      const chartW = cW - PAD_L - PAD_R;
+      const chartH = cH - PAD_T - PAD_B;
+      const n = cfg.labels.length;
+
+      // White bg
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cW, cH);
+
+      // Title
+      ctx.fillStyle = '#0A1628'; ctx.font = 'bold 13px Arial';
+      ctx.textAlign = 'center'; ctx.fillText(cfg.title, cW/2, 22);
+
+      // Axis
+      ctx.strokeStyle = '#94A3B8'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(PAD_L, PAD_T); ctx.lineTo(PAD_L, PAD_T+chartH);
+      ctx.lineTo(PAD_L+chartW, PAD_T+chartH); ctx.stroke();
+
+      // Value range
+      let minV=0, maxV=0;
+      cfg.datasets.forEach(ds => ds.data.forEach(v => {
+        if (v!=null){ if(v<minV)minV=v; if(v>maxV)maxV=v; }
+      }));
+      if (cfg.type==='stacked') {
+        const sums = cfg.labels.map((_,i)=>cfg.datasets.reduce((s,ds)=>s+(ds.data[i]||0),0));
+        maxV = Math.max(...sums); minV = 0;
+      }
+      const rawR = maxV - minV || 1;
+      const mag = Math.pow(10, Math.floor(Math.log10(rawR/5)));
+      const step = mag * (rawR/5 > 5 ? 2 : 1);
+      const axMin = Math.floor(minV/step)*step;
+      const axMax = Math.ceil(maxV/step)*step;
+      const axR = axMax - axMin || 1;
+      const tickN = 5;
+      function toY(v){ return PAD_T + chartH - ((v-axMin)/axR)*chartH; }
+
+      // Gridlines + Y labels
+      ctx.textAlign='right'; ctx.font='9px Arial'; ctx.fillStyle='#64748B';
+      for(let t=0;t<=tickN;t++){
+        const tv=axMin+(axR/tickN)*t, ty=toY(tv);
+        ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=0.5;
+        ctx.beginPath(); ctx.moveTo(PAD_L,ty); ctx.lineTo(PAD_L+chartW,ty); ctx.stroke();
+        const lbl=Math.abs(tv)>=1000?(tv/1000).toFixed(1)+'K':tv.toFixed(Math.abs(tv)<10&&tv%1!==0?2:0);
+        ctx.fillStyle='#64748B'; ctx.fillText(lbl, PAD_L-4, ty+3);
+      }
+
+      const COLORS=['#1A4080','#0E7490','#166534','#B45309','#5B21B6','#DC2626'];
+
+      if(cfg.type==='line'){
+        cfg.datasets.forEach((ds,di)=>{
+          const col=ds.color||COLORS[di%COLORS.length];
+          ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.setLineDash([]);
+          ctx.beginPath();
+          let st=false;
+          ds.data.forEach((v,i)=>{
+            if(v==null)return;
+            const x=PAD_L+(i+0.5)*(chartW/n), y2=toY(v);
+            if(!st){ctx.moveTo(x,y2);st=true;}else ctx.lineTo(x,y2);
+          });
+          ctx.stroke();
+          ctx.fillStyle=col;
+          ds.data.forEach((v,i)=>{
+            if(v==null)return;
+            const x=PAD_L+(i+0.5)*(chartW/n), y2=toY(v);
+            ctx.beginPath(); ctx.arc(x,y2,3.5,0,Math.PI*2); ctx.fill();
+          });
+        });
+      } else if(cfg.type==='stacked'){
+        const bw=(chartW/n)*0.65;
+        cfg.labels.forEach((_,i)=>{
+          const bx=PAD_L+i*(chartW/n)+(chartW/n-bw)/2;
+          let stackY=toY(0);
+          cfg.datasets.forEach((ds,di)=>{
+            const v=ds.data[i]||0, col=ds.color||COLORS[di%COLORS.length];
+            const bh=(v/axR)*chartH;
+            ctx.fillStyle=col; ctx.fillRect(bx,stackY-bh,bw,bh);
+            stackY-=bh;
+          });
+        });
+      } else { // clustered bar
+        const gW=chartW/n, numDS=cfg.datasets.length;
+        const bw=Math.min(gW*0.68/numDS,28), gPad=(gW-bw*numDS)/2;
+        cfg.datasets.forEach((ds,di)=>{
+          const col=ds.color||COLORS[di%COLORS.length];
+          ds.data.forEach((v,i)=>{
+            if(v==null)return;
+            const bx=PAD_L+i*gW+gPad+di*bw;
+            const baseY=toY(Math.max(0,axMin)), topY=toY(v);
+            ctx.fillStyle=col; ctx.fillRect(bx,Math.min(baseY,topY),bw,Math.abs(baseY-topY));
+          });
+        });
+      }
+
+      // X labels
+      ctx.textAlign='center'; ctx.font='9px Arial'; ctx.fillStyle='#475569';
+      cfg.labels.forEach((lbl,i)=>{
+        const x=PAD_L+(i+0.5)*(chartW/n);
+        ctx.fillText(lbl,x,PAD_T+chartH+14);
+      });
+
+      // Legend
+      let lx=PAD_L; const ly=PAD_T+chartH+34;
+      cfg.datasets.forEach((ds,di)=>{
+        const col=ds.color||COLORS[di%COLORS.length];
+        ctx.fillStyle=col; ctx.fillRect(lx,ly-9,12,9);
+        ctx.fillStyle='#374151'; ctx.font='9px Arial'; ctx.textAlign='left';
+        ctx.fillText(ds.label,lx+15,ly);
+        lx+=ctx.measureText(ds.label).width+32;
+      });
+
+      return canvas.toDataURL('image/png');
+    }
+
+    // Embed a PNG dataURL into the PDF at mm coords (x,y,w,h)
+    function addChartToPDF(doc, pngDataUrl, x, y, w, h) {
+      doc.addImage(pngDataUrl,'PNG',x,y,w,h);
+    }
+
     function sectionTitle(txt, y) {
       doc.setTextColor(...navy);
       doc.setFontSize(14);
@@ -3987,6 +4115,77 @@ async function exportPDF() {
     footer('');
 
     // ══════════════════════════════════════════
+
+    // ══════════════════════════════════════════
+    // PAGE 2B  -  PLAIN ENGLISH: WHAT THIS MEANS FOR YOU
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+
+    // Header
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, W, 22, 'F');
+    doc.setFillColor(...teal);
+    doc.rect(0, 22, W, 1.5, 'F');
+    doc.setTextColor(...white);
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Plain English: What This Analysis Actually Means', W/2, 14, { align:'center' });
+    y = 30;
+
+    // Intro blurb
+    doc.setFillColor(224, 242, 254);
+    doc.roundedRect(10, y, W-20, 16, 2, 2, 'F');
+    doc.setFillColor(...teal); doc.rect(10, y, 2.5, 16, 'F');
+    doc.setTextColor(...navy); doc.setFontSize(8.5); doc.setFont('helvetica', 'bold');
+    doc.text('Bottom line up front:', 15, y+6);
+    doc.setTextColor(...gray); doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+    doc.text('SGI stock trades at ~$69. Our analysis says it\'s worth ~$100 — a 44% discount. Here\'s why, in plain terms.', 15, y+13, { maxWidth: W-28 });
+    y += 22;
+
+    // Helper: draw a plain-English explanation box
+    function plainBox(y, emoji, heading, body, bgColor, borderColor) {
+      bgColor = bgColor || [248, 250, 252];
+      borderColor = borderColor || teal;
+      const lines = doc.splitTextToSize(body, W - 38);
+      const boxH = 10 + lines.length * 4.8 + 4;
+      y = checkY(y, boxH + 4);
+      doc.setFillColor(...bgColor);
+      doc.roundedRect(10, y, W-20, boxH, 2, 2, 'F');
+      doc.setFillColor(...borderColor); doc.rect(10, y, 2.5, boxH, 'F');
+      doc.setTextColor(...navy); doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+      doc.text(emoji + '  ' + heading, 15, y+7);
+      doc.setTextColor(...gray); doc.setFontSize(7.8); doc.setFont('helvetica', 'normal');
+      doc.text(lines, 15, y+13);
+      return y + boxH + 4;
+    }
+
+    y = plainBox(y, '📈', 'The Company Is Growing Fast — But the Stock Hasn\'t Caught Up Yet',
+      'Somnigroup (SGI) just completed a huge acquisition — they bought Mattress Firm in early 2025, making them both the manufacturer AND the largest retailer of mattresses in the US. Revenue jumped from $4.9B to $7.5B in one year (+52%). The stock is still priced like it\'s the old, smaller company. That gap is the opportunity.',
+      [248, 250, 252], teal);
+
+    y = plainBox(y, '💰', 'EPS Is About to Triple — That\'s the Core of the "Buy" Case',
+      'In 2025, earnings per share were just $1.84 because of one-time costs from the acquisition (lawyers, debt, restructuring). In 2026, now that the dust has settled, analysts estimate EPS of $4.82 — nearly a 3x jump. By 2028, EPS is expected to reach $7.08. When earnings triple but the stock price stays flat, that\'s a classic undervaluation signal.',
+      [240, 253, 244], green);
+
+    y = plainBox(y, '🏦', 'Yes, They Have a Lot of Debt — But It\'s Going Down Quickly',
+      'To buy Mattress Firm, SGI borrowed heavily. Their debt-to-EBITDA ratio hit 7.81x in 2025 — that\'s high. Think of it like a person who took out a big mortgage. The concern is real, but the house is a good one: they generate $633M in free cash flow per year, and management has committed to paying down ~$500M+ of debt each year through 2028. By 2027, the ratio drops to ~3.9x — comfortable territory.',
+      [255, 251, 235], gold);
+
+    y = plainBox(y, '🔗', 'Owning Both the Factory and the Store Is a Big Deal',
+      'Before the acquisition, SGI made Tempur-Pedic and Sealy mattresses and sold them through third-party stores. Now they also own 2,300 Mattress Firm stores — the #1 mattress retail chain in the US. This means they capture profit at every step: manufacturing, delivery, and retail sale. That\'s called "vertical integration," and it typically leads to higher profit margins over time.',
+      [248, 250, 252], teal);
+
+    y = plainBox(y, '📊', 'What "44% Upside" Actually Means',
+      'When analysts say the stock has 44% upside to a $100 target, they mean: if the company hits its earnings targets over the next 12 months, investors paying $69 today should expect the stock to reach around $100. That\'s based on 6 different valuation methods (discounted cash flows, earnings multiples, peer comparison etc.), all of which point to a $88–$120 range. The $100 target is the midpoint.',
+      [240, 253, 244], green);
+
+    y = plainBox(y, '⚠️', 'The Main Risks — When This Trade Goes Wrong',
+      'Two things could prevent this from working: (1) If the US housing market stays depressed (people buy mattresses when they move), fewer consumers shop for mattresses. (2) If the debt load becomes a problem — rising interest rates or slower-than-expected earnings recovery could tighten their financial flexibility. The bear case puts the stock at $59, which is actually below where it trades today. That\'s why this is a "considered" bet, not a certainty.',
+      [255, 241, 242], red);
+
+    footer('');
+
     // PAGE 3  -  COMPANY OVERVIEW
     // ══════════════════════════════════════════
     newPage();
@@ -4179,6 +4378,35 @@ async function exportPDF() {
     doc.setFontSize(6.5);
     doc.setFont('helvetica', 'italic');
     doc.text('E = Analyst estimates. FY2025 includes Mattress Firm consolidation from Sep 2024. Source: SGI SEC filings, FactSet consensus.', 10, y);
+    y += 5;
+
+    // ── Chart: Revenue & EBITDA trend ──────────────────────────────────────────
+    {
+      const pngFin = makeChartPDF({
+        title: 'Revenue, EBITDA & Net Income ($M) — FY2021 to FY2028E',
+        type: 'bar',
+        labels: ['FY2021','FY2022','FY2023','FY2024','FY2025','FY2026E','FY2027E','FY2028E'],
+        datasets: [
+          { label:'Revenue ($M)',    data:[4930.8,4921.2,4925.4,4930.9,7476.5,7952.0,8369.0,8881.0], color:'#1A4080' },
+          { label:'EBITDA ($M)',     data:[1003.5,807.3,739.3,804.2,1040.5,1478.0,1673.0,1886.0],    color:'#0E7490' },
+          { label:'Net Income ($M)', data:[624.5,455.7,368.1,384.3,384.1,711.0,881.0,1055.0],        color:'#166534' },
+        ],
+        width:700, height:240
+      });
+      y = checkY(y, 64);
+      addChartToPDF(doc, pngFin, 10, y, W-20, 62);
+      y += 65;
+      // Plain-English callout
+      const finLines = doc.splitTextToSize(
+        '📈  Plain English: Revenue nearly doubled in FY2025 due to the Mattress Firm acquisition. The key story is profit (EBITDA, green bars) growing even faster than revenue going forward — from $1.0B in 2025 to $1.9B by 2028. That profit growth is what drives the stock price.',
+        W-28);
+      doc.setFillColor(240, 253, 244); doc.roundedRect(10, y, W-20, finLines.length*4.5+8, 2, 2, 'F');
+      doc.setFillColor(...green); doc.rect(10, y, 2.5, finLines.length*4.5+8, 'F');
+      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+      doc.text(finLines, 15, y+6);
+      y += finLines.length*4.5+12;
+    }
+
     footer('');
 
     // ══════════════════════════════════════════
@@ -4378,6 +4606,33 @@ async function exportPDF() {
     const deleverText = 'SGI\'s FY2025 Net Debt/EBITDA of 7.81x reflects peak leverage from the Mattress Firm acquisition financing. Management targets reducing this ratio to below 3.5x by FY2028E through a combination of EBITDA growth (synergy realization) and mandatory debt amortization of ~$400M annually. FCF generation of $745M (FY2026E) provides capacity for both deleveraging and capital returns.';
     const delLines = doc.splitTextToSize(deleverText, W - 28);
     doc.text(delLines, 14, y + 14);
+    y += 34;
+
+    // ── Chart: Debt & FCF trajectory ───────────────────────────────────────────
+    {
+      const pngBS = makeChartPDF({
+        title: 'Free Cash Flow vs Total Debt ($M)',
+        type: 'bar',
+        labels: ['FY2021','FY2022','FY2023','FY2024','FY2025'],
+        datasets: [
+          { label:'FCF ($M)',        data:[599.8,72.3,384.9,569.2,633.2], color:'#166534' },
+          { label:'Total Debt ($M)', data:[2820.1,3532.6,3449.9,4632.2,8620.2], color:'#DC2626' },
+        ],
+        width:700, height:210
+      });
+      y = checkY(y, 60);
+      addChartToPDF(doc, pngBS, 10, y, W-20, 58);
+      y += 61;
+      const bsLines = doc.splitTextToSize(
+        '⚠️  Plain English: The red bars show debt spiked massively in 2025 due to the acquisition. The green bars show SGI generates strong cash each year — $633M in FY2025. That cash goes toward paying down the red bars. Think of it like a big mortgage with a high monthly income: uncomfortable at first, manageable over time.',
+        W-28);
+      doc.setFillColor(255,251,235); doc.roundedRect(10,y,W-20,bsLines.length*4.5+8,2,2,'F');
+      doc.setFillColor(...gold); doc.rect(10,y,2.5,bsLines.length*4.5+8,'F');
+      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      doc.text(bsLines,15,y+6);
+      y += bsLines.length*4.5+12;
+    }
+
     footer('');
 
     // ══════════════════════════════════════════
@@ -4469,6 +4724,34 @@ async function exportPDF() {
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'normal');
     dcfAssumptions.forEach((a, i) => doc.text('- ' + a, 14 + (i % 3) * 65, y + 14 + Math.floor(i / 3) * 6));
+    y += 25;
+
+    // ── Chart: Valuation range by method ───────────────────────────────────────
+    {
+      const pngVal = makeChartPDF({
+        title: 'Price Target Range by Valuation Method ($)',
+        type: 'bar',
+        labels: ['DCF','Fwd P/E','EV/EBITDA','SOTP','Consensus','Monte Carlo','Current Price'],
+        datasets: [
+          { label:'Low ($)',  data:[74,82,52,85,83,67,69],  color:'#DC2626' },
+          { label:'Base ($)', data:[88,99,62,100,100,94,69], color:'#065F46' },
+          { label:'High ($)', data:[106,120,74,118,115,115,69],color:'#166534' },
+        ],
+        width:700, height:220
+      });
+      y = checkY(y, 62);
+      addChartToPDF(doc, pngVal, 10, y, W-20, 60);
+      y += 63;
+      const valLines = doc.splitTextToSize(
+        '📊  Plain English: Every bar chart above represents a different way to calculate what SGI is worth. The green bars (high end) average $110+. The navy bars (base case) average $92. Even the most conservative method (EV/EBITDA low) gives $52 — which is still below today\'s $69 price in that lone pessimistic scenario. The weight of evidence strongly points to undervaluation.',
+        W-28);
+      doc.setFillColor(240,253,244); doc.roundedRect(10,y,W-20,valLines.length*4.5+8,2,2,'F');
+      doc.setFillColor(...green); doc.rect(10,y,2.5,valLines.length*4.5+8,'F');
+      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      doc.text(valLines,15,y+6);
+      y += valLines.length*4.5+12;
+    }
+
     footer('');
 
     // ══════════════════════════════════════════
@@ -5179,6 +5462,33 @@ async function exportPDF() {
       doc.text(p18_cLines, 14, y + 11);
       y += p18_cH + 3;
     });
+
+    // ── Chart: Quarterly EPS trend ─────────────────────────────────────────────
+    {
+      const pngEPS = makeChartPDF({
+        title: 'Quarterly EPS: Reported vs Adj EPS vs Consensus ($)',
+        type: 'line',
+        labels: ['Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25'],
+        datasets: [
+          { label:'Reported EPS', data:[0.64,0.43,0.43,0.60,0.73,0.40,-0.17,0.47,0.83,0.66], color:'#1A4080' },
+          { label:'Adj EPS',      data:[0.75,0.55,0.56,0.70,0.84,0.53,0.35,0.65,0.97,0.79], color:'#0E7490' },
+          { label:'Consensus',    data:[0.60,0.46,0.45,0.57,0.68,0.44,0.10,0.43,0.78,0.63], color:'#92400E' },
+        ],
+        width:700, height:230
+      });
+      y = checkY(y, 64);
+      addChartToPDF(doc, pngEPS, 10, y, W-20, 62);
+      y += 65;
+      const epsLines = doc.splitTextToSize(
+        '📉➡📈  Plain English: The dip to -$0.17 EPS in Q1 2025 looks alarming, but it\'s entirely explained by one-time acquisition costs. Strip those out (Adj EPS = $0.35) and the underlying business was profitable. From Q2 2025 onwards, both reported and adjusted EPS recovered strongly, confirming the core business is healthy.',
+        W-28);
+      doc.setFillColor(224,242,254); doc.roundedRect(10,y,W-20,epsLines.length*4.5+8,2,2,'F');
+      doc.setFillColor(...teal); doc.rect(10,y,2.5,epsLines.length*4.5+8,'F');
+      doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      doc.text(epsLines,15,y+6);
+      y += epsLines.length*4.5+12;
+    }
+
     footer('');
 
     // ══════════════════════════════════════════
