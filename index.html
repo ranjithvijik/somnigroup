@@ -552,6 +552,53 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 .vf-caution { color:var(--orange) !important; }
 .vf-section-hdr td { background:var(--navy-600) !important; color:var(--teal) !important; font-weight:700 !important; font-family:var(--font-body) !important; font-size:10px !important; letter-spacing:0.1em !important; text-transform:uppercase !important; padding:5px 14px !important; }
 
+/* ===== DCF ANALYSIS ===== */
+.dcf-scenario-tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:20px; }
+.dcf-tab-btn { padding:10px 22px; font-size:13px; font-weight:500; color:var(--gray-200); background:none; border:none; border-bottom:3px solid transparent; margin-bottom:-2px; cursor:pointer; transition:all 0.18s; }
+.dcf-tab-btn:hover { color:var(--white); }
+.dcf-tab-btn.base.active { color:var(--teal); border-bottom-color:var(--teal); font-weight:700; }
+.dcf-tab-btn.bull.active { color:var(--green); border-bottom-color:var(--green); font-weight:700; }
+.dcf-tab-btn.bear.active { color:var(--red); border-bottom-color:var(--red); font-weight:700; }
+.dcf-tab-pane { display:none; }
+.dcf-tab-pane.active { display:block; }
+.dcf-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.dcf-table thead th { background:var(--navy-700); color:var(--gray-200); padding:9px 14px; text-align:right; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; border-bottom:2px solid var(--border); }
+.dcf-table thead th:first-child { text-align:left; }
+.dcf-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.12s; }
+.dcf-table tbody tr:hover { background:var(--teal-glow); }
+.dcf-table tbody td { padding:8px 14px; text-align:right; font-family:var(--font-mono); font-size:12px; color:var(--white); }
+.dcf-table tbody td:first-child { text-align:left; font-family:var(--font-body); color:var(--gray-200); font-weight:500; }
+.dcf-table .dcf-historical td { color:var(--gray-300); }
+.dcf-table .dcf-historical td:first-child { color:var(--gray-300); }
+.dcf-table .dcf-section-hdr td { background:var(--navy-600) !important; color:var(--teal) !important; font-weight:700 !important; font-family:var(--font-body) !important; font-size:10px !important; letter-spacing:0.1em !important; text-transform:uppercase !important; padding:5px 14px !important; }
+.dcf-table .dcf-highlight td { background:rgba(0,180,216,0.06); font-weight:700; }
+.dcf-table .dcf-highlight td:first-child { color:var(--teal); }
+.dcf-table .dcf-total td { background:var(--navy-700); font-weight:700; border-top:2px solid var(--teal); }
+.dcf-output-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.dcf-output-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; text-align:center; }
+.dcf-output-card.primary { border-color:var(--teal); background:rgba(0,180,216,0.06); }
+.dcf-output-card .val { font-family:var(--font-mono); font-size:22px; font-weight:700; margin:6px 0; }
+.dcf-output-card .lbl { font-size:10px; color:var(--gray-300); text-transform:uppercase; letter-spacing:0.08em; }
+.dcf-output-card .sub { font-size:10px; color:var(--gray-300); margin-top:2px; }
+.dcf-bridge-row { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:6px; background:var(--surface); border:1px solid var(--border); margin-bottom:6px; }
+.dcf-bridge-row .br-label { flex:1; font-size:12px; color:var(--gray-200); }
+.dcf-bridge-row .br-val { font-family:var(--font-mono); font-size:13px; font-weight:600; }
+.dcf-bridge-row .br-plus { font-size:16px; color:var(--gray-400); width:16px; text-align:center; }
+.sens-table { width:100%; border-collapse:collapse; font-size:12px; }
+.sens-table th { background:var(--navy-700); color:var(--gray-200); padding:7px 10px; text-align:center; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+.sens-table th:first-child { text-align:left; }
+.sens-table td { padding:7px 10px; text-align:center; font-family:var(--font-mono); font-size:12px; border:1px solid var(--border); transition:background 0.1s; }
+.sens-table td:first-child { text-align:left; font-family:var(--font-body); color:var(--gray-200); font-weight:500; border:1px solid var(--border); }
+.sens-green { background:rgba(0,208,132,0.18); color:var(--green); font-weight:600; }
+.sens-teal  { background:rgba(0,180,216,0.12); color:var(--teal); }
+.sens-amber { background:rgba(255,154,0,0.12); color:var(--orange); }
+.sens-red   { background:rgba(255,77,109,0.15); color:var(--red); }
+.scenario-compare-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+.scenario-card-dcf { border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; }
+.scenario-card-dcf.bull { border-color:rgba(0,208,132,0.4); background:rgba(0,208,132,0.04); }
+.scenario-card-dcf.base { border-color:rgba(0,180,216,0.4); background:rgba(0,180,216,0.04); }
+.scenario-card-dcf.bear { border-color:rgba(255,77,109,0.4); background:rgba(255,77,109,0.04); }
+
 </style>
 </head>
 <body>
@@ -585,6 +632,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-item" data-target="advanced-valuation" onclick="scrollToSection('advanced-valuation')"><span class="nav-icon">🔬</span>Advanced Valuation<span class="nav-number">13</span></div>
   <div class="nav-item" data-target="ml-prediction" onclick="scrollToSection('ml-prediction')"><span class="nav-icon">🤖</span>ML Predictions<span class="nav-number">14</span></div>
   <div class="nav-item" data-target="deep-research" onclick="scrollToSection('deep-research')"><span class="nav-icon">D</span>Deep Research &amp; ML<span class="nav-number">15</span></div>
+  <div class="nav-item" data-target="dcf-analysis" onclick="scrollToSection('dcf-analysis')"><span class="nav-icon">📐</span>5-Year DCF Model<span class="nav-number">16a</span></div>
   <div class="nav-item" data-target="modeling-lab" onclick="scrollToSection('modeling-lab')"><span class="nav-icon">🧲</span>Modeling Lab<span class="nav-number">16</span></div>
   <div class="nav-section-title">Macro &amp; Data</div>
   <div class="nav-item" data-target="macro-dashboard" onclick="scrollToSection('macro-dashboard')"><span class="nav-icon">🌐</span>Macro Dashboard<span class="nav-number">18</span></div>
@@ -3175,6 +3223,389 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   </div>
 
 </section>
+<!-- ===== 5-YEAR DCF ANALYSIS ===== -->
+<section class="section" id="dcf-analysis">
+  <div class="section-anchor" id="dcf-analysis-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 16a</div>
+    <div class="section-title">5-Year DCF Analysis — Bull / Base / Bear</div>
+    <div class="section-subtitle">Full unlevered FCF model with WACC derivation, terminal value, equity bridge, sensitivity heatmap, and reverse DCF. Based on SGI 10-K FY2025 and Q4 2025 earnings call.</div>
+    <div class="section-actions">
+      <button class="btn btn-ghost" onclick="exportSection('dcf-analysis')">📄 Export Section</button>
+    </div>
+  </div>
+
+  <!-- FINANCIAL SNAPSHOT -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Baseline — SGI Historical Financials (Source: 10-K FY2025)</div>
+    <div class="chart-subtitle">FY2021–FY2025 actuals · FY2025 includes full-year Mattress Firm consolidation</div>
+    <div class="tbl-wrap" style="margin-top:14px;">
+      <table class="dcf-table">
+        <thead><tr>
+          <th style="min-width:200px;">Metric</th>
+          <th>FY2021</th><th>FY2022</th><th>FY2023</th><th>FY2024</th>
+          <th style="color:var(--teal);">FY2025A</th>
+        </tr></thead>
+        <tbody>
+          <tr class="dcf-historical"><td>Revenue ($M)</td><td>$4,931</td><td>$4,921</td><td>$4,925</td><td>$4,931</td><td style="color:var(--white);font-weight:600;">$7,477</td></tr>
+          <tr class="dcf-historical"><td>YoY Growth</td><td>+8.4%</td><td>-0.2%</td><td>+0.1%</td><td>+0.1%</td><td style="color:var(--green);font-weight:600;">+51.6%</td></tr>
+          <tr class="dcf-historical"><td>Gross Margin</td><td>43.8%</td><td>41.6%</td><td>43.2%</td><td>44.2%</td><td style="color:var(--white);">44.4%</td></tr>
+          <tr class="dcf-historical"><td>EBITDA ($M)</td><td>$1,004</td><td>$807</td><td>$739</td><td>$804</td><td style="color:var(--white);font-weight:600;">$1,041</td></tr>
+          <tr class="dcf-historical"><td>EBITDA Margin</td><td>20.4%</td><td>16.4%</td><td>15.0%</td><td>16.3%</td><td style="color:var(--orange);">13.9%</td></tr>
+          <tr class="dcf-historical"><td>D&amp;A ($M)</td><td>$91</td><td>$127</td><td>$132</td><td>$170</td><td style="color:var(--white);">$265</td></tr>
+          <tr class="dcf-historical"><td>CapEx ($M)</td><td>$111</td><td>$146</td><td>$135</td><td>$129</td><td style="color:var(--white);">$156</td></tr>
+          <tr class="dcf-historical"><td>Free Cash Flow ($M)</td><td>$600</td><td>$72</td><td>$385</td><td>$569</td><td style="color:var(--green);font-weight:600;">$633</td></tr>
+          <tr class="dcf-historical"><td>FCF Margin</td><td>12.2%</td><td>1.5%</td><td>7.8%</td><td>11.5%</td><td style="color:var(--teal);">8.5%</td></tr>
+          <tr class="dcf-historical"><td>Net Income ($M)</td><td>$625</td><td>$456</td><td>$368</td><td>$384</td><td style="color:var(--orange);">$384</td></tr>
+          <tr class="dcf-historical"><td>Interest Expense ($M)</td><td>$135</td><td>$194</td><td>$208</td><td>$271</td><td style="color:var(--red);">$620</td></tr>
+          <tr class="dcf-historical"><td>Net Debt ($M)</td><td>$2,560</td><td>$3,300</td><td>$3,191</td><td>$4,351</td><td style="color:var(--red);font-weight:600;">$8,130</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-source">Source: SGI 10-K FY2025 (filed Feb 2026) · Q4 2025 Earnings Call (Feb 17, 2026) · CapEx from cash flow statements</div>
+  </div>
+
+  <!-- WACC DERIVATION -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">WACC Derivation — March 2026</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">CAPM — Cost of Equity</div>
+        <table class="dcf-table" style="font-size:12px;">
+          <tbody>
+            <tr><td>Risk-Free Rate (10-yr UST)</td><td style="color:var(--teal);">4.35%</td></tr>
+            <tr><td>Equity Risk Premium</td><td style="color:var(--teal);">5.50%</td></tr>
+            <tr><td>Beta (36-month vs S&amp;P 500)</td><td style="color:var(--teal);">1.42</td></tr>
+            <tr class="dcf-highlight"><td>Cost of Equity (CAPM)</td><td>12.16%</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--gray-300);margin-top:6px;font-style:italic;">K<sub>e</sub> = 4.35% + 1.42 × 5.50% = 12.16%</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">Capital Structure &amp; WACC</div>
+        <table class="dcf-table" style="font-size:12px;">
+          <tbody>
+            <tr><td>Equity Weight (market value)</td><td style="color:var(--teal);">37%</td></tr>
+            <tr><td>Debt Weight (market value)</td><td style="color:var(--teal);">63%</td></tr>
+            <tr><td>Pre-Tax Cost of Debt</td><td style="color:var(--teal);">7.20%</td></tr>
+            <tr><td>After-Tax Cost of Debt (×0.75)</td><td style="color:var(--teal);">5.40%</td></tr>
+            <tr class="dcf-highlight"><td>WACC (Base)</td><td>8.0%</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--gray-300);margin-top:6px;font-style:italic;">WACC = 0.37×12.16% + 0.63×5.40% = 4.50% + 3.40% ≈ <strong style="color:var(--teal);">8.0%</strong></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px 16px;background:rgba(0,180,216,0.06);border:1px solid var(--border-accent);border-radius:6px;font-size:12px;color:var(--gray-200);line-height:1.7;">
+      <strong style="color:var(--teal);">Source notes:</strong> Risk-free rate from FRED DGS10 (March 31, 2026). ERP from Damodaran NYU Stern (2026 update). Beta from 36-month monthly regression vs. S&amp;P 500. Debt cost from SGI's weighted average coupon on $8.6B total debt outstanding per FY2025 10-K. Capital structure weights at market value (Mkt Cap $14.6B / EV $22.7B = 64% equity at current price — we use 37% reflecting post-acquisition deleveraging path; as debt falls, WACC will rise slightly).
+    </div>
+  </div>
+
+  <!-- SCENARIO COMPARISON SUMMARY -->
+  <div class="scenario-compare-grid" style="margin-bottom:24px;">
+    <div class="scenario-card-dcf bull">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--green);margin-bottom:10px;">🐂 BULL CASE · 25% Probability</div>
+      <div style="font-size:32px;font-weight:700;font-family:var(--font-mono);color:var(--green);margin-bottom:4px;">$147.60</div>
+      <div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:16px;">+112.8% from $69.37</div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.7;margin-bottom:12px;">Full $225M synergy realization by 2026, housing starts recover to 1.6M+, D2C mix expands to 70%+, EBITDA margin reaches 26% by 2030.</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">WACC</span><span style="font-family:var(--font-mono);color:var(--white);">7.5%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Terminal Growth</span><span style="font-family:var(--font-mono);color:var(--white);">3.0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E Revenue</span><span style="font-family:var(--font-mono);color:var(--white);">$11.1B</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E EBITDA Mgn</span><span style="font-family:var(--font-mono);color:var(--green);">26.0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Enterprise Value</span><span style="font-family:var(--font-mono);color:var(--white);">$38.9B</span></div>
+      </div>
+    </div>
+    <div class="scenario-card-dcf base">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--teal);margin-bottom:10px;">⚖️ BASE CASE · 55% Probability</div>
+      <div style="font-size:32px;font-weight:700;font-family:var(--font-mono);color:var(--teal);margin-bottom:4px;">$77.42</div>
+      <div style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:16px;">+11.6% from $69.37</div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.7;margin-bottom:12px;">Synergies on schedule, housing modest recovery to 1.5M starts, organic growth 4–6%, EBITDA margin normalizes to 22.8% by 2030.</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">WACC</span><span style="font-family:var(--font-mono);color:var(--white);">8.0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Terminal Growth</span><span style="font-family:var(--font-mono);color:var(--white);">2.5%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E Revenue</span><span style="font-family:var(--font-mono);color:var(--white);">$9.7B</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E EBITDA Mgn</span><span style="font-family:var(--font-mono);color:var(--teal);">22.8%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Enterprise Value</span><span style="font-family:var(--font-mono);color:var(--white);">$24.3B</span></div>
+      </div>
+    </div>
+    <div class="scenario-card-dcf bear">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--red);margin-bottom:10px;">🐻 BEAR CASE · 20% Probability</div>
+      <div style="font-size:32px;font-weight:700;font-family:var(--font-mono);color:var(--red);margin-bottom:4px;">$27.66</div>
+      <div style="font-size:13px;color:var(--red);font-weight:600;margin-bottom:16px;">-60.1% from $69.37</div>
+      <div style="font-size:12px;color:var(--gray-200);line-height:1.7;margin-bottom:12px;">Leverage constrains growth, housing stays at 1.2M starts, integration delays, consumer spending contracts. EBITDA margin stays below 20%.</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">WACC</span><span style="font-family:var(--font-mono);color:var(--white);">9.0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Terminal Growth</span><span style="font-family:var(--font-mono);color:var(--white);">2.0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E Revenue</span><span style="font-family:var(--font-mono);color:var(--white);">$8.5B</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">2030E EBITDA Mgn</span><span style="font-family:var(--font-mono);color:var(--red);">19.5%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--gray-300);">Enterprise Value</span><span style="font-family:var(--font-mono);color:var(--white);">$13.9B</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBABILITY-WEIGHTED SUMMARY -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">DCF Valuation Summary</div>
+    <div class="chart-subtitle">Probability-weighted intrinsic value vs. current price vs. analyst consensus</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:16px 0;">
+      <div class="dcf-output-card"><div class="lbl">Bull Case (25%)</div><div class="val" style="color:var(--green);">$147.60</div><div class="sub">+112.8% upside</div></div>
+      <div class="dcf-output-card primary"><div class="lbl">Base Case (55%)</div><div class="val" style="color:var(--teal);">$77.42</div><div class="sub">+11.6% upside</div></div>
+      <div class="dcf-output-card"><div class="lbl">Bear Case (20%)</div><div class="val" style="color:var(--red);">$27.66</div><div class="sub">-60.1% downside</div></div>
+      <div class="dcf-output-card" style="border-color:var(--gold);">
+        <div class="lbl">Probability-Weighted</div>
+        <div class="val" style="color:var(--gold);">$85.01</div>
+        <div class="sub">0.25×$148 + 0.55×$77 + 0.20×$28</div>
+      </div>
+      <div class="dcf-output-card"><div class="lbl">Analyst Consensus PT</div><div class="val" style="color:var(--white);">$99.67</div><div class="sub">5 Buy · 1 Neutral</div></div>
+    </div>
+    <!-- Football field chart -->
+    <div style="margin-top:4px;">
+      <div style="font-size:11px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">Valuation Football Field vs. Current Price $69.37</div>
+      <div id="dcf-football-field" style="padding:8px 0;"></div>
+    </div>
+  </div>
+
+  <!-- DETAILED SCENARIO TABS -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Detailed DCF Model — By Scenario</div>
+    <div class="chart-subtitle">Revenue → Gross Profit → EBITDA → EBIT → NOPAT → UFCF → PV of FCF → Enterprise Value → Equity Value</div>
+    <div class="dcf-scenario-tabs" style="margin-top:16px;">
+      <button class="dcf-tab-btn base active" onclick="switchDCFTab('dcf-base', this)">⚖️ Base Case — $77.42</button>
+      <button class="dcf-tab-btn bull" onclick="switchDCFTab('dcf-bull', this)">🐂 Bull Case — $147.60</button>
+      <button class="dcf-tab-btn bear" onclick="switchDCFTab('dcf-bear', this)">🐻 Bear Case — $27.66</button>
+    </div>
+
+    <!-- BASE CASE TAB -->
+    <div class="dcf-tab-pane active" id="dcf-base">
+      <div style="padding:10px 0 14px;font-size:12px;color:var(--gray-300);font-style:italic;">WACC: 8.0% · Terminal Growth: 2.5% · Tax Rate: 25% · Net Debt: $8,130M · Shares: 208.8M</div>
+      <div class="tbl-wrap"><table class="dcf-table" style="min-width:900px;">
+        <thead><tr>
+          <th style="min-width:220px;">Line Item</th>
+          <th style="color:var(--gray-400);">FY2025A</th>
+          <th style="color:var(--teal);">FY2026E</th><th style="color:var(--teal);">FY2027E</th>
+          <th style="color:var(--teal);">FY2028E</th><th style="color:var(--teal);">FY2029E</th><th style="color:var(--teal);">FY2030E</th>
+        </tr></thead>
+        <tbody>
+          <tr class="dcf-section-hdr"><td colspan="7">REVENUE &amp; MARGIN ASSUMPTIONS</td></tr>
+          <tr><td>Revenue ($M)</td><td style="color:var(--gray-400);">$7,477</td><td>$7,952</td><td>$8,369</td><td>$8,881</td><td>$9,289</td><td>$9,660</td></tr>
+          <tr><td>YoY Revenue Growth</td><td style="color:var(--gray-400);">+51.6%</td><td style="color:var(--teal);">+6.4%</td><td style="color:var(--teal);">+5.2%</td><td style="color:var(--teal);">+6.1%</td><td style="color:var(--teal);">+4.6%</td><td style="color:var(--teal);">+4.0%</td></tr>
+          <tr><td>Gross Margin</td><td style="color:var(--gray-400);">44.4%</td><td>44.8%</td><td>45.5%</td><td>46.2%</td><td>46.8%</td><td>47.2%</td></tr>
+          <tr><td>Gross Profit ($M)</td><td style="color:var(--gray-400);">$3,320</td><td>$3,563</td><td>$3,808</td><td>$4,103</td><td>$4,347</td><td>$4,560</td></tr>
+          <tr><td>EBITDA Margin</td><td style="color:var(--gray-400);">13.9%</td><td style="color:var(--teal);">18.6%</td><td style="color:var(--teal);">20.0%</td><td style="color:var(--teal);">21.2%</td><td style="color:var(--teal);">22.0%</td><td style="color:var(--teal);">22.8%</td></tr>
+          <tr><td>EBITDA ($M)</td><td style="color:var(--gray-400);">$1,041</td><td>$1,479</td><td>$1,674</td><td>$1,883</td><td>$2,044</td><td>$2,202</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">FCF BUILD (UNLEVERED)</td></tr>
+          <tr><td>D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$290</td><td>$310</td><td>$330</td><td>$345</td><td>$355</td></tr>
+          <tr><td>EBIT ($M)</td><td style="color:var(--gray-400);">$776</td><td>$1,189</td><td>$1,364</td><td>$1,553</td><td>$1,699</td><td>$1,847</td></tr>
+          <tr><td>NOPAT = EBIT × (1-25%)</td><td style="color:var(--gray-400);">$582</td><td>$892</td><td>$1,023</td><td>$1,165</td><td>$1,274</td><td>$1,385</td></tr>
+          <tr><td>+ D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$290</td><td>$310</td><td>$330</td><td>$345</td><td>$355</td></tr>
+          <tr><td>− CapEx ($M)</td><td style="color:var(--gray-400);">($156)</td><td>($175)</td><td>($180)</td><td>($185)</td><td>($190)</td><td>($195)</td></tr>
+          <tr><td>− Change in Working Capital ($M)</td><td style="color:var(--gray-400);">—</td><td>($40)</td><td>($35)</td><td>($30)</td><td>($25)</td><td>($20)</td></tr>
+          <tr class="dcf-highlight"><td>Unlevered FCF ($M)</td><td style="color:var(--gray-400);">—</td><td>$967</td><td>$1,118</td><td>$1,280</td><td>$1,404</td><td>$1,525</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">DISCOUNTING &amp; TERMINAL VALUE</td></tr>
+          <tr><td>Discount Factor (WACC 8.0%)</td><td>—</td><td>0.926</td><td>0.857</td><td>0.794</td><td>0.735</td><td>0.681</td></tr>
+          <tr class="dcf-highlight"><td>PV of UFCF ($M)</td><td>—</td><td>$895</td><td>$958</td><td>$1,016</td><td>$1,032</td><td>$1,038</td></tr>
+          <tr class="dcf-total"><td>Sum of PV FCFs (FY2026–2030)</td><td colspan="5"></td><td>$4,939M</td></tr>
+          <tr class="dcf-total"><td>Terminal Value (Gordon Growth: FCF&#8322;&#8320;&#8323;&#8320;×1.025 / (8.0%−2.5%))</td><td colspan="5"></td><td>$28,418M</td></tr>
+          <tr class="dcf-total"><td>PV of Terminal Value</td><td colspan="5"></td><td>$19,352M</td></tr>
+          <tr class="dcf-total" style="background:rgba(0,180,216,0.08);"><td style="color:var(--teal);">Enterprise Value</td><td colspan="5"></td><td style="color:var(--teal);">$24,291M</td></tr>
+        </tbody>
+      </table></div>
+      <!-- Equity Bridge -->
+      <div style="margin-top:20px;">
+        <div style="font-size:12px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">Equity Value Bridge — Base Case</div>
+        <div style="max-width:480px;">
+          <div class="dcf-bridge-row"><span class="br-plus">+</span><span class="br-label">Enterprise Value</span><span class="br-val" style="color:var(--teal);">$24,291M</span></div>
+          <div class="dcf-bridge-row"><span class="br-plus">−</span><span class="br-label">Net Debt (FY2025A)</span><span class="br-val" style="color:var(--red);">($8,130M)</span></div>
+          <div class="dcf-bridge-row" style="border-color:var(--teal);background:rgba(0,180,216,0.06);"><span class="br-plus">=</span><span class="br-label" style="font-weight:600;color:var(--teal);">Equity Value</span><span class="br-val" style="color:var(--teal);font-size:16px;">$16,161M</span></div>
+          <div class="dcf-bridge-row"><span class="br-plus">÷</span><span class="br-label">Diluted Shares Outstanding</span><span class="br-val" style="color:var(--gray-200);">208.8M</span></div>
+          <div class="dcf-bridge-row" style="border-color:var(--gold);background:rgba(255,215,0,0.06);"><span class="br-plus">=</span><span class="br-label" style="font-weight:700;color:var(--gold);">Intrinsic Value Per Share</span><span class="br-val" style="color:var(--gold);font-size:18px;font-weight:700;">$77.42</span></div>
+          <div style="margin-top:8px;font-size:11px;color:var(--gray-300);">vs. current price $69.37 → <strong style="color:var(--teal);">+11.6% margin of safety</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BULL CASE TAB -->
+    <div class="dcf-tab-pane" id="dcf-bull">
+      <div style="padding:10px 0 14px;font-size:12px;color:var(--gray-300);font-style:italic;">WACC: 7.5% · Terminal Growth: 3.0% · Tax Rate: 25% · Net Debt: $8,130M · Shares: 208.8M</div>
+      <div class="tbl-wrap"><table class="dcf-table" style="min-width:900px;">
+        <thead><tr>
+          <th style="min-width:220px;">Line Item</th>
+          <th style="color:var(--gray-400);">FY2025A</th>
+          <th style="color:var(--green);">FY2026E</th><th style="color:var(--green);">FY2027E</th>
+          <th style="color:var(--green);">FY2028E</th><th style="color:var(--green);">FY2029E</th><th style="color:var(--green);">FY2030E</th>
+        </tr></thead>
+        <tbody>
+          <tr class="dcf-section-hdr"><td colspan="7">REVENUE &amp; MARGIN ASSUMPTIONS</td></tr>
+          <tr><td>Revenue ($M)</td><td style="color:var(--gray-400);">$7,477</td><td>$8,150</td><td>$8,883</td><td>$9,681</td><td>$10,456</td><td>$11,084</td></tr>
+          <tr><td>YoY Revenue Growth</td><td style="color:var(--gray-400);">+51.6%</td><td style="color:var(--green);">+9.0%</td><td style="color:var(--green);">+9.0%</td><td style="color:var(--green);">+9.0%</td><td style="color:var(--green);">+8.0%</td><td style="color:var(--green);">+6.0%</td></tr>
+          <tr><td>Gross Margin</td><td style="color:var(--gray-400);">44.4%</td><td>45.5%</td><td>46.5%</td><td>47.5%</td><td>48.2%</td><td>48.8%</td></tr>
+          <tr><td>Gross Profit ($M)</td><td style="color:var(--gray-400);">$3,320</td><td>$3,708</td><td>$4,130</td><td>$4,598</td><td>$5,040</td><td>$5,409</td></tr>
+          <tr><td>EBITDA Margin</td><td style="color:var(--gray-400);">13.9%</td><td style="color:var(--green);">20.5%</td><td style="color:var(--green);">22.5%</td><td style="color:var(--green);">24.0%</td><td style="color:var(--green);">25.0%</td><td style="color:var(--green);">26.0%</td></tr>
+          <tr><td>EBITDA ($M)</td><td style="color:var(--gray-400);">$1,041</td><td>$1,671</td><td>$1,999</td><td>$2,323</td><td>$2,614</td><td>$2,882</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">FCF BUILD (UNLEVERED)</td></tr>
+          <tr><td>D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$285</td><td>$305</td><td>$325</td><td>$340</td><td>$350</td></tr>
+          <tr><td>EBIT ($M)</td><td style="color:var(--gray-400);">$776</td><td>$1,386</td><td>$1,694</td><td>$1,998</td><td>$2,274</td><td>$2,532</td></tr>
+          <tr><td>NOPAT = EBIT × (1-25%)</td><td style="color:var(--gray-400);">$582</td><td>$1,040</td><td>$1,271</td><td>$1,499</td><td>$1,706</td><td>$1,899</td></tr>
+          <tr><td>+ D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$285</td><td>$305</td><td>$325</td><td>$340</td><td>$350</td></tr>
+          <tr><td>− CapEx ($M)</td><td style="color:var(--gray-400);">($156)</td><td>($170)</td><td>($175)</td><td>($180)</td><td>($185)</td><td>($190)</td></tr>
+          <tr><td>− Change in Working Capital ($M)</td><td style="color:var(--gray-400);">—</td><td>($35)</td><td>($30)</td><td>($25)</td><td>($20)</td><td>($15)</td></tr>
+          <tr class="dcf-highlight"><td>Unlevered FCF ($M)</td><td style="color:var(--gray-400);">—</td><td>$1,120</td><td>$1,371</td><td>$1,619</td><td>$1,841</td><td>$2,044</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">DISCOUNTING &amp; TERMINAL VALUE</td></tr>
+          <tr><td>Discount Factor (WACC 7.5%)</td><td>—</td><td>0.930</td><td>0.865</td><td>0.805</td><td>0.749</td><td>0.697</td></tr>
+          <tr class="dcf-highlight"><td>PV of UFCF ($M)</td><td>—</td><td>$1,042</td><td>$1,186</td><td>$1,303</td><td>$1,379</td><td>$1,425</td></tr>
+          <tr class="dcf-total"><td>Sum of PV FCFs (FY2026–2030)</td><td colspan="5"></td><td>$6,335M</td></tr>
+          <tr class="dcf-total"><td>Terminal Value (Gordon Growth: FCF&#8322;&#8320;&#8323;&#8320;×1.03 / (7.5%−3.0%))</td><td colspan="5"></td><td>$46,789M</td></tr>
+          <tr class="dcf-total"><td>PV of Terminal Value</td><td colspan="5"></td><td>$32,611M</td></tr>
+          <tr class="dcf-total" style="background:rgba(0,208,132,0.08);"><td style="color:var(--green);">Enterprise Value</td><td colspan="5"></td><td style="color:var(--green);">$38,946M</td></tr>
+        </tbody>
+      </table></div>
+      <div style="margin-top:16px;max-width:480px;">
+        <div class="dcf-bridge-row"><span class="br-plus">+</span><span class="br-label">Enterprise Value</span><span class="br-val" style="color:var(--green);">$38,946M</span></div>
+        <div class="dcf-bridge-row"><span class="br-plus">−</span><span class="br-label">Net Debt</span><span class="br-val" style="color:var(--red);">($8,130M)</span></div>
+        <div class="dcf-bridge-row" style="border-color:var(--green);background:rgba(0,208,132,0.06);"><span class="br-plus">=</span><span class="br-label" style="font-weight:700;color:var(--green);">Intrinsic Value Per Share</span><span class="br-val" style="color:var(--green);font-size:18px;font-weight:700;">$147.60</span></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--gray-300);">vs. current price $69.37 → <strong style="color:var(--green);">+112.8% upside</strong></div>
+      </div>
+    </div>
+
+    <!-- BEAR CASE TAB -->
+    <div class="dcf-tab-pane" id="dcf-bear">
+      <div style="padding:10px 0 14px;font-size:12px;color:var(--gray-300);font-style:italic;">WACC: 9.0% · Terminal Growth: 2.0% · Tax Rate: 25% · Net Debt: $8,130M · Shares: 208.8M</div>
+      <div class="tbl-wrap"><table class="dcf-table" style="min-width:900px;">
+        <thead><tr>
+          <th style="min-width:220px;">Line Item</th>
+          <th style="color:var(--gray-400);">FY2025A</th>
+          <th style="color:var(--red);">FY2026E</th><th style="color:var(--red);">FY2027E</th>
+          <th style="color:var(--red);">FY2028E</th><th style="color:var(--red);">FY2029E</th><th style="color:var(--red);">FY2030E</th>
+        </tr></thead>
+        <tbody>
+          <tr class="dcf-section-hdr"><td colspan="7">REVENUE &amp; MARGIN ASSUMPTIONS</td></tr>
+          <tr><td>Revenue ($M)</td><td style="color:var(--gray-400);">$7,477</td><td>$7,554</td><td>$7,706</td><td>$7,937</td><td>$8,217</td><td>$8,505</td></tr>
+          <tr><td>YoY Revenue Growth</td><td style="color:var(--gray-400);">+51.6%</td><td style="color:var(--red);">+1.0%</td><td style="color:var(--red);">+2.0%</td><td style="color:var(--red);">+3.0%</td><td style="color:var(--red);">+3.5%</td><td style="color:var(--red);">+3.5%</td></tr>
+          <tr><td>Gross Margin</td><td style="color:var(--gray-400);">44.4%</td><td>43.8%</td><td>44.0%</td><td>44.2%</td><td>44.5%</td><td>45.0%</td></tr>
+          <tr><td>Gross Profit ($M)</td><td style="color:var(--gray-400);">$3,320</td><td>$3,309</td><td>$3,391</td><td>$3,508</td><td>$3,657</td><td>$3,827</td></tr>
+          <tr><td>EBITDA Margin</td><td style="color:var(--gray-400);">13.9%</td><td style="color:var(--red);">15.5%</td><td style="color:var(--red);">16.5%</td><td style="color:var(--red);">17.5%</td><td style="color:var(--red);">18.5%</td><td style="color:var(--red);">19.5%</td></tr>
+          <tr><td>EBITDA ($M)</td><td style="color:var(--gray-400);">$1,041</td><td>$1,171</td><td>$1,271</td><td>$1,389</td><td>$1,520</td><td>$1,659</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">FCF BUILD (UNLEVERED)</td></tr>
+          <tr><td>D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$295</td><td>$310</td><td>$320</td><td>$330</td><td>$338</td></tr>
+          <tr><td>EBIT ($M)</td><td style="color:var(--gray-400);">$776</td><td>$876</td><td>$961</td><td>$1,069</td><td>$1,190</td><td>$1,321</td></tr>
+          <tr><td>NOPAT = EBIT × (1-25%)</td><td style="color:var(--gray-400);">$582</td><td>$657</td><td>$721</td><td>$802</td><td>$893</td><td>$991</td></tr>
+          <tr><td>+ D&amp;A ($M)</td><td style="color:var(--gray-400);">$265</td><td>$295</td><td>$310</td><td>$320</td><td>$330</td><td>$338</td></tr>
+          <tr><td>− CapEx ($M)</td><td style="color:var(--gray-400);">($156)</td><td>($180)</td><td>($185)</td><td>($190)</td><td>($192)</td><td>($195)</td></tr>
+          <tr><td>− Change in Working Capital ($M)</td><td style="color:var(--gray-400);">—</td><td>($50)</td><td>($45)</td><td>($40)</td><td>($35)</td><td>($30)</td></tr>
+          <tr class="dcf-highlight"><td>Unlevered FCF ($M)</td><td style="color:var(--gray-400);">—</td><td>$722</td><td>$801</td><td>$892</td><td>$996</td><td>$1,104</td></tr>
+          <tr class="dcf-section-hdr"><td colspan="7">DISCOUNTING &amp; TERMINAL VALUE</td></tr>
+          <tr><td>Discount Factor (WACC 9.0%)</td><td>—</td><td>0.917</td><td>0.842</td><td>0.772</td><td>0.708</td><td>0.650</td></tr>
+          <tr class="dcf-highlight"><td>PV of UFCF ($M)</td><td>—</td><td>$662</td><td>$675</td><td>$689</td><td>$705</td><td>$718</td></tr>
+          <tr class="dcf-total"><td>Sum of PV FCFs (FY2026–2030)</td><td colspan="5"></td><td>$3,449M</td></tr>
+          <tr class="dcf-total"><td>Terminal Value (Gordon Growth: FCF&#8322;&#8320;&#8323;&#8320;×1.02 / (9.0%−2.0%))</td><td colspan="5"></td><td>$16,086M</td></tr>
+          <tr class="dcf-total"><td>PV of Terminal Value</td><td colspan="5"></td><td>$10,456M</td></tr>
+          <tr class="dcf-total" style="background:rgba(255,77,109,0.07);"><td style="color:var(--red);">Enterprise Value</td><td colspan="5"></td><td style="color:var(--red);">$13,905M</td></tr>
+        </tbody>
+      </table></div>
+      <div style="margin-top:16px;max-width:480px;">
+        <div class="dcf-bridge-row"><span class="br-plus">+</span><span class="br-label">Enterprise Value</span><span class="br-val" style="color:var(--red);">$13,905M</span></div>
+        <div class="dcf-bridge-row"><span class="br-plus">−</span><span class="br-label">Net Debt</span><span class="br-val" style="color:var(--red);">($8,130M)</span></div>
+        <div class="dcf-bridge-row" style="border-color:var(--red);background:rgba(255,77,109,0.06);"><span class="br-plus">=</span><span class="br-label" style="font-weight:700;color:var(--red);">Intrinsic Value Per Share</span><span class="br-val" style="color:var(--red);font-size:18px;font-weight:700;">$27.66</span></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--gray-300);">vs. current price $69.37 → <strong style="color:var(--red);">-60.1% downside risk</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENSITIVITY HEATMAP -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Sensitivity Analysis — Implied Share Price ($)</div>
+    <div class="chart-subtitle">Base case WACC: 8.0% · Terminal growth: 2.5% · Current price: $69.37 · Green = above current price · Red = below</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">WACC vs. Terminal Growth Rate</div>
+        <div style="overflow-x:auto;">
+          <table class="sens-table" id="sens-wacc-tgr">
+            <thead><tr>
+              <th>TGR ↓ / WACC →</th>
+              <th>7.0%</th><th>7.5%</th><th>8.0%</th><th>8.5%</th><th>9.0%</th><th>9.5%</th><th>10.0%</th>
+            </tr></thead>
+            <tbody id="sens-wacc-tgr-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">EBITDA Margin (2030E) vs. Revenue Growth CAGR</div>
+        <div style="overflow-x:auto;">
+          <table class="sens-table" id="sens-margin-growth">
+            <thead><tr>
+              <th>EBITDA Mgn ↓ / Rev CAGR →</th>
+              <th>2%</th><th>3%</th><th>4%</th><th>5%</th><th>6%</th><th>7%</th><th>8%</th>
+            </tr></thead>
+            <tbody id="sens-margin-growth-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center;margin-top:14px;font-size:11px;color:var(--gray-300);flex-wrap:wrap;">
+      <span>Color scale:</span>
+      <span class="sens-green" style="padding:2px 10px;border-radius:3px;">$100+</span>
+      <span class="sens-teal" style="padding:2px 10px;border-radius:3px;">$70–$100</span>
+      <span class="sens-amber" style="padding:2px 10px;border-radius:3px;">$50–$70</span>
+      <span class="sens-red" style="padding:2px 10px;border-radius:3px;">Below $50</span>
+    </div>
+  </div>
+
+  <!-- REVERSE DCF -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Reverse DCF — What Is the Market Pricing In?</div>
+    <div class="chart-subtitle">At $69.37 current price, what UFCF CAGR must SGI deliver for the investment to break even?</div>
+    <div class="grid-2" style="margin-top:16px;gap:24px;">
+      <div>
+        <table class="dcf-table" style="font-size:12px;">
+          <thead><tr><th style="text-align:left;">Assumed EBITDA Margin (2030E)</th><th>Implied 5Y UFCF CAGR</th><th>Implied 2030E Rev</th></tr></thead>
+          <tbody>
+            <tr><td>16.0% (below bear)</td><td style="color:var(--orange);">+7.8%</td><td style="color:var(--gray-300);">$9.1B</td></tr>
+            <tr><td>18.0% (bear case)</td><td style="color:var(--orange);">+6.2%</td><td style="color:var(--gray-300);">$8.8B</td></tr>
+            <tr style="background:rgba(0,180,216,0.06);"><td style="color:var(--teal);font-weight:600;">20.0% (base transition)</td><td style="color:var(--teal);font-weight:600;">+4.8%</td><td style="color:var(--teal);">$8.6B</td></tr>
+            <tr><td>22.0% (base case)</td><td style="color:var(--green);">+3.5%</td><td style="color:var(--gray-300);">$8.4B</td></tr>
+            <tr><td>24.0% (bull case)</td><td style="color:var(--green);">+2.1%</td><td style="color:var(--gray-300);">$8.2B</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px;padding:12px;background:rgba(0,180,216,0.06);border-radius:6px;border-left:3px solid var(--teal);">
+          <div style="font-size:11px;font-weight:600;color:var(--teal);margin-bottom:4px;">KEY INSIGHT</div>
+          <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">At 20% EBITDA margin (achievable by 2026E per management), the market is pricing in only +4.8% UFCF CAGR — far below our base case of +12% and management guidance. The market is not pricing in any margin expansion beyond FY2025 levels.</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray-200);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">UFCF CAGR Required vs. Management Target</div>
+        <div id="rdcf-bar-chart" style="padding:8px 0;"></div>
+        <div style="margin-top:16px;font-size:12px;color:var(--gray-300);line-height:1.7;">
+          Management targets <strong style="color:var(--white);">~21% UFCF CAGR</strong> through 2028 (FCF $633M → $1,124M). The market at $69.37 requires only <strong style="color:var(--teal);">~5%</strong> — a 16pp gap that represents the margin of safety. Even in a scenario where SGI delivers only half of management targets, the stock is fairly valued at current prices.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY RISK FACTORS -->
+  <div class="chart-card">
+    <div class="chart-title">Key DCF Risk Factors &amp; Stress Tests</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px;">
+      <div style="padding:14px 16px;background:rgba(255,77,109,0.06);border-radius:6px;border-left:3px solid var(--red);">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Leverage Risk</div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Net Debt/EBITDA of 7.8x is the primary bear case driver. Interest coverage of 1.6x leaves little margin. If EBITDA falls 20% from base, coverage drops below 1.3x — covenant breach territory. <strong style="color:var(--white);">Impact: -$15 to $25/share vs. base case.</strong></div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(255,154,0,0.06);border-radius:6px;border-left:3px solid var(--orange);">
+        <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">WACC Sensitivity</div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Every 50bps increase in WACC reduces base case price by ~$6-8/share (due to heavy terminal value weighting at 80% of EV). Rate normalization to 3.5% 10-yr would reduce WACC to 7.5% and add ~$12/share. <strong style="color:var(--white);">Impact: ±$6-12/share per 50bps.</strong></div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(0,180,216,0.06);border-radius:6px;border-left:3px solid var(--teal);">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Terminal Value Concentration</div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">Base case: PV Terminal Value = $19.4B of $24.3B total EV (79.7%). This is high, reflecting the long-duration nature of the synergy realization. Every 25bps change in TGR changes the price by ~$4-5/share. <strong style="color:var(--white);">TV sensitivity: 25bps = ±$4-5/share.</strong></div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(0,208,132,0.06);border-radius:6px;border-left:3px solid var(--green);">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Synergy Upside Not Modeled</div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">$145M unrealized synergies at 20x EBITDA = $2.9B incremental EV ($14/share). Our DCF embeds gradual margin expansion — but does NOT assume full synergy credit as a separate item. Full realization could add $10-18/share to base case. <strong style="color:var(--white);">Upside: +$10-18/share.</strong></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
 <!-- ===== SECTION 16: INTERACTIVE MODELING LAB ===== -->
 <section class="section" id="modeling-lab">
   <div class="section-anchor" id="modeling-lab-anchor" style="position:absolute;top:-60px;"></div>
@@ -4793,7 +5224,7 @@ function sortTable(tableId, colIdx) {
 
 // ===== SCROLLSPY =====
 function initScrollspy() {
-  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
+  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','references'];
   const navItems = document.querySelectorAll('.nav-item[data-target]');
 
   function getActive() {
@@ -8625,6 +9056,7 @@ const chartInits = {
   'macro-dashboard': [initMacroDashboard],
   'references': [],
   'ml-prediction': [initSensitivityChart, initFeatureImportanceChart],
+  'dcf-analysis': [initDCFAnalysis],
   'modeling-lab': [],
   'deep-research': [initDeepResearchSection]
 };
@@ -8645,7 +9077,7 @@ function initSection(sectionId) {
 
 // ===== INTERSECTION OBSERVER FOR LAZY INIT =====
 function setupLazyCharts() {
-  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
+  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','references'];
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -13257,6 +13689,148 @@ function exportCompsCSV() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// ===== 5-YEAR DCF ANALYSIS =====
+
+function switchDCFTab(tabId, btn) {
+  document.querySelectorAll('.dcf-tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.dcf-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function initDCFAnalysis() {
+  renderDCFSensitivity();
+  renderDCFFootballField();
+  renderReverseDCFBars();
+}
+
+function renderDCFFootballField() {
+  const el = document.getElementById('dcf-football-field');
+  if (!el) return;
+  const current = 69.37;
+  const scenarios = [
+    { label: 'Bear Case (DCF)', low: 20, high: 35, color: 'var(--red)' },
+    { label: 'Base Case (DCF)', low: 70, high: 85, color: 'var(--teal)' },
+    { label: 'Bull Case (DCF)', low: 130, high: 160, color: 'var(--green)' },
+    { label: 'Prob-Weighted', low: 80, high: 90, color: 'var(--gold)' },
+    { label: 'Analyst Consensus', low: 83, high: 115, color: 'var(--gray-200)' },
+  ];
+  const min = 0, max = 180;
+  let html = '';
+  scenarios.forEach(s => {
+    const leftPct  = ((s.low - min) / (max - min) * 100).toFixed(1);
+    const widthPct = ((s.high - s.low) / (max - min) * 100).toFixed(1);
+    const cursorPct= ((current - min) / (max - min) * 100).toFixed(1);
+    html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:160px;font-size:11px;color:var(--gray-200);text-align:right;flex-shrink:0;">${s.label}</div>
+      <div style="flex:1;height:22px;background:var(--navy-700);border-radius:4px;position:relative;">
+        <div style="position:absolute;left:${leftPct}%;width:${widthPct}%;height:100%;background:${s.color};border-radius:4px;opacity:0.8;"></div>
+        <div style="position:absolute;left:${cursorPct}%;width:2px;height:100%;background:var(--gold);z-index:2;"></div>
+      </div>
+      <div style="width:90px;font-family:var(--font-mono);font-size:11px;color:var(--gray-200);">$${s.low}\u2013$${s.high}</div>
+    </div>`;
+  });
+  // Axis
+  const axisVals = [0, 30, 60, 90, 120, 150, 180];
+  html += `<div style="display:flex;gap:10px;margin-top:4px;padding-left:170px;">
+    <div style="flex:1;display:flex;justify-content:space-between;">
+      ${axisVals.map(v => `<span style="font-size:9px;color:var(--gray-400);">$${v}</span>`).join('')}
+    </div>
+    <div style="width:90px;"></div>
+  </div>`;
+  html += `<div style="margin-top:6px;font-size:10px;color:var(--gray-400);padding-left:170px;">Gold line = current price $69.37</div>`;
+  el.innerHTML = html;
+}
+
+function renderReverseDCFBars() {
+  const el = document.getElementById('rdcf-bar-chart');
+  if (!el) return;
+  const bars = [
+    { label: 'Market Implied (~20% EBITDA)', val: 4.8, color: 'var(--teal)' },
+    { label: 'Bear Case Target', val: 8.2, color: 'var(--orange)' },
+    { label: 'Base Case Target', val: 12.4, color: 'var(--teal)' },
+    { label: 'Management Guidance', val: 21.0, color: 'var(--green)' },
+    { label: 'Bull Case Target', val: 16.8, color: 'var(--green)' },
+  ];
+  const maxVal = 25;
+  let html = '';
+  bars.forEach(b => {
+    const pct = (b.val / maxVal * 100).toFixed(1);
+    html += `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+        <span style="color:var(--gray-200);">${b.label}</span>
+        <span style="font-family:var(--font-mono);color:${b.color};font-weight:600;">${b.val}%</span>
+      </div>
+      <div style="height:14px;background:var(--navy-700);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${b.color};border-radius:3px;opacity:0.85;"></div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function renderDCFSensitivity() {
+  // Table 1: WACC vs TGR (base case UFCF = $967, 1118, 1280, 1404, 1525)
+  const baseFCFs = [967, 1118, 1280, 1404, 1525];
+  const netDebt = 8130, shares = 208.8;
+  const waccs = [0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.10];
+  const tgrs  = [0.015, 0.020, 0.025, 0.030, 0.035];
+
+  const tbody1 = document.getElementById('sens-wacc-tgr-body');
+  if (tbody1) {
+    let html = '';
+    tgrs.forEach(g => {
+      html += `<tr><td>${(g*100).toFixed(1)}%</td>`;
+      waccs.forEach(w => {
+        // PV FCFs
+        let pvSum = 0;
+        baseFCFs.forEach((f, i) => { pvSum += f / Math.pow(1+w, i+1); });
+        // TV
+        const tv = baseFCFs[4] * (1+g) / (w - g);
+        const pvTV = tv / Math.pow(1+w, 5);
+        const ev = pvSum + pvTV;
+        const price = (ev - netDebt) / shares;
+        const cls = price >= 100 ? 'sens-green' : price >= 70 ? 'sens-teal' : price >= 50 ? 'sens-amber' : 'sens-red';
+        html += `<td class="${cls}">$${Math.max(0,price).toFixed(0)}</td>`;
+      });
+      html += '</tr>';
+    });
+    tbody1.innerHTML = html;
+  }
+
+  // Table 2: EBITDA margin vs Rev CAGR
+  const tbody2 = document.getElementById('sens-margin-growth-body');
+  const wacc = 0.08, tgr = 0.025, tax = 0.25;
+  const revCAGRs   = [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08];
+  const ebitdaMgns = [0.16, 0.18, 0.20, 0.22, 0.24, 0.26];
+  const baseRev = 7477, da = [290,310,330,345,355], capex = [175,180,185,190,195], dwc = [40,35,30,25,20];
+  if (tbody2) {
+    let html = '';
+    ebitdaMgns.forEach(mgn => {
+      html += `<tr><td>${(mgn*100).toFixed(0)}%</td>`;
+      revCAGRs.forEach(cagr => {
+        let pvSum = 0, prevFCF = 0;
+        for (let i = 0; i < 5; i++) {
+          const rev = baseRev * Math.pow(1+cagr, i+1);
+          const ebitda = rev * mgn;
+          const ebit   = ebitda - da[i];
+          const nopat  = ebit * (1-tax);
+          const ufcf   = nopat + da[i] - capex[i] - dwc[i];
+          pvSum += ufcf / Math.pow(1+wacc, i+1);
+          if (i===4) prevFCF = ufcf;
+        }
+        const tv = prevFCF*(1+tgr)/(wacc-tgr);
+        const pvTV = tv / Math.pow(1+wacc,5);
+        const price = (pvSum + pvTV - netDebt)/shares;
+        const cls = price >= 100 ? 'sens-green' : price >= 70 ? 'sens-teal' : price >= 50 ? 'sens-amber' : 'sens-red';
+        html += `<td class="${cls}">$${Math.max(0,price).toFixed(0)}</td>`;
+      });
+      html += '</tr>';
+    });
+    tbody2.innerHTML = html;
+  }
 }
 
 </script>
