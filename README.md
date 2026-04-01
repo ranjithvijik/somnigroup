@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🟢 Somnigroup International (NYSE: SGI)
 
@@ -389,4 +389,3 @@ The entire dashboard is a single `index.html` by design:
 [![Live Dashboard](https://img.shields.io/badge/View_Live_Dashboard-00d4aa?style=for-the-badge&logo=googlechrome&logoColor=white)](https://main.d2bz9s024v2yld.amplifyapp.com/)
 
 </div>
-]]>
