@@ -486,6 +486,72 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   100% { background-position: -200% 0; }
 }
 
+/* ===== COMPS STUDIO ===== */
+.comps-studio { }
+.tab-bar { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:20px; }
+.tab-btn { padding:10px 20px; font-size:13px; font-weight:500; color:var(--gray-200); background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-2px; cursor:pointer; transition:all 0.18s; font-family:var(--font-body); white-space:nowrap; }
+.tab-btn:hover { color:var(--white); }
+.tab-btn.active { color:var(--teal); border-bottom-color:var(--teal); font-weight:600; }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+
+.cs-table-wrap { overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border); }
+.cs-table { width:100%; border-collapse:collapse; font-size:12px; min-width:1200px; }
+.cs-table thead tr { background:var(--navy-700); }
+.cs-table thead th { padding:9px 12px; text-align:right; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray-200); white-space:nowrap; cursor:pointer; user-select:none; border-bottom:2px solid var(--teal); }
+.cs-table thead th:first-child, .cs-table thead th:nth-child(2) { text-align:left; }
+.cs-table thead th:hover { color:var(--teal); }
+.cs-table thead th.sort-asc::after { content:' ↑'; color:var(--teal); }
+.cs-table thead th.sort-desc::after { content:' ↓'; color:var(--teal); }
+.cs-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.12s; }
+.cs-table tbody tr:hover { background:var(--teal-glow); }
+.cs-table tbody td { padding:8px 12px; text-align:right; font-family:var(--font-mono); font-size:12px; color:var(--white); white-space:nowrap; }
+.cs-table tbody td:first-child { text-align:left; font-family:var(--font-body); }
+.cs-table tbody td:nth-child(2) { text-align:center; }
+.cs-table tfoot tr { background:var(--navy-700); border-top:2px solid var(--teal); }
+.cs-table tfoot td { padding:9px 12px; text-align:right; font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--gray-200); }
+.cs-table tfoot td:first-child { text-align:left; font-family:var(--font-body); color:var(--gray-200); }
+/* SGI subject row */
+.cs-sgi-row { background:rgba(255,215,0,0.06) !important; }
+.cs-sgi-row td { font-weight:600; }
+.cs-sgi-row td:first-child { color:var(--gold) !important; }
+/* Section header rows inside table body */
+.cs-section-hdr td { background:var(--navy-600) !important; color:var(--teal) !important; font-weight:700 !important; font-family:var(--font-body) !important; font-size:10px !important; letter-spacing:0.1em !important; text-transform:uppercase !important; padding:5px 12px !important; }
+/* Best/worst */
+.cs-best { color:var(--green) !important; font-weight:700; }
+.cs-worst { color:var(--red) !important; }
+.cs-nm { color:var(--gray-300) !important; font-style:italic; }
+/* Live input row */
+.cs-input-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:14px 16px; background:var(--surface); border:1px solid var(--border-accent); border-radius:var(--radius); margin-bottom:16px; }
+.cs-input-row label { font-size:11px; color:var(--gray-200); }
+.cs-input-row input[type="number"] { width:90px; background:var(--navy-700); border:1px solid var(--border-accent); border-radius:4px; padding:5px 8px; color:var(--teal); font-family:var(--font-mono); font-size:12px; font-weight:600; text-align:right; }
+.cs-input-row input[type="number"]:focus { outline:none; border-color:var(--teal); }
+.cs-badge-note { font-size:10px; color:var(--gray-300); padding:3px 8px; background:var(--navy-700); border-radius:4px; border:1px solid var(--border); font-family:var(--font-mono); }
+/* Col group pills */
+.col-group-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.col-group-btn { font-size:11px; font-weight:500; padding:4px 12px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--gray-200); cursor:pointer; transition:all 0.15s; }
+.col-group-btn:hover { border-color:var(--teal-dim); color:var(--white); }
+.col-group-btn.active { background:var(--teal-glow); border-color:var(--teal); color:var(--teal); font-weight:600; }
+/* KPI operating table */
+.kpi-ops-table { width:100%; border-collapse:collapse; font-size:12px; }
+.kpi-ops-table th { background:var(--navy-700); color:var(--gray-200); padding:8px 12px; text-align:right; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; border-bottom:2px solid var(--teal); }
+.kpi-ops-table th:first-child { text-align:left; width:200px; }
+.kpi-ops-table td { padding:7px 12px; text-align:right; font-family:var(--font-mono); font-size:12px; border-bottom:1px solid var(--border); color:var(--white); }
+.kpi-ops-table td:first-child { text-align:left; font-family:var(--font-body); color:var(--gray-200); font-size:12px; }
+.kpi-ops-table tbody tr:hover { background:var(--teal-glow); }
+.kpi-section-hdr td { background:var(--navy-600) !important; color:var(--teal) !important; font-weight:700 !important; font-family:var(--font-body) !important; font-size:10px !important; letter-spacing:0.1em !important; text-transform:uppercase !important; padding:5px 12px !important; }
+/* Valuation framework table */
+.vf-table { width:100%; border-collapse:collapse; font-size:12px; }
+.vf-table th { background:var(--navy-700); color:var(--gray-200); padding:9px 14px; text-align:center; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; border-bottom:2px solid var(--teal); }
+.vf-table th:first-child { text-align:left; }
+.vf-table td { padding:8px 14px; text-align:center; font-family:var(--font-mono); font-size:12px; border-bottom:1px solid var(--border); color:var(--white); }
+.vf-table td:first-child { text-align:left; font-family:var(--font-body); color:var(--gray-200); font-weight:500; }
+.vf-table td:last-child { font-family:var(--font-body); text-align:left; font-size:11px; color:var(--gray-300); }
+.vf-sgi { color:var(--gold) !important; font-weight:700; }
+.vf-advantage { color:var(--green) !important; font-weight:600; }
+.vf-caution { color:var(--orange) !important; }
+.vf-section-hdr td { background:var(--navy-600) !important; color:var(--teal) !important; font-weight:700 !important; font-family:var(--font-body) !important; font-size:10px !important; letter-spacing:0.1em !important; text-transform:uppercase !important; padding:5px 14px !important; }
+
 </style>
 </head>
 <body>
@@ -511,6 +577,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-section-title">Analysis</div>
   <div class="nav-item" data-target="technical-analysis" onclick="scrollToSection('technical-analysis')"><span class="nav-icon">📉</span>Technical Analysis<span class="nav-number">09</span></div>
   <div class="nav-item" data-target="peer-comparison" onclick="scrollToSection('peer-comparison')"><span class="nav-icon">🔍</span>Peer Comparison<span class="nav-number">10</span></div>
+  <div class="nav-item" data-target="comps-studio" onclick="scrollToSection('comps-studio')"><span class="nav-icon">⚖️</span>Trading Comps Studio<span class="nav-number">10½</span></div>
   <div class="nav-item" data-target="analyst-consensus" onclick="scrollToSection('analyst-consensus')"><span class="nav-icon">📈</span>Analyst Consensus<span class="nav-number">11</span></div>
   <div class="nav-item" data-target="investment-narrative" onclick="scrollToSection('investment-narrative')"><span class="nav-icon">📝</span>Investment Case<span class="nav-number">11</span></div>
   <div class="nav-section-title">Advanced</div>
@@ -1768,6 +1835,319 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
     </div>
     <div class="chart-source" style="margin-top:8px;">Source: Bloomberg · FactSet · Company filings · SGI FY2026E estimates per internal model</div>
   </div>
+</section>
+
+<!-- ===== TRADING COMPS STUDIO ===== -->
+<section class="section" id="comps-studio">
+  <div class="section-anchor" id="comps-studio-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 10b</div>
+    <div class="section-title">Trading Comps Studio</div>
+    <div class="section-subtitle">Live editable inputs &middot; Growth-adjusted multiples &middot; 3-tab analysis framework &middot; 12 companies</div>
+    <div class="section-actions">
+      <button class="btn btn-ghost" onclick="exportCompsCSV()">&#11015; Export CSV</button>
+      <button class="btn btn-ghost" onclick="exportSection('comps-studio')">&#128196; Export Section</button>
+    </div>
+  </div>
+
+  <!-- Live Input Row -->
+  <div class="cs-input-row">
+    <span style="font-size:11px;font-weight:600;color:var(--teal);margin-right:4px;">SGI Live Inputs:</span>
+    <label>Current Price ($) <input type="number" id="cs-price" value="69.37" step="0.01" oninput="recomputeComps()"></label>
+    <label>FY2026E EPS ($) <input type="number" id="cs-eps26" value="4.82" step="0.01" oninput="recomputeComps()"></label>
+    <label>FY2026E EBITDA ($M) <input type="number" id="cs-ebitda26" value="1478" step="1" oninput="recomputeComps()"></label>
+    <label>Net Debt ($M) <input type="number" id="cs-netdebt" value="8130" step="1" oninput="recomputeComps()"></label>
+    <label>Shares Out (M) <input type="number" id="cs-shares" value="208.8" step="0.1" oninput="recomputeComps()"></label>
+    <span class="cs-badge-note" id="cs-live-pe">Fwd P/E: 14.4x</span>
+    <span class="cs-badge-note" id="cs-live-ev">EV: $22.6B</span>
+    <span class="cs-badge-note" id="cs-live-evebitda">EV/EBITDA: 15.3x</span>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchCompsTab('tab-comps', this)">&#128202; Trading Comps</button>
+    <button class="tab-btn" onclick="switchCompsTab('tab-kpis', this)">&#128200; SGI Operating KPIs</button>
+    <button class="tab-btn" onclick="switchCompsTab('tab-framework', this)">&#128302; Valuation Framework</button>
+  </div>
+
+  <!-- ===== TAB 1: TRADING COMPS ===== -->
+  <div class="tab-pane active" id="tab-comps">
+    <!-- Column group filter -->
+    <div class="col-group-bar">
+      <span style="font-size:11px;color:var(--gray-300);align-self:center;">View:</span>
+      <button class="col-group-btn active" onclick="setColGroup('all', this)">All Metrics</button>
+      <button class="col-group-btn" onclick="setColGroup('valuation', this)">Valuation Multiples</button>
+      <button class="col-group-btn" onclick="setColGroup('growth', this)">Growth &amp; Quality</button>
+      <button class="col-group-btn" onclick="setColGroup('adjusted', this)">Growth-Adjusted</button>
+    </div>
+
+    <div class="cs-table-wrap">
+      <table class="cs-table" id="compsTable">
+        <thead>
+          <tr>
+            <th onclick="sortComps(0)" style="text-align:left;min-width:140px;">Company</th>
+            <th onclick="sortComps(1)" style="text-align:center;">Ticker</th>
+            <th onclick="sortComps(2)">Mkt Cap ($B)</th>
+            <th onclick="sortComps(3)" data-group="valuation">Fwd P/E</th>
+            <th onclick="sortComps(4)" data-group="valuation">EV/EBITDA (LTM)</th>
+            <th onclick="sortComps(5)" data-group="valuation">EV/EBITDA (Fwd)</th>
+            <th onclick="sortComps(6)" data-group="growth">Gross Margin</th>
+            <th onclick="sortComps(7)" data-group="growth">EBITDA Margin</th>
+            <th onclick="sortComps(8)" data-group="growth">Net Margin</th>
+            <th onclick="sortComps(9)" data-group="growth">Rev Growth YoY</th>
+            <th onclick="sortComps(10)" data-group="growth">FCF Yield</th>
+            <th onclick="sortComps(11)" data-group="growth">ROE</th>
+            <th onclick="sortComps(12)" data-group="growth">EPS CAGR</th>
+            <th onclick="sortComps(13)" data-group="adjusted">P/E &divide; EPS CAGR</th>
+            <th onclick="sortComps(14)" data-group="adjusted">EV/EBITDA &divide; Growth</th>
+            <th onclick="sortComps(15)">Group</th>
+          </tr>
+        </thead>
+        <tbody id="compsBody">
+          <!-- Filled by JS -->
+        </tbody>
+        <tfoot id="compsFoot">
+          <!-- Stats rows filled by JS -->
+        </tfoot>
+      </table>
+    </div>
+    <div style="font-size:10px;color:var(--gray-300);margin-top:8px;font-style:italic;">
+      Source: Bloomberg &middot; FactSet &middot; Company filings &middot; As of March 31, 2026 &middot; NM = Not Meaningful (loss or insufficient data) &middot; Growth-adjusted = multiple &divide; growth rate (lower = better value per unit of growth)
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: SGI OPERATING KPIs ===== -->
+  <div class="tab-pane" id="tab-kpis">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px;">Somnigroup International (NYSE: SGI) &mdash; Quarterly Operating KPIs</div>
+      <div style="font-size:11px;color:var(--gray-300);">Source: SGI 10-K FY2025, Q4 2025 Earnings Call &middot; Q1 2025 = post-acquisition (Mattress Firm closed Feb 5, 2025)</div>
+    </div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);">
+      <table class="kpi-ops-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Q3 2023</th><th>Q4 2023</th>
+            <th>Q1 2024</th><th>Q2 2024</th><th>Q3 2024</th><th>Q4 2024</th>
+            <th style="color:var(--teal);">Q1 2025</th><th style="color:var(--teal);">Q2 2025</th><th style="color:var(--teal);">Q3 2025</th><th style="color:var(--teal);">Q4 2025</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="kpi-section-hdr"><td colspan="11">INCOME STATEMENT HIGHLIGHTS</td></tr>
+          <tr><td>Revenue ($M)</td><td>1,277</td><td>1,171</td><td>1,189</td><td>1,234</td><td>1,300</td><td>1,208</td><td style="color:var(--teal);">1,605</td><td style="color:var(--teal);">1,881</td><td style="color:var(--teal);">2,123</td><td style="color:var(--teal);">1,868</td></tr>
+          <tr><td>Gross Profit ($M)</td><td>574</td><td>513</td><td>513</td><td>554</td><td>590</td><td>523</td><td style="color:var(--teal);">581</td><td style="color:var(--teal);">827</td><td style="color:var(--teal);">953</td><td style="color:var(--teal);">839</td></tr>
+          <tr><td>Gross Margin %</td><td>44.9%</td><td>43.8%</td><td>43.1%</td><td>44.9%</td><td>45.4%</td><td>43.3%</td><td style="color:var(--orange);">36.2%</td><td style="color:var(--teal);">44.0%</td><td style="color:var(--teal);">44.9%</td><td style="color:var(--teal);">44.9%</td></tr>
+          <tr><td>EBITDA ($M)</td><td>216</td><td>155</td><td>174</td><td>216</td><td>244</td><td>170</td><td style="color:var(--orange);">80</td><td style="color:var(--teal);">246</td><td style="color:var(--teal);">378</td><td style="color:var(--teal);">322</td></tr>
+          <tr><td>Adj EBITDA ($M)</td><td>221</td><td>165</td><td>180</td><td>222</td><td>250</td><td>185</td><td style="color:var(--teal);">185</td><td style="color:var(--teal);">290</td><td style="color:var(--teal);">415</td><td style="color:var(--teal);">350</td></tr>
+          <tr><td>Net Income ($M)</td><td>113</td><td>77</td><td>76</td><td>106</td><td>130</td><td>72</td><td style="color:var(--red);">-33</td><td style="color:var(--teal);">99</td><td style="color:var(--teal);">177</td><td style="color:var(--teal);">141</td></tr>
+          <tr><td>EPS (Diluted)</td><td>0.64</td><td>0.43</td><td>0.43</td><td>0.60</td><td>0.73</td><td>0.40</td><td style="color:var(--red);">-0.17</td><td style="color:var(--teal);">0.47</td><td style="color:var(--teal);">0.83</td><td style="color:var(--teal);">0.66</td></tr>
+          <tr><td>Adj EPS</td><td>0.75</td><td>0.55</td><td>0.56</td><td>0.70</td><td>0.84</td><td>0.53</td><td style="color:var(--teal);">0.35</td><td style="color:var(--teal);">0.65</td><td style="color:var(--teal);">0.97</td><td style="color:var(--teal);">0.79</td></tr>
+
+          <tr class="kpi-section-hdr"><td colspan="11">CASH FLOW &amp; BALANCE SHEET</td></tr>
+          <tr><td>Free Cash Flow ($M)</td><td>148</td><td>96</td><td>105</td><td>140</td><td>162</td><td>100</td><td style="color:var(--teal);">42</td><td style="color:var(--teal);">155</td><td style="color:var(--teal);">225</td><td style="color:var(--teal);">185</td></tr>
+          <tr><td>CapEx ($M)</td><td>34</td><td>36</td><td>32</td><td>31</td><td>33</td><td>32</td><td style="color:var(--teal);">38</td><td style="color:var(--teal);">40</td><td style="color:var(--teal);">40</td><td style="color:var(--teal);">38</td></tr>
+          <tr><td>Net Debt ($B)</td><td>3.19</td><td>3.19</td><td>3.45</td><td>3.45</td><td>4.35</td><td>4.35</td><td style="color:var(--red);">8.13</td><td style="color:var(--red);">8.05</td><td style="color:var(--teal);">7.96</td><td style="color:var(--teal);">7.88</td></tr>
+          <tr><td>Net Debt / Adj EBITDA</td><td>4.3x</td><td>4.3x</td><td>5.4x</td><td>5.4x</td><td>5.4x</td><td>5.4x</td><td style="color:var(--red);">7.8x</td><td style="color:var(--orange);">7.2x</td><td style="color:var(--orange);">6.8x</td><td style="color:var(--teal);">6.2x</td></tr>
+
+          <tr class="kpi-section-hdr"><td colspan="11">SEGMENT BREAKDOWN (FY2025 QUARTERS)</td></tr>
+          <tr><td>NA Wholesale Rev ($M)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td style="color:var(--teal);">558</td><td style="color:var(--teal);">622</td><td style="color:var(--teal);">697</td><td style="color:var(--teal);">553</td></tr>
+          <tr><td>Mattress Firm Rev ($M)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td style="color:var(--teal);">770</td><td style="color:var(--teal);">955</td><td style="color:var(--teal);">1,052</td><td style="color:var(--teal);">928</td></tr>
+          <tr><td>International Rev ($M)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td style="color:var(--teal);">277</td><td style="color:var(--teal);">304</td><td style="color:var(--teal);">374</td><td style="color:var(--teal);">387</td></tr>
+
+          <tr class="kpi-section-hdr"><td colspan="11">YOY GROWTH RATES (FY2025 QUARTERS)</td></tr>
+          <tr><td>Revenue Growth YoY</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>+1.8%</td><td>+3.2%</td><td style="color:var(--teal);">+34.9%</td><td style="color:var(--teal);">+52.5%</td><td style="color:var(--teal);">+63.3%</td><td style="color:var(--teal);">+54.7%</td></tr>
+          <tr><td>Adj EBITDA Growth YoY</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>+13.6%</td><td>+12.4%</td><td style="color:var(--orange);">+2.8%</td><td style="color:var(--teal);">+30.6%</td><td style="color:var(--teal);">+66.0%</td><td style="color:var(--teal);">+89.2%</td></tr>
+          <tr><td>FCF Growth YoY</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>+15.7%</td><td>&mdash;</td><td style="color:var(--orange);">-60.0%</td><td style="color:var(--teal);">+10.7%</td><td style="color:var(--teal);">+38.9%</td><td style="color:var(--teal);">+85.0%</td></tr>
+
+          <tr class="kpi-section-hdr"><td colspan="11">MARGIN PROFILE (%)</td></tr>
+          <tr><td>EBITDA Margin %</td><td>16.9%</td><td>13.2%</td><td>14.6%</td><td>17.5%</td><td>18.8%</td><td>14.1%</td><td style="color:var(--orange);">5.0%</td><td style="color:var(--teal);">13.1%</td><td style="color:var(--teal);">17.8%</td><td style="color:var(--teal);">17.2%</td></tr>
+          <tr><td>FCF Margin %</td><td>11.6%</td><td>8.2%</td><td>8.8%</td><td>11.3%</td><td>12.5%</td><td>8.3%</td><td style="color:var(--orange);">2.6%</td><td style="color:var(--teal);">8.2%</td><td style="color:var(--teal);">10.6%</td><td style="color:var(--teal);">9.9%</td></tr>
+          <tr><td>Net Margin %</td><td>8.9%</td><td>6.6%</td><td>6.4%</td><td>8.6%</td><td>10.0%</td><td>6.0%</td><td style="color:var(--red);">-2.1%</td><td style="color:var(--teal);">5.3%</td><td style="color:var(--teal);">8.4%</td><td style="color:var(--teal);">7.5%</td></tr>
+
+          <tr class="kpi-section-hdr"><td colspan="11">EPS BEAT / MISS vs CONSENSUS</td></tr>
+          <tr><td>Consensus Adj EPS Est.</td><td>0.72</td><td>0.53</td><td>0.54</td><td>0.68</td><td>0.80</td><td>0.51</td><td style="color:var(--teal);">0.31</td><td style="color:var(--teal);">0.60</td><td style="color:var(--teal);">0.91</td><td style="color:var(--teal);">0.75</td></tr>
+          <tr><td>Beat / (Miss)</td>
+            <td style="color:var(--green);">+0.03</td><td style="color:var(--green);">+0.02</td>
+            <td style="color:var(--green);">+0.02</td><td style="color:var(--green);">+0.02</td><td style="color:var(--green);">+0.04</td><td style="color:var(--green);">+0.02</td>
+            <td style="color:var(--green);">+0.04</td><td style="color:var(--green);">+0.05</td><td style="color:var(--green);">+0.06</td><td style="color:var(--green);">+0.04</td>
+          </tr>
+          <tr><td>Beat % of Consensus</td>
+            <td style="color:var(--green);">+4.2%</td><td style="color:var(--green);">+3.8%</td>
+            <td style="color:var(--green);">+3.7%</td><td style="color:var(--green);">+2.9%</td><td style="color:var(--green);">+5.0%</td><td style="color:var(--green);">+3.9%</td>
+            <td style="color:var(--green);">+12.9%</td><td style="color:var(--green);">+8.3%</td><td style="color:var(--green);">+6.6%</td><td style="color:var(--green);">+5.3%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:10px;color:var(--gray-300);margin-top:8px;font-style:italic;">
+      Blue-tinted columns = post-Mattress Firm acquisition quarters (Q1&ndash;Q4 2025). Q1 2025 margins depressed by one-time acquisition costs. Source: SGI 10-K FY2025, Q4 2025 earnings call transcript.
+    </div>
+
+    <!-- Trend summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px;">
+      <div class="chart-card" style="text-align:center;">
+        <div style="font-size:10px;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Q4 2025 Rev YoY</div>
+        <div style="font-size:22px;font-weight:700;color:var(--green);font-family:var(--font-mono);">+54.7%</div>
+        <div style="font-size:10px;color:var(--gray-300);margin-top:4px;">Mattress Firm consolidation</div>
+      </div>
+      <div class="chart-card" style="text-align:center;">
+        <div style="font-size:10px;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">10-Quarter Adj EPS Beat Rate</div>
+        <div style="font-size:22px;font-weight:700;color:var(--green);font-family:var(--font-mono);">10/10</div>
+        <div style="font-size:10px;color:var(--gray-300);margin-top:4px;">Every quarter beat consensus</div>
+      </div>
+      <div class="chart-card" style="text-align:center;">
+        <div style="font-size:10px;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Adj EBITDA Trajectory</div>
+        <div style="font-size:22px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">Q1&rarr;Q3 +124%</div>
+        <div style="font-size:10px;color:var(--gray-300);margin-top:4px;">Within FY2025 post-acquisition</div>
+      </div>
+      <div class="chart-card" style="text-align:center;">
+        <div style="font-size:10px;color:var(--gray-300);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Leverage (Net Debt/EBITDA)</div>
+        <div style="font-size:22px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">7.8x&rarr;6.2x</div>
+        <div style="font-size:10px;color:var(--gray-300);margin-top:4px;">Q1 2025 &rarr; Q4 2025 deleverage</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB 3: VALUATION FRAMEWORK ===== -->
+  <div class="tab-pane" id="tab-framework">
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px;">Vertically Integrated Home Goods vs. Pure-Play Retail vs. Premium Brands</div>
+      <div style="font-size:11px;color:var(--gray-300);">Does SGI's unique positioning justify a premium or discount to peers?</div>
+    </div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;">
+      <table class="vf-table">
+        <thead>
+          <tr>
+            <th style="min-width:200px;">Dimension</th>
+            <th style="color:var(--gold);">SGI</th>
+            <th>Direct Peers (Med)</th>
+            <th>Retail Adjacent (Med)</th>
+            <th>Diversified Home (Med)</th>
+            <th style="min-width:180px;">Assessment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="vf-section-hdr"><td colspan="6">VALUATION MULTIPLES</td></tr>
+          <tr>
+            <td>EV/EBITDA (LTM)</td>
+            <td class="vf-sgi">21.9x</td><td>10.8x</td><td>13.0x</td><td>9.5x</td>
+            <td class="vf-caution">Premium &mdash; justified by post-acq noise in LTM EBITDA</td>
+          </tr>
+          <tr>
+            <td>EV/EBITDA (Fwd 2026E)</td>
+            <td class="vf-sgi">15.3x</td><td>9.8x</td><td>12.4x</td><td>8.6x</td>
+            <td class="vf-advantage">Compressing fast &mdash; 56% drop as earnings normalize</td>
+          </tr>
+          <tr>
+            <td>Forward P/E (2026E)</td>
+            <td class="vf-sgi">14.4x</td><td>13.6x</td><td>18.5x</td><td>13.2x</td>
+            <td class="vf-advantage">At-parity with peers despite 51.6% rev growth premium</td>
+          </tr>
+          <tr>
+            <td>Price/FCF</td>
+            <td class="vf-sgi">23.2x</td><td>18.4x</td><td>20.2x</td><td>15.8x</td>
+            <td style="color:var(--gray-300);font-family:var(--font-body);">Slight premium &mdash; FCF growing 22% CAGR</td>
+          </tr>
+          <tr class="vf-section-hdr"><td colspan="6">GROWTH &amp; QUALITY</td></tr>
+          <tr>
+            <td>Revenue Growth YoY</td>
+            <td class="vf-sgi">+51.6%</td><td>-2.4%</td><td>+4.4%</td><td>-0.6%</td>
+            <td class="vf-advantage">Dominant &mdash; acquisition-driven but sustainable mix shift</td>
+          </tr>
+          <tr>
+            <td>Organic Rev Growth (ex-MF)</td>
+            <td class="vf-sgi">~+3.5%</td><td>-2.4%</td><td>+4.4%</td><td>-0.6%</td>
+            <td style="color:var(--gray-300);font-family:var(--font-body);">In-line with retail adjacent on organic basis</td>
+          </tr>
+          <tr>
+            <td>EBITDA Margin (FY2025A)</td>
+            <td class="vf-sgi">13.9%</td><td>11.3%</td><td>18.4%</td><td>12.8%</td>
+            <td class="vf-caution">Temporarily depressed by integration costs</td>
+          </tr>
+          <tr>
+            <td>EBITDA Margin (FY2026E)</td>
+            <td class="vf-sgi">18.6%</td><td>11.3%</td><td>18.4%</td><td>12.8%</td>
+            <td class="vf-advantage">Normalizing to retail adjacent level &mdash; 480bps expansion</td>
+          </tr>
+          <tr>
+            <td>Gross Margin</td>
+            <td class="vf-sgi">44.4%</td><td>41.0%</td><td>45.6%</td><td>28.6%</td>
+            <td style="color:var(--gray-300);font-family:var(--font-body);">Best-in-class among direct peers</td>
+          </tr>
+          <tr>
+            <td>FCF Conversion (FCF/NI)</td>
+            <td class="vf-sgi">165%</td><td>84%</td><td>120%</td><td>102%</td>
+            <td class="vf-advantage">Exceptional &mdash; D&amp;A uplift from acquired intangibles</td>
+          </tr>
+          <tr class="vf-section-hdr"><td colspan="6">GROWTH-ADJUSTED MULTIPLES</td></tr>
+          <tr>
+            <td>P/E &divide; EPS CAGR (PEG)</td>
+            <td class="vf-sgi">0.64x</td><td>1.52x</td><td>1.42x</td><td>1.38x</td>
+            <td class="vf-advantage">Deeply discounted &mdash; PEG &lt;1.0 = undervalued</td>
+          </tr>
+          <tr>
+            <td>EV/EBITDA &divide; EBITDA Growth</td>
+            <td class="vf-sgi">0.72x</td><td>1.84x</td><td>1.62x</td><td>1.58x</td>
+            <td class="vf-advantage">SGI pays significantly less per unit of EBITDA growth</td>
+          </tr>
+          <tr>
+            <td>EV/EBITDA (Fwd) &divide; Rev Growth</td>
+            <td class="vf-sgi">0.30x</td><td>4.08x</td><td>2.82x</td><td>&mdash;</td>
+            <td class="vf-advantage">SGI most attractive in universe on growth-adjusted basis</td>
+          </tr>
+          <tr class="vf-section-hdr"><td colspan="6">LEVERAGE &amp; CAPITAL STRUCTURE</td></tr>
+          <tr>
+            <td>Net Debt / EBITDA</td>
+            <td class="vf-sgi">7.8x</td><td>3.2x</td><td>2.4x</td><td>2.8x</td>
+            <td class="vf-caution">Primary risk &mdash; peak leverage post-acquisition</td>
+          </tr>
+          <tr>
+            <td>Net Debt / EBITDA (2027E)</td>
+            <td class="vf-sgi">3.9x</td><td>2.8x</td><td>2.2x</td><td>2.6x</td>
+            <td style="color:var(--gray-300);font-family:var(--font-body);">Normalizing rapidly &mdash; approaching peer territory</td>
+          </tr>
+          <tr>
+            <td>Interest Coverage (x)</td>
+            <td class="vf-sgi">1.6x</td><td>4.2x</td><td>6.8x</td><td>5.4x</td>
+            <td class="vf-caution">Tight &mdash; requires continued earnings execution</td>
+          </tr>
+          <tr>
+            <td>Dividend Yield</td>
+            <td class="vf-sgi">1.0%</td><td>0.8%</td><td>2.2%</td><td>3.8%</td>
+            <td style="color:var(--gray-300);font-family:var(--font-body);">Below average &mdash; capital directed to debt paydown</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key Takeaways -->
+    <div class="chart-card">
+      <div class="chart-title" style="margin-bottom:14px;">Key Takeaways &mdash; Valuation Framework Verdict</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(0,208,132,0.06);border-radius:6px;border-left:3px solid var(--green);">
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--green);flex-shrink:0;">01</span>
+          <span style="font-size:13px;color:var(--gray-100);line-height:1.6;"><strong style="color:var(--green);">Growth-adjusted, SGI is the most attractive in the universe.</strong> PEG of 0.64x vs. peer median 1.5x means investors pay 57% less per unit of earnings growth. EV/EBITDA &divide; growth of 0.30x vs. peers at 4.1x is the starkest divergence.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(0,180,216,0.06);border-radius:6px;border-left:3px solid var(--teal);">
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--teal);flex-shrink:0;">02</span>
+          <span style="font-size:13px;color:var(--gray-100);line-height:1.6;"><strong style="color:var(--teal);">Forward multiples are compressing dramatically.</strong> EV/EBITDA (LTM) of 21.9x drops to 15.3x on FY2026E &mdash; a 56% compression as $1,478M EBITDA normalizes from FY2025A $1,041M. By FY2028E at $1,886M EBITDA, forward EV/EBITDA reaches ~12x at current price.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,215,0,0.06);border-radius:6px;border-left:3px solid var(--gold);">
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;">03</span>
+          <span style="font-size:13px;color:var(--gray-100);line-height:1.6;"><strong style="color:var(--gold);">Leverage is the only real bear case &mdash; but it is time-bound.</strong> Net Debt/EBITDA of 7.8x compresses to 3.9x by FY2027E. Management has explicitly committed to 80% of FCF toward debt paydown. The risk is real but visible and quantifiable &mdash; not a structural quality issue.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,77,109,0.06);border-radius:6px;border-left:3px solid var(--red);">
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--red);flex-shrink:0;">04</span>
+          <span style="font-size:13px;color:var(--gray-100);line-height:1.6;"><strong style="color:var(--red);">At the same Fwd P/E as direct peers (14.4x), SGI grows EPS 3x faster.</strong> La-Z-Boy at 12x P/E grows EPS at +9%; SGI at 14.4x grows at +24%. The 20% P/E premium to LZB for 166% more EPS growth is structurally mispriced.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(0,208,132,0.06);border-radius:6px;border-left:3px solid var(--green);">
+          <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--green);flex-shrink:0;">05</span>
+          <span style="font-size:13px;color:var(--gray-100);line-height:1.6;"><strong style="color:var(--green);">Verdict: LONG at current price.</strong> Six valuation methods averaging ~$94 base case vs. $69.37 market. Growth-adjusted metrics show widest discount in the comparable universe. Leverage risk is the primary overhang but has a clear 24-month resolution path. Risk/reward: 3:1.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <!-- ===== SECTION 11: ANALYST CONSENSUS ===== -->
@@ -4413,7 +4793,7 @@ function sortTable(tableId, colIdx) {
 
 // ===== SCROLLSPY =====
 function initScrollspy() {
-  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
+  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
   const navItems = document.querySelectorAll('.nav-item[data-target]');
 
   function getActive() {
@@ -8238,6 +8618,7 @@ const chartInits = {
   'catalysts-risks': [initSynergyChart, initRiskMatrix],
   'technical-analysis': [initTechnicalCharts],
   'peer-comparison': [initPeerRadar, initPeerPE, initCompScatterChart, initCompGrowthPEChart],
+  'comps-studio': [function(){ recomputeComps(); }],
   'analyst-consensus': [initRatingChart, initEarningsSurprise, initEPSEstimate],
   'quant-risk': [initReturnDistChart, initROICWaccChart],
   'advanced-valuation': [initValuationBridgeChart, initMonteCarloChart],
@@ -8264,7 +8645,7 @@ function initSection(sectionId) {
 
 // ===== INTERSECTION OBSERVER FOR LAZY INIT =====
 function setupLazyCharts() {
-  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
+  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','modeling-lab','macro-dashboard','references'];
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -12641,6 +13022,243 @@ document.addEventListener('DOMContentLoaded', () => {
   // Try to connect to live data after a brief delay
   setTimeout(startLiveRefresh, 1500);
 });
+
+// ===== TRADING COMPS STUDIO =====
+
+const COMPS_DATA = [
+  // [company, ticker, mktCap, fwdPE, evEbitdaLTM, evEbitdaFwd, grossMgn, ebitdaMgn, netMgn, revGrowth, fcfYield, roe, epsCagr, group, isSGI]
+  ['Somnigroup Intl', 'SGI',  14.6,  14.4, 21.9, 15.3, 44.4,  13.9,   5.1,  51.6,  4.3,  20.9, 22.4, 'Direct Peer', true],
+  ['Sleep Number',   'SNBR',  1.2,  25.0, 18.2, 14.0, 58.0,  12.4,   2.0,   1.0,  8.0,  15.0,  8.2, 'Direct Peer', false],
+  ['Purple Innovation','PRPL', 0.3,  null,  null, null, 35.0,  -4.2, -15.0,  -5.0, null,  null,-18.5, 'Direct Peer', false],
+  ['La-Z-Boy',       'LZB',   2.1,  12.0,  8.8,  8.0, 53.0,  14.6,   6.5,   3.0,  5.0,  18.0,  9.1, 'Direct Peer', false],
+  ['Leggett & Platt','LEG',   1.8,  15.0, 11.2,  9.5, 20.0,   8.2,  -5.0, -10.0,  3.0, -25.0, -7.3, 'Direct Peer', false],
+  ['Williams-Sonoma','WSM',  18.4,  16.8, 13.4, 11.2, 46.2,  20.1,  14.8,   4.2,  8.5,  56.4, 11.7, 'Retail Adjacent', false],
+  ['RH',             'RH',    8.2,  22.4, 18.2, 14.8, 48.6,  22.4,  10.2,   6.8,  2.8,  null, 14.2, 'Retail Adjacent', false],
+  ['Mohawk Industries','MHK', 7.1,  11.2,  9.0,  7.4, 26.8,  11.4,   3.2,  -2.4,  6.8,   7.2,  3.8, 'Diversified Home', false],
+  ['Whirlpool',      'WHR',   4.8,   9.8,  7.6,  6.2, 22.4,   9.8,   2.8,  -4.1,  7.2,  12.4,  2.1, 'Diversified Home', false],
+  ['Stanley Blk&Dkr','SWK',  14.2,  18.6, 14.8, 12.4, 28.6,  13.2,   3.8,   2.8,  4.2,   9.8, 12.4, 'Diversified Home', false],
+  ['Fortune Brands', 'FBHS',  6.4,  14.2, 12.8, 10.8, 36.4,  16.8,   8.4,   1.2,  5.6,  16.4,  7.8, 'Diversified Home', false],
+];
+
+// Deduplicate by ticker
+const COMPS = COMPS_DATA.filter((r,i,a) => a.findIndex(x=>x[1]===r[1])===i);
+
+function recomputeComps() {
+  const price    = parseFloat(document.getElementById('cs-price').value)    || 69.37;
+  const eps26    = parseFloat(document.getElementById('cs-eps26').value)    || 4.82;
+  const ebitda26 = parseFloat(document.getElementById('cs-ebitda26').value) || 1478;
+  const netDebt  = parseFloat(document.getElementById('cs-netdebt').value)  || 8130;
+  const shares   = parseFloat(document.getElementById('cs-shares').value)   || 208.8;
+
+  const mktCap = (price * shares) / 1000; // $B
+  const ev = mktCap * 1000 + netDebt;     // $M
+  const fwdPE = price / eps26;
+  const evEbitdaFwd = ev / ebitda26;
+
+  // Update badges
+  document.getElementById('cs-live-pe').textContent       = 'Fwd P/E: ' + fwdPE.toFixed(1) + 'x';
+  document.getElementById('cs-live-ev').textContent       = 'EV: $' + (ev/1000).toFixed(1) + 'B';
+  document.getElementById('cs-live-evebitda').textContent = 'EV/EBITDA (Fwd): ' + evEbitdaFwd.toFixed(1) + 'x';
+
+  // Update SGI row in COMPS
+  COMPS[0][2] = parseFloat(mktCap.toFixed(1));
+  COMPS[0][3] = parseFloat(fwdPE.toFixed(1));
+  COMPS[0][5] = parseFloat(evEbitdaFwd.toFixed(1));
+
+  renderCompsTable();
+}
+
+function renderCompsTable() {
+  const tbody = document.getElementById('compsBody');
+  const tfoot = document.getElementById('compsFoot');
+  if (!tbody) return;
+
+  // Compute growth-adjusted columns
+  const rows = COMPS.map(r => {
+    const pegStyle     = (r[3] && r[12] && r[12] > 0) ? (r[3] / r[12]).toFixed(2) + 'x' : 'NM';
+    const evGrowthAdj  = (r[5] && r[9]  && r[9]  > 0) ? (r[5] / r[9]).toFixed(2)  + 'x' : 'NM';
+    return [...r, pegStyle, evGrowthAdj]; // indices 15=peg, 16=evGrowthAdj
+  });
+
+  // Figure best/worst per numeric column
+  const higherBetterCols = [6,7,8,9,10,11,12];
+  const numCols = [2,3,4,5,6,7,8,9,10,11,12];
+  const colBest = {}, colWorst = {};
+  numCols.forEach(ci => {
+    const vals = rows.filter(r => typeof r[ci] === 'number' && r[ci] !== null).map(r => r[ci]);
+    if (!vals.length) return;
+    const higherBetter = higherBetterCols.includes(ci);
+    colBest[ci]  = higherBetter ? Math.max(...vals) : Math.min(...vals.filter(v => v > 0));
+    colWorst[ci] = higherBetter ? Math.min(...vals) : Math.max(...vals);
+  });
+
+  let html = '';
+  let lastGroup = '';
+  rows.forEach(r => {
+    const isSGI  = r[14];
+    const group  = r[13];
+    if (group !== lastGroup) {
+      html += `<tr class="cs-section-hdr"><td colspan="16">${group}</td></tr>`;
+      lastGroup = group;
+    }
+    const rowClass = isSGI ? 'cs-sgi-row' : '';
+    html += `<tr class="${rowClass}">`;
+    // Company name
+    html += `<td>${isSGI ? '<strong style="color:var(--gold);">&#9733; ' + r[0] + '</strong>' : r[0]}</td>`;
+    // Ticker
+    html += `<td style="font-family:var(--font-mono);text-align:center;${isSGI ? 'color:var(--gold);font-weight:700;' : ''}">${r[1]}</td>`;
+    // Market cap
+    html += `<td>$${r[2]}B</td>`;
+    // Valuation multiples (3,4,5)
+    [3,4,5].forEach(ci => {
+      const val = r[ci];
+      if (val === null || val === undefined) { html += `<td class="cs-nm">NM</td>`; return; }
+      let cls = '';
+      if (val === colBest[ci])  cls = 'cs-best';
+      if (val === colWorst[ci]) cls = 'cs-worst';
+      html += `<td class="${cls}">${val.toFixed(1)}x</td>`;
+    });
+    // Growth & quality cols (6-12)
+    [6,7,8,9,10,11,12].forEach(ci => {
+      const val = r[ci];
+      if (val === null || val === undefined) { html += `<td class="cs-nm">NM</td>`; return; }
+      let cls = '';
+      if (val === colBest[ci])  cls = 'cs-best';
+      if (val === colWorst[ci]) cls = 'cs-worst';
+      html += `<td class="${cls}">${(val > 0 ? '+' : '') + val.toFixed(1)}%</td>`;
+    });
+    // Growth-adjusted cols (15, 16)
+    html += `<td class="${r[15] === 'NM' ? 'cs-nm' : ''}">${r[15]}</td>`;
+    html += `<td class="${r[16] === 'NM' ? 'cs-nm' : ''}">${r[16]}</td>`;
+    // Group label
+    html += `<td style="font-size:10px;color:var(--gray-300);">${group}</td>`;
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+
+  // Footer stats
+  const validRows = rows.filter(r => !r[14]); // exclude SGI from peer stats
+
+  function colMedian(ci) {
+    const vals = validRows.filter(r => typeof r[ci] === 'number' && r[ci] !== null).map(r => r[ci]).sort((a,b) => a-b);
+    if (!vals.length) return null;
+    const mid = Math.floor(vals.length / 2);
+    return vals.length % 2 ? vals[mid] : (vals[mid-1] + vals[mid]) / 2;
+  }
+  function colMean(ci) {
+    const vals = validRows.filter(r => typeof r[ci] === 'number' && r[ci] !== null).map(r => r[ci]);
+    if (!vals.length) return null;
+    return vals.reduce((a,b) => a+b, 0) / vals.length;
+  }
+
+  const sgiRow = rows[0];
+
+  function buildFootRow(label, getFn) {
+    let h = `<tr><td>${label}</td><td></td>`;
+    // mktCap
+    const mcv = getFn(2);
+    h += `<td>${mcv !== null ? '$' + mcv.toFixed(1) + 'B' : '&mdash;'}</td>`;
+    [3,4,5].forEach(ci => { const v = getFn(ci); h += `<td>${v !== null ? v.toFixed(1) + 'x' : '&mdash;'}</td>`; });
+    [6,7,8,9,10,11,12].forEach(ci => { const v = getFn(ci); h += `<td>${v !== null ? (v>0?'+':'') + v.toFixed(1) + '%' : '&mdash;'}</td>`; });
+    h += '<td></td><td></td><td></td></tr>';
+    return h;
+  }
+
+  function buildPremRow() {
+    let h = `<tr style="color:var(--gold);"><td>SGI Premium to Median</td><td></td>`;
+    const mcMed = colMedian(2);
+    h += `<td>${mcMed ? ((sgiRow[2]/mcMed - 1)*100).toFixed(0) + '%' : '&mdash;'}</td>`;
+    [3,4,5].forEach(ci => {
+      const med = colMedian(ci);
+      if (med && sgiRow[ci]) {
+        const prem = (sgiRow[ci]/med - 1)*100;
+        h += `<td style="color:${Math.abs(prem)<5 ? 'var(--gray-300)' : prem>0 ? 'var(--red)' : 'var(--green)'}">${prem>0?'+':''}${prem.toFixed(0)}%</td>`;
+      } else h += '<td>&mdash;</td>';
+    });
+    [6,7,8,9,10,11,12].forEach(ci => {
+      const med = colMedian(ci);
+      if (med !== null && sgiRow[ci] !== null) {
+        const prem = sgiRow[ci] - med;
+        h += `<td style="color:${Math.abs(prem)<0.5 ? 'var(--gray-300)' : prem>0 ? 'var(--green)' : 'var(--red)'}">${prem>0?'+':''}${prem.toFixed(1)}pp</td>`;
+      } else h += '<td>&mdash;</td>';
+    });
+    h += '<td></td><td></td><td></td></tr>';
+    return h;
+  }
+
+  tfoot.innerHTML = buildFootRow('Peer Median', colMedian) + buildFootRow('Peer Mean', colMean) + buildPremRow();
+}
+
+function switchCompsTab(tabId, btn) {
+  document.querySelectorAll('#comps-studio .tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#comps-studio .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setColGroup(group, btn) {
+  document.querySelectorAll('.col-group-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const table = document.getElementById('compsTable');
+  if (!table) return;
+  // Show all columns first
+  table.querySelectorAll('th, td').forEach(el => el.style.display = '');
+  if (group === 'all') return;
+  // Hide header columns that have a different data-group attribute
+  const ths = Array.from(table.querySelectorAll('thead th'));
+  ths.forEach((th, colIdx) => {
+    const g = th.getAttribute('data-group');
+    if (g && g !== group) {
+      table.querySelectorAll('tr').forEach(row => {
+        const cell = row.children[colIdx];
+        if (cell) cell.style.display = 'none';
+      });
+    }
+  });
+}
+
+function sortComps(colIdx) {
+  const tbody = document.getElementById('compsBody');
+  if (!tbody) return;
+  const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => !r.classList.contains('cs-section-hdr'));
+  const dir = (tbody.dataset.sortCol == colIdx && tbody.dataset.sortDir === 'asc') ? 'desc' : 'asc';
+  tbody.dataset.sortCol = colIdx;
+  tbody.dataset.sortDir = dir;
+  rows.sort((a, b) => {
+    const av = (a.children[colIdx] && a.children[colIdx].textContent) ? a.children[colIdx].textContent.replace(/[+%$Bx\u2605]/g,'').trim() : '';
+    const bv = (b.children[colIdx] && b.children[colIdx].textContent) ? b.children[colIdx].textContent.replace(/[+%$Bx\u2605]/g,'').trim() : '';
+    const an = parseFloat(av), bn = parseFloat(bv);
+    if (!isNaN(an) && !isNaN(bn)) return dir === 'asc' ? an-bn : bn-an;
+    return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+  // Update sort indicators
+  document.querySelectorAll('#compsTable thead th').forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === colIdx) th.classList.add(dir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+function exportCompsCSV() {
+  const table = document.getElementById('compsTable');
+  if (!table) return;
+  let csv = '';
+  table.querySelectorAll('tr').forEach(row => {
+    const cells = Array.from(row.querySelectorAll('th, td'))
+      .map(c => '"' + c.textContent.trim().replace(/"/g, '""') + '"');
+    csv += cells.join(',') + '\n';
+  });
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'SGI_Trading_Comps_' + getTimestamp() + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 </script>
 </body>
 </html>
