@@ -14347,7 +14347,7 @@ function exportSlides() {
     const over=p>pvFVs[i];
     const pct=(p-40)/(120-40);
     const bh=Math.max(1,pct*(cH-4));
-    doc.setFillColor(...(over?msOrange:msSteelBlue));
+    doc.setFillColor(...(over?amber:teal));
     doc.rect(cX+1+i*bwp,cTop+cH-2-bh,bwp-0.4,bh,'F');
   });
   pvFVs.forEach((f,i)=>{
@@ -14360,8 +14360,8 @@ function exportSlides() {
   pvLbs.forEach((l,i)=>{
     if(l){ doc.setTextColor(...gray); doc.setFontSize(5); doc.setFont('helvetica','normal'); doc.text(l,cX+1+i*bwp+bwp/2,cTop+cH+5,{align:'center'}); }
   });
-  doc.setFillColor(...msSteelBlue); doc.rect(8,cTop+cH+8,8,4,'F'); doc.setTextColor(...gray); doc.setFontSize(6.5); doc.text('Undervalued',18,cTop+cH+12);
-  doc.setFillColor(...msOrange); doc.rect(70,cTop+cH+8,8,4,'F'); doc.text('Overvalued',80,cTop+cH+12);
+  doc.setFillColor(...teal); doc.rect(8,cTop+cH+8,8,4,'F'); doc.setTextColor(...gray); doc.setFontSize(6.5); doc.text('Undervalued',18,cTop+cH+12);
+  doc.setFillColor(...amber); doc.rect(70,cTop+cH+8,8,4,'F'); doc.text('Overvalued',80,cTop+cH+12);
   doc.setFillColor(184,134,11); doc.circle(130,cTop+cH+10,1.5,'F'); doc.text('Fair Value Estimate',135,cTop+cH+12);
   // P/FVE table
   const pfveSlide=[
