@@ -6639,7 +6639,7 @@ async function exportPDF() {
       doc.setFontSize(6);
       doc.setFont('helvetica', 'normal');
       doc.text('SGI Equity Analyst Report  |  Report as of ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) + '  |  NYSE: SGI  |  For Institutional Use Only', 10, 4.5);
-      doc.text('Page ' + pageNum + ' of 37', W - 10, 4.5, {align:'right'});
+      doc.text('Page ' + pageNum + ' of 35', W - 10, 4.5, {align:'right'});
     }
 
     function msTitleBar() {
@@ -6724,32 +6724,51 @@ async function exportPDF() {
     }
 
     function msTableRow(cols, xs, y, rowH, isHeader, isAlt) {
+      // Compute column widths: each col gets width = next_x - this_x (minus 2mm gap)
+      // Last col gets width to right margin (W-10)
+      const colWidths = xs.map((x, i) => {
+        const nextX = xs[i + 1] || (W - 9);
+        return Math.max(4, nextX - x - 1.5);
+      });
+      // Compute actual row height needed (check for wrapping in any cell)
+      const fs = isHeader ? 7 : 7.5;
+      doc.setFontSize(fs);
+      doc.setFont('helvetica', isHeader ? 'bold' : 'normal');
+      let maxLines = 1;
+      cols.forEach((c, i) => {
+        const txt = String(c || '');
+        const lines = doc.splitTextToSize(txt, colWidths[i]);
+        if (lines.length > maxLines) maxLines = lines.length;
+      });
+      const lineH = fs * 0.45; // mm per line at this font size
+      const actualH = Math.max(rowH, maxLines * lineH + 2.5);
       if (isHeader) {
         doc.setFillColor(...msSteelBlue);
-        doc.rect(xs[0] - 1, y, W - xs[0] - 9, rowH, 'F');
+        doc.rect(xs[0] - 1, y, W - xs[0] - 9, actualH, 'F');
         doc.setTextColor(...white);
-        doc.setFontSize(7);
-        doc.setFont('helvetica', 'bold');
       } else {
-        if (isAlt) { doc.setFillColor(245, 247, 250); doc.rect(xs[0] - 1, y, W - xs[0] - 9, rowH, 'F'); }
+        if (isAlt) { doc.setFillColor(245, 247, 250); doc.rect(xs[0] - 1, y, W - xs[0] - 9, actualH, 'F'); }
         doc.setTextColor(...msDarkGray);
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'normal');
       }
       cols.forEach((c, i) => {
-        if (c && !isHeader) {
-          const sv = String(c || '');
+        const txt = String(c || '');
+        if (txt && !isHeader) {
+          const sv = txt;
           const numVal = parseFloat(sv.replace(/[$,%x\(\)]/g,''));
           if (!isNaN(numVal) && (sv.startsWith('-') || sv.startsWith('('))) doc.setTextColor(...msRed);
           else if (!isNaN(numVal) && sv.startsWith('+')) doc.setTextColor(...msGreen);
           else doc.setTextColor(...msDarkGray);
         }
-        doc.text(String(c || ''), xs[i], y + rowH - 1.5);
+        const lines = doc.splitTextToSize(txt, colWidths[i]);
+        // Vertically center single-line; top-align multi-line
+        const textY = lines.length === 1 ? y + actualH / 2 + lineH / 2 : y + lineH + 0.5;
+        doc.text(lines, xs[i], textY);
         doc.setTextColor(...(isHeader ? white : msDarkGray));
       });
       doc.setDrawColor(...msLightGray);
       doc.setLineWidth(0.15);
-      if (xs[0] !== undefined) doc.line(xs[0] - 1, y + rowH, W - 9, y + rowH);
+      if (xs[0] !== undefined) doc.line(xs[0] - 1, y + actualH, W - 9, y + actualH);
+      return actualH; // return actual height so callers can use it
     }
 
     // ============================================================
@@ -6760,13 +6779,19 @@ async function exportPDF() {
     msTitleBar();
     msKPIStrip();
     msFooter();
-    let y = 34;
-
-    // Left column (x=10, w=62) — ToC + Disclosure + Analyst
+    // Two independent columns — left: ToC/disclosure, right: analyst note
     const lx = 10, lw = 62;
     const rx = 76, rw = 124;
+    let ly = 34;  // left column y-tracker
+    let ry = 34;  // right column y-tracker
 
-    y = msSectionHead('Table of Contents', y);
+    // Draw section head only in left column (constrained width heading)
+    doc.setTextColor(...msSteelBlue);
+    doc.setFontSize(10); doc.setFont('helvetica','bold');
+    doc.text('Table of Contents', lx, ly);
+    doc.setFillColor(...msSteelBlue);
+    doc.rect(lx, ly + 1.5, lw, 0.5, 'F');  // Only left column width
+    ly += 8;
     const tocItems = [
       'Pg 1  — Cover / Analyst Note',
       'Pg 2  — Business Description & Strategy',
@@ -6798,44 +6823,43 @@ async function exportPDF() {
       doc.setTextColor(...msDarkGray);
       doc.setFontSize(6.5);
       doc.setFont('helvetica', 'normal');
-      doc.text(item, lx, y);
-      y += 5;
+      doc.text(item, lx, ly);
+      ly += 5;
     });
 
-    y += 3;
+    ly += 3;
     doc.setFillColor(245, 247, 250);
-    doc.rect(lx, y, lw, 30, 'F');
+    doc.rect(lx, ly, lw, 30, 'F');
     doc.setDrawColor(...msLightGray);
-    doc.rect(lx, y, lw, 30, 'S');
+    doc.rect(lx, ly, lw, 30, 'S');
     doc.setTextColor(...msSteelBlue);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.text('IMPORTANT DISCLOSURES', lx + 2, y + 5);
+    doc.text('IMPORTANT DISCLOSURES', lx + 2, ly + 5);
     doc.setTextColor(...msGray);
     doc.setFontSize(5.5);
     doc.setFont('helvetica', 'normal');
     const discText = 'This report is for institutional and professional investors only. Not investment advice. Past performance does not guarantee future results. SGI equity analyst coverage initiated Feb 2025. Fair value estimates are forward-looking and subject to change.';
     const discLines = doc.splitTextToSize(discText, lw - 4);
-    doc.text(discLines, lx + 2, y + 10);
-    y += 35;
+    doc.text(discLines, lx + 2, ly + 10);
+    ly += 35;
 
     doc.setFillColor(245, 247, 250);
-    doc.rect(lx, y, lw, 22, 'F');
+    doc.rect(lx, ly, lw, 22, 'F');
     doc.setDrawColor(...msLightGray);
-    doc.rect(lx, y, lw, 22, 'S');
+    doc.rect(lx, ly, lw, 22, 'S');
     doc.setTextColor(...msSteelBlue);
     doc.setFontSize(7);
     doc.setFont('helvetica', 'bold');
-    doc.text('ANALYST DETAILS', lx + 2, y + 5);
+    doc.text('ANALYST DETAILS', lx + 2, ly + 5);
     doc.setTextColor(...msDarkGray);
     doc.setFontSize(6);
     doc.setFont('helvetica', 'normal');
-    doc.text('Lead: SGI Research Desk', lx + 2, y + 11);
-    doc.text('Coverage: Consumer Cyclical / Specialty Retail', lx + 2, y + 16);
-    doc.text('Updated: ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}), lx + 2, y + 21);
+    doc.text('Lead: SGI Research Desk', lx + 2, ly + 11);
+    doc.text('Coverage: Consumer Cyclical / Specialty Retail', lx + 2, ly + 16);
+    doc.text('Updated: ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}), lx + 2, ly + 21);
 
-    // Right column — Analyst note
-    let ry = 34;
+    // Right column — Analyst note (ry already declared above as 34)
     doc.setTextColor(...msSteelBlue);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
@@ -7668,7 +7692,7 @@ async function exportPDF() {
     p13y = msSectionHead('Segment Revenue & Operating Income Analysis', p13y);
 
     const segHeaders = ['Segment', 'FY2023 Rev', 'FY2024 Rev', 'FY2025A Rev', 'FY2025 OI', 'FY2025 OI%', 'FY2026E Rev', 'Rev Growth'];
-    const segXs = [10, 46, 72, 98, 130, 155, 170, 188];
+    const segXs = [10, 44, 68, 94, 122, 148, 166, 184];
     msTableRow(segHeaders, segXs, p13y, 7, true, false);
     p13y += 7;
     const segData = [
@@ -7721,7 +7745,7 @@ async function exportPDF() {
     p14y = msSectionHead('Quarterly Performance — Q3 2023 through Q4 2025', p14y);
 
     const qtlyHeaders = ['Metric', 'Q3 23', 'Q4 23', 'Q1 24', 'Q2 24', 'Q3 24', 'Q4 24', 'Q1 25', 'Q2 25', 'Q3 25', 'Q4 25'];
-    const qtlyXs = [10, 44, 62, 79, 96, 113, 130, 148, 162, 177, 190];
+    const qtlyXs = [10, 42, 58, 74, 90, 106, 122, 138, 152, 166, 178];
     msTableRow(qtlyHeaders, qtlyXs, p14y, 7, true, false);
     p14y += 7;
     const qtlyData = [
@@ -8053,7 +8077,7 @@ async function exportPDF() {
     p18y = msSectionHead('Trading Comps Studio — Full 11-Company Table', p18y);
 
     const compsHeaders = ['Company', 'Tkr', 'Mkt Cap', 'Fwd P/E', 'EV/EBITDA(LTM)', 'EV/EBITDA(Fwd)', 'Gr.Mgn', 'EBITDA%', 'Net%', 'Rev.Gr.', 'FCF Yld', 'ROE', 'EPS CAGR'];
-    const compsXs = [10, 48, 60, 76, 91, 108, 124, 135, 146, 156, 165, 175, 185];
+    const compsXs = [10, 46, 58, 72, 86, 102, 117, 128, 139, 149, 158, 168, 178];
     msTableRow(compsHeaders, compsXs, p18y, 7, true, false);
     p18y += 7;
     const fullCompsData = [
@@ -8578,7 +8602,7 @@ async function exportPDF() {
     p26y = msSectionHead('ESG & Sustainability Profile', p26y);
     // ESG Score Summary table
     const esgSummHdrs = ['Dimension', 'Score', 'Category', 'Peer Avg', 'Assessment'];
-    const esgSummXs   = [10, 55, 90, 125, 162];
+    const esgSummXs   = [10, 52, 82, 112, 142];
     msTableRow(esgSummHdrs, esgSummXs, p26y, 7, true, false); p26y += 7;
     [
       ['ESG Exposure Score', '38.4', 'Medium', '37.8', 'Moderate — chemical inputs, supply chain'],
@@ -8596,7 +8620,7 @@ async function exportPDF() {
     p26y = checkY(p26y, 30);
     p26y = msSectionHead('S — Social', p26y);
     const socHdrs = ['Metric', 'SGI', 'Peer Median', 'Assessment'];
-    const socXs   = [10, 80, 130, 165];
+    const socXs   = [10, 68, 110, 148];
     msTableRow(socHdrs, socXs, p26y, 7, true, false); p26y += 7;
     [
       ['Total Employees', '~22,000', '~8,000', 'Larger footprint post-acquisition'],
@@ -8647,7 +8671,7 @@ async function exportPDF() {
     p27y += 18;
     // Institutional holders table
     const ioHdrs = ['Rank','Institution','Shares Held','% Shares Out','Value ($M)','QoQ Change','Type'];
-    const ioXs   = [10, 22, 78, 118, 142, 165, 188];
+    const ioXs   = [10, 22, 76, 114, 138, 162, 184];
     msTableRow(ioHdrs, ioXs, p27y, 7, true, false); p27y += 7;
     [
       ['1','Vanguard Group','18,420,000','8.82%','$1,276','+245K','Passive'],
@@ -8680,7 +8704,7 @@ async function exportPDF() {
     let p28y = 34;
     p28y = msSectionHead('Executive Management Team', p28y);
     const execHdrs = ['Executive','Title','Tenure','Prior Experience','FY2025 Comp (est.)'];
-    const execXs   = [10, 55, 100, 123, 170];
+    const execXs   = [10, 52, 94, 118, 168];
     msTableRow(execHdrs, execXs, p28y, 7, true, false); p28y += 7;
     [
       ['Scott L. Thompson','Chairman, CEO','13 yrs at co.','Spectrum Brands CEO; retail ops expert','$12.4M'],
@@ -8858,7 +8882,7 @@ async function exportPDF() {
     let p31y = 34;
     p31y = msSectionHead('10-Year Financial History (FY2015-FY2025)', p31y);
     const ltHdrs = ['Metric','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025A'];
-    const ltXs = [10,43,60,77,94,111,128,145,162,179,192,204];
+    const ltXs = [10,38,54,70,86,102,118,134,150,165,178,190];
     msTableRow(ltHdrs, ltXs, p31y, 6.5, true, false); p31y+=6.5;
     const ltData = [
       ['Revenue ($M)','2,682','2,848','2,974','2,888','3,147','4,019','4,931','4,921','4,925','4,931','7,477'],
@@ -8912,7 +8936,7 @@ async function exportPDF() {
     p32y = checkY(p32y, 55);
     p32y = msSectionHead('Forward Valuation Summary — Analyst Estimates', p32y);
     const fvHdrs = ['Metric','FY2025A','FY2026E','FY2027E','FY2028E'];
-    const fvXs   = [10, 70, 115, 150, 185];
+    const fvXs   = [10, 68, 112, 146, 180];
     msTableRow(fvHdrs, fvXs, p32y, 7, true, false); p32y+=7;
     const fvData = [
       ['Revenue ($M)','$7,477','$7,952','$8,369','$8,881'],
