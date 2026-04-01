@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\$\$","\$\$"],["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 <style>
@@ -5450,32 +5450,125 @@ async function exportSection(sectionId) {
   pdf.save('SGI_' + sectionId + '.pdf');
 }
 
-// ===== XLSX EXPORT =====
-function exportXLSX() {
-  if (!window.XLSX) { alert('SheetJS not loaded. Please refresh and try again.'); return; }
-  const wb = XLSX.utils.book_new();
+// ===== XLSX EXPORT (ExcelJS) =====
+async function exportXLSX() {
+  if (!window.ExcelJS) { alert('ExcelJS not loaded. Please refresh and try again.'); return; }
 
-  // Helper: apply column widths to a worksheet
-  function setColWidths(ws, widths) {
-    ws['!cols'] = widths.map(function(w) { return { wch: w }; });
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'SGI Investment Analysis';
+  wb.created = new Date();
+
+  // ── COLOUR PALETTE ──────────────────────────────────────────────────────────
+  const C = {
+    navyBg:    '0A1628',   // dark navy header bg
+    navyFg:    'FFFFFF',   // white header text
+    teal:      '0E7490',   // accent teal header (section dividers)
+    tealLight: 'CFFAFE',   // very light teal row tint
+    gold:      'B45309',   // gold header bg (estimates / forward-looking)
+    goldLight: 'FEF3C7',   // light gold
+    green:     '166534',   // positive value text
+    greenBg:   'DCFCE7',   // positive row bg
+    red:       '991B1B',   // negative value text
+    redBg:     'FEE2E2',   // negative row bg
+    amber:     '92400E',   // amber warning
+    amberBg:   'FEF3C7',   // amber bg
+    gray1:     'F8FAFC',   // alt row light
+    gray2:     'F1F5F9',   // alt row slightly darker
+    grayBorder:'CBD5E1',   // border colour
+    subHead:   '1E3A5F',   // sub-header navy
+    subHeadFg: 'FFFFFF',
+    purple:    '5B21B6',   // ML / special section
+    purpleLight:'EDE9FE',
+    orange:    'C2410C',
+    orangeLight:'FFEDD5',
+  };
+
+  // ── SHARED STYLE HELPERS ────────────────────────────────────────────────────
+  function borderAll(thin) {
+    const s = thin ? 'thin' : 'medium';
+    return { top:{style:s,color:{argb:'FF'+C.grayBorder}}, left:{style:s,color:{argb:'FF'+C.grayBorder}},
+             bottom:{style:s,color:{argb:'FF'+C.grayBorder}}, right:{style:s,color:{argb:'FF'+C.grayBorder}} };
+  }
+  function headerStyle(bgHex, fgHex) {
+    return {
+      font:{ bold:true, color:{argb:'FF'+fgHex}, size:10, name:'Calibri' },
+      fill:{ type:'pattern', pattern:'solid', fgColor:{argb:'FF'+bgHex} },
+      alignment:{ horizontal:'center', vertical:'middle', wrapText:true },
+      border: borderAll(false)
+    };
+  }
+  function dataStyle(bgHex, fgHex, hAlign) {
+    return {
+      font:{ color:{argb:'FF'+(fgHex||'1E293B')}, size:10, name:'Calibri' },
+      fill:{ type:'pattern', pattern:'solid', fgColor:{argb:'FF'+(bgHex||'FFFFFF')} },
+      alignment:{ horizontal:hAlign||'right', vertical:'middle' },
+      border: borderAll(true)
+    };
+  }
+  function labelStyle(bgHex, bold) {
+    return {
+      font:{ bold:!!bold, color:{argb:'FF1E293B'}, size:10, name:'Calibri' },
+      fill:{ type:'pattern', pattern:'solid', fgColor:{argb:'FF'+(bgHex||'FFFFFF')} },
+      alignment:{ horizontal:'left', vertical:'middle' },
+      border: borderAll(true)
+    };
+  }
+  function noteStyle() {
+    return {
+      font:{ italic:true, color:{argb:'FF475569'}, size:9, name:'Calibri' },
+      fill:{ type:'pattern', pattern:'solid', fgColor:{argb:'FFFFF8DC'} },
+      alignment:{ horizontal:'left', wrapText:true, vertical:'middle' }
+    };
+  }
+  function sectionTitleStyle(bgHex) {
+    return {
+      font:{ bold:true, color:{argb:'FFFFFFFF'}, size:11, name:'Calibri' },
+      fill:{ type:'pattern', pattern:'solid', fgColor:{argb:'FF'+(bgHex||C.subHead)} },
+      alignment:{ horizontal:'left', vertical:'middle' }
+    };
   }
 
-  // Helper: apply number format (z property) to a range of cells in a worksheet
-  // rowStart/rowEnd are 0-based row indices, colStart/colEnd are 0-based col indices
-  function applyNumFmt(ws, fmt, rowStart, rowEnd, colStart, colEnd) {
-    for (var r = rowStart; r <= rowEnd; r++) {
-      for (var c = colStart; c <= colEnd; c++) {
-        var addr = XLSX.utils.encode_cell({ r: r, c: c });
-        if (ws[addr] && ws[addr].t === 'n') {
-          ws[addr].z = fmt;
-        }
-      }
+  // Apply a style object to a cell
+  function styleCell(cell, style) {
+    if (style.font)      Object.assign(cell.font, style.font);
+    if (style.fill)      cell.fill = style.fill;
+    if (style.alignment) cell.alignment = style.alignment;
+    if (style.border)    cell.border = style.border;
+  }
+
+  // Style an entire row by 1-based row number on a sheet
+  function styleRow(ws, rowNum, styleFn, startCol, endCol) {
+    for (let c = startCol; c <= endCol; c++) {
+      styleCell(ws.getCell(rowNum, c), styleFn(c));
     }
   }
 
-  // ── Tab 1: Income Statement ─────────────────────────────────────────────────
-  var incomeData = [
-    ['Year','Revenue ($M)','COGS ($M)','Gross Profit ($M)','Gross Margin','SG&A ($M)','D&A ($M)','Op Income ($M)','EBITDA ($M)','Interest Exp ($M)','Pre-Tax Income ($M)','Tax ($M)','Net Income ($M)','EPS Diluted','Shares Out (M)'],
+  // Freeze top row
+  function freezeTopRow(ws) {
+    ws.views = [{ state:'frozen', xSplit:0, ySplit:1, topLeftCell:'A2' }];
+  }
+
+  // Set column widths from array of char widths
+  function setCols(ws, widths) {
+    widths.forEach((w,i) => { ws.getColumn(i+1).width = w; });
+  }
+
+  // Auto-colour a numeric cell: green if positive, red if negative
+  function colorNumeric(cell, val) {
+    if (typeof val === 'number') {
+      if (val > 0) { cell.font = { ...cell.font, color:{argb:'FF'+C.green} }; }
+      else if (val < 0) { cell.font = { ...cell.font, color:{argb:'FF'+C.red} }; }
+    }
+  }
+
+  // ── TAB 1: INCOME STATEMENT ──────────────────────────────────────────────────
+  const ws1 = wb.addWorksheet('Income Statement', { properties:{tabColor:{argb:'FF'+C.navyBg}} });
+  setCols(ws1, [10,14,12,14,13,10,10,13,12,13,16,10,13,12,14]);
+  freezeTopRow(ws1);
+  ws1.getRow(1).height = 32;
+
+  const incomeHeaders = ['Year','Revenue ($M)','COGS ($M)','Gross Profit ($M)','Gross Margin','SG&A ($M)','D&A ($M)','Op Income ($M)','EBITDA ($M)','Interest Exp ($M)','Pre-Tax Income ($M)','Tax ($M)','Net Income ($M)','EPS Diluted','Shares Out (M)'];
+  const incomeData = [
     ['FY2021',4930.8,2772.1,2158.7,0.438,786.4,91.2,912.3,1003.5,134.5,777.8,153.3,624.5,3.06,204.1],
     ['FY2022',4921.2,2871.6,2049.6,0.416,940.0,126.7,680.6,807.3,194.2,486.4,30.7,455.7,2.53,180.2],
     ['FY2023',4925.4,2796.7,2128.7,0.432,1012.5,132.1,607.2,739.3,208.0,399.2,31.1,368.1,2.08,177.0],
@@ -5485,84 +5578,199 @@ function exportXLSX() {
     ['FY2027E',8369.0,'','','','','','',1673.0,'','','',881.0,5.82,''],
     ['FY2028E',8881.0,'','','','','','',1886.0,'','','',1055.0,7.08,''],
   ];
-  var ws1 = XLSX.utils.aoa_to_sheet(incomeData);
-  // Number formats: currency cols 1-3, 5-13 (0-based); margin col 4; EPS col 13; shares col 14
-  applyNumFmt(ws1, '#,##0.0', 1, 8, 1, 3);
-  applyNumFmt(ws1, '#,##0.0', 1, 8, 5, 12);
-  applyNumFmt(ws1, '0.0%', 1, 8, 4, 4);
-  applyNumFmt(ws1, '#,##0.00', 1, 8, 13, 13);
-  applyNumFmt(ws1, '#,##0.0', 1, 8, 14, 14);
-  setColWidths(ws1, [10,14,12,14,13,10,10,13,12,13,16,10,13,12,14]);
-  XLSX.utils.book_append_sheet(wb, ws1, 'Income Statement');
 
-  // ── Tab 2: Balance Sheet ────────────────────────────────────────────────────
-  var bsData = [
-    ['Year','Cash ($M)','Total Current Assets ($M)','Goodwill ($M)','Intangibles ($M)','Total Assets ($M)','Total Current Liab ($M)','Long-Term Debt ($M)','Total Debt ($M)','Total Liab ($M)','Stockholders Equity ($M)','Net Debt ($M)'],
+  // Header row
+  incomeHeaders.forEach((h,i) => {
+    const cell = ws1.getCell(1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.navyBg, C.navyFg));
+  });
+
+  incomeData.forEach((row, ri) => {
+    const rowNum = ri + 2;
+    const isEstimate = String(row[0]).endsWith('E');
+    const altBg = isEstimate ? C.goldLight : (ri % 2 === 0 ? C.gray1 : 'FFFFFF');
+    const rObj = ws1.getRow(rowNum);
+    rObj.height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws1.getCell(rowNum, ci+1);
+      cell.value = val === '' ? null : val;
+      if (ci === 0) {
+        styleCell(cell, labelStyle(altBg, isEstimate));
+        if (isEstimate) cell.font = { ...cell.font, color:{argb:'FF'+C.gold}, bold:true };
+      } else {
+        const s = dataStyle(altBg);
+        styleCell(cell, s);
+        if (ci === 4) { cell.numFmt = '0.0%'; }
+        else if (ci === 13) { cell.numFmt = '#,##0.00'; }
+        else if (typeof val === 'number') { cell.numFmt = '#,##0.0'; }
+        // highlight net income negative
+        if ((ci === 12 || ci === 11) && typeof val === 'number' && val < 0) {
+          cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red}, bold:true };
+        }
+      }
+    });
+  });
+  ws1.autoFilter = { from:'A1', to:{row:1,column:incomeHeaders.length} };
+
+  // ── TAB 2: BALANCE SHEET ────────────────────────────────────────────────────
+  const ws2 = wb.addWorksheet('Balance Sheet', { properties:{tabColor:{argb:'FF164E63'}} });
+  setCols(ws2, [10,11,22,13,14,14,20,17,13,13,22,13]);
+  freezeTopRow(ws2);
+  ws2.getRow(1).height = 32;
+
+  const bsHeaders = ['Year','Cash ($M)','Total Current Assets ($M)','Goodwill ($M)','Intangibles ($M)','Total Assets ($M)','Total Current Liab ($M)','Long-Term Debt ($M)','Total Debt ($M)','Total Liab ($M)','Stockholders Equity ($M)','Net Debt ($M)'];
+  const bsData = [
     ['FY2021',260.6,1248.3,1575.3,2238.4,7419.7,1039.2,2552.5,2820.1,4688.9,2730.8,2559.5],
     ['FY2022',232.7,1063.5,1508.3,2123.9,7137.8,821.2,3345.8,3532.6,5098.5,2039.3,3299.9],
     ['FY2023',258.5,1133.7,1541.3,2062.3,7246.1,928.9,3247.3,3449.9,5132.6,2113.5,3191.4],
     ['FY2024',280.8,1190.4,1561.3,2000.7,7439.3,891.6,4372.7,4632.2,5912.1,1527.2,4351.4],
     ['FY2025',490.2,2845.6,8120.1,4156.0,21685.3,2468.5,8202.4,8620.2,15112.8,6572.5,8130.0],
   ];
-  var ws2 = XLSX.utils.aoa_to_sheet(bsData);
-  applyNumFmt(ws2, '#,##0.0', 1, 5, 1, 11);
-  setColWidths(ws2, [10,11,22,13,14,14,20,17,13,13,22,13]);
-  XLSX.utils.book_append_sheet(wb, ws2, 'Balance Sheet');
 
-  // ── Tab 3: Cash Flow ────────────────────────────────────────────────────────
-  var cfData = [
-    ['Year','OCF ($M)','CapEx ($M)','FCF ($M)','Share Repurchases ($M)','Dividends Paid ($M)','D&A ($M)','FCF Yield'],
-    ['FY2021',711.0,111.2,599.8,386.6,41.3,91.2,'12.2%'],
-    ['FY2022',218.7,146.4,72.3,120.4,43.1,126.7,'1.5%'],
-    ['FY2023',519.8,134.9,384.9,98.6,44.5,132.1,'7.8%'],
-    ['FY2024',698.0,128.8,569.2,180.2,47.3,170.0,'11.5%'],
-    ['FY2025',789.0,155.8,633.2,50.0,51.6,265.1,'4.3%'],
-  ];
-  var ws3 = XLSX.utils.aoa_to_sheet(cfData);
-  applyNumFmt(ws3, '#,##0.0', 1, 5, 1, 6);
-  setColWidths(ws3, [10,12,12,12,22,20,12,12]);
-  XLSX.utils.book_append_sheet(wb, ws3, 'Cash Flow');
+  bsHeaders.forEach((h,i) => {
+    const cell = ws2.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('164E63','FFFFFF'));
+  });
+  bsData.forEach((row,ri) => {
+    const altBg = ri % 2 === 0 ? C.gray1 : 'FFFFFF';
+    ws2.getRow(ri+2).height = 18;
+    row.forEach((val,ci) => {
+      const cell = ws2.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg)); }
+      else {
+        styleCell(cell, dataStyle(altBg));
+        cell.numFmt = '#,##0.0';
+        // Net debt column: colour red if high
+        if (ci===11 && val > 5000) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red}, bold:true };
+        // Cash: green
+        if (ci===1) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green} };
+      }
+    });
+  });
+  ws2.autoFilter = { from:'A1', to:{row:1,column:bsHeaders.length} };
 
-  // ── Tab 4: Quarterly (ACTUAL data) ─────────────────────────────────────────
-  // EBITDA estimated as Op Income + D&A (quarterly D&A ~1/4 of annual)
-  // FY2023 D&A=132.1, FY2024 D&A=170.0, FY2025 D&A=265.1
-  // Q3-Q4 2023: ~33.0/qtr; Q1-Q4 2024: ~42.5/qtr; Q1-Q4 2025: ~66.3/qtr
-  // Adj EBITDA adds back one-time items (acquisition/integration costs)
-  // Adj EPS adds back acquisition-related amortization (intangibles ~$400M/yr post-acq)
-  // FCF estimated from OCF-CapEx run-rates
-  var qtrData = [
-    ['Quarter','Revenue ($M)','Gross Profit ($M)','Op Income ($M)','Net Income ($M)','EPS (Diluted)','EBITDA ($M)','Adj EBITDA ($M)','Adj EPS','FCF ($M)','Gross Margin','Op Margin'],
-    // Pre-acquisition quarters (legacy Tempur Sealy)
-    ['Q3 2023',1277.1,573.7,183.2,113.3,0.64,216.2,221.0,0.75,148.0,0.449,0.143],
-    ['Q4 2023',1170.5,512.8,121.9,77.1,0.43,154.9,165.0,0.55,96.0,0.438,0.104],
-    ['Q1 2024',1189.4,512.6,131.5,76.3,0.43,174.0,180.0,0.56,105.0,0.431,0.111],
-    ['Q2 2024',1233.6,554.2,173.3,106.1,0.60,215.8,222.0,0.70,140.0,0.449,0.140],
-    ['Q3 2024',1300.0,589.9,201.8,130.0,0.73,244.3,250.0,0.84,162.0,0.454,0.155],
-    ['Q4 2024',1207.9,523.4,127.6,71.9,0.40,170.1,185.0,0.53,100.0,0.433,0.106],
-    // Post-acquisition quarters (includes Mattress Firm)
-    ['Q1 2025',1604.7,580.5,13.2,-33.1,-0.17,79.5,185.0,0.35,42.0,0.362,0.008],
-    ['Q2 2025',1880.8,827.2,179.9,99.0,0.47,246.2,290.0,0.65,155.0,0.440,0.096],
-    ['Q3 2025',2122.6,952.8,311.6,177.4,0.83,377.9,415.0,0.97,225.0,0.449,0.147],
-    ['Q4 2025',1868.4,839.4,255.2,140.8,0.66,321.5,350.0,0.79,185.0,0.449,0.137],
+  // ── TAB 3: CASH FLOW ────────────────────────────────────────────────────────
+  const ws3 = wb.addWorksheet('Cash Flow', { properties:{tabColor:{argb:'FF166534'}} });
+  setCols(ws3, [10,12,12,12,22,20,12,12]);
+  freezeTopRow(ws3);
+  ws3.getRow(1).height = 32;
+
+  const cfHeaders = ['Year','OCF ($M)','CapEx ($M)','FCF ($M)','Share Repurchases ($M)','Dividends Paid ($M)','D&A ($M)','FCF Yield'];
+  const cfData = [
+    ['FY2021',711.0,111.2,599.8,386.6,41.3,91.2,0.122],
+    ['FY2022',218.7,146.4,72.3,120.4,43.1,126.7,0.015],
+    ['FY2023',519.8,134.9,384.9,98.6,44.5,132.1,0.078],
+    ['FY2024',698.0,128.8,569.2,180.2,47.3,170.0,0.115],
+    ['FY2025',789.0,155.8,633.2,50.0,51.6,265.1,0.043],
   ];
-  var ws4 = XLSX.utils.aoa_to_sheet(qtrData);
-  applyNumFmt(ws4, '#,##0.0', 1, 10, 1, 3);
-  applyNumFmt(ws4, '#,##0.0', 1, 10, 6, 9);
-  applyNumFmt(ws4, '#,##0.00', 1, 10, 5, 5);
-  applyNumFmt(ws4, '#,##0.00', 1, 10, 8, 8);
-  applyNumFmt(ws4, '#,##0.0', 1, 10, 4, 4);
-  applyNumFmt(ws4, '0.0%', 1, 10, 10, 11);
-  setColWidths(ws4, [10,14,16,13,13,13,13,15,10,12,14,12]);
-  // Freeze header row
-  ws4['!freeze'] = { xSplit: 0, ySplit: 1, topLeftCell: 'A2', activeCell: 'A2', sqref: 'A2' };
+
+  cfHeaders.forEach((h,i) => {
+    const cell = ws3.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('166534','FFFFFF'));
+  });
+  cfData.forEach((row,ri) => {
+    const altBg = ri % 2 === 0 ? C.greenBg : 'F0FDF4';
+    ws3.getRow(ri+2).height = 18;
+    row.forEach((val,ci) => {
+      const cell = ws3.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg)); }
+      else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===7) { cell.numFmt = '0.0%'; }
+        else { cell.numFmt = '#,##0.0'; }
+        // FCF: bold green
+        if (ci===3) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green}, bold:true };
+        // CapEx: red
+        if (ci===2) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red} };
+      }
+    });
+  });
+
+  // ── TAB 4: QUARTERLY ────────────────────────────────────────────────────────
+  const ws4 = wb.addWorksheet('Quarterly', { properties:{tabColor:{argb:'FF0E7490'}} });
+  setCols(ws4, [10,14,16,13,13,13,13,15,10,12,14,12]);
+  freezeTopRow(ws4);
+  ws4.getRow(1).height = 32;
+
+  const qtrHeaders = ['Quarter','Revenue ($M)','Gross Profit ($M)','Op Income ($M)','Net Income ($M)','EPS (Diluted)','EBITDA ($M)','Adj EBITDA ($M)','Adj EPS','FCF ($M)','Gross Margin','Op Margin'];
+  const qtrData = [
+    ['Q3 2023',1277.1,573.7,183.2,113.3,0.64,216.2,221.0,0.75,148.0,0.449,0.143,'pre'],
+    ['Q4 2023',1170.5,512.8,121.9,77.1,0.43,154.9,165.0,0.55,96.0,0.438,0.104,'pre'],
+    ['Q1 2024',1189.4,512.6,131.5,76.3,0.43,174.0,180.0,0.56,105.0,0.431,0.111,'pre'],
+    ['Q2 2024',1233.6,554.2,173.3,106.1,0.60,215.8,222.0,0.70,140.0,0.449,0.140,'pre'],
+    ['Q3 2024',1300.0,589.9,201.8,130.0,0.73,244.3,250.0,0.84,162.0,0.454,0.155,'pre'],
+    ['Q4 2024',1207.9,523.4,127.6,71.9,0.40,170.1,185.0,0.53,100.0,0.433,0.106,'pre'],
+    ['Q1 2025',1604.7,580.5,13.2,-33.1,-0.17,79.5,185.0,0.35,42.0,0.362,0.008,'post'],
+    ['Q2 2025',1880.8,827.2,179.9,99.0,0.47,246.2,290.0,0.65,155.0,0.440,0.096,'post'],
+    ['Q3 2025',2122.6,952.8,311.6,177.4,0.83,377.9,415.0,0.97,225.0,0.449,0.147,'post'],
+    ['Q4 2025',1868.4,839.4,255.2,140.8,0.66,321.5,350.0,0.79,185.0,0.449,0.137,'post'],
+  ];
+
+  qtrHeaders.forEach((h,i) => {
+    const cell = ws4.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.teal,'FFFFFF'));
+  });
+
+  // Section divider rows
+  const preSectionRow = ws4.getRow(2);
+  // Insert a divider label before pre-acq rows
+  // We'll add it inline via a merged cell section header
+  // Pre-acq rows: data rows 2-7 (Excel rows 2-7)
+  // Post-acq rows: data rows 8-11 (Excel rows 8-11)
+
+  qtrData.forEach((row, ri) => {
+    const isPost = row[12] === 'post';
+    const isQ1Acq = row[0] === 'Q1 2025'; // worst quarter
+    const altBg = isPost
+      ? (ri % 2 === 0 ? C.tealLight : 'E0F2FE')
+      : (ri % 2 === 0 ? C.gray1 : 'FFFFFF');
+    const rowNum = ri + 2;
+    ws4.getRow(rowNum).height = 18;
+
+    row.slice(0, 12).forEach((val, ci) => {
+      const cell = ws4.getCell(rowNum, ci+1);
+      cell.value = val === '' ? null : val;
+      if (ci===0) {
+        styleCell(cell, labelStyle(altBg, isPost));
+        if (isPost) cell.font = { ...cell.font, color:{argb:'FF'+C.teal}, bold:true };
+      } else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===10||ci===11) { cell.numFmt = '0.0%'; }
+        else if (ci===5||ci===8) { cell.numFmt = '#,##0.00'; }
+        else if (typeof val==='number') { cell.numFmt = '#,##0.0'; }
+        // Negative values → red
+        if (typeof val==='number' && val < 0) {
+          cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red}, bold:true };
+          cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.redBg} };
+        }
+      }
+    });
+  });
+
   // Note row
-  var noteRow = [['Note: Q3-Q4 2023 and Q1-Q4 2024 = pre-Mattress Firm acquisition period. Q1-Q4 2025 = post-acquisition (Feb 2025). EBITDA = Op Income + D&A. Adj EBITDA excludes acquisition/integration charges. Adj EPS excludes acquisition amortization. FCF estimated.']];
-  XLSX.utils.sheet_add_aoa(ws4, noteRow, { origin: { r: 12, c: 0 } });
-  XLSX.utils.book_append_sheet(wb, ws4, 'Quarterly');
+  const noteRowNum = qtrData.length + 2;
+  ws4.mergeCells(noteRowNum, 1, noteRowNum, 12);
+  const noteCell = ws4.getCell(noteRowNum, 1);
+  noteCell.value = 'Note: Q3–Q4 2023 and Q1–Q4 2024 = pre-Mattress Firm acquisition period. Q1–Q4 2025 = post-acquisition (Feb 2025). Blue rows = post-acquisition quarters. EBITDA = Op Income + D&A. Adj EBITDA excludes acquisition/integration charges. Adj EPS excludes acquisition amortization. FCF estimated.';
+  styleCell(noteCell, noteStyle());
+  ws4.getRow(noteRowNum).height = 40;
 
-  // ── Tab 5: Ratios ───────────────────────────────────────────────────────────
-  var ratiosData = [
-    ['Ratio','FY2021','FY2022','FY2023','FY2024','FY2025'],
+  ws4.autoFilter = { from:'A1', to:{row:1,column:qtrHeaders.length} };
+
+  // ── TAB 5: RATIOS ────────────────────────────────────────────────────────────
+  const ws5 = wb.addWorksheet('Ratios', { properties:{tabColor:{argb:'FF5B21B6'}} });
+  setCols(ws5, [22,12,12,12,12,12]);
+  freezeTopRow(ws5);
+  ws5.getRow(1).height = 28;
+
+  const ratiosHeaders = ['Ratio','FY2021','FY2022','FY2023','FY2024','FY2025'];
+  const ratiosData = [
     ['Gross Margin',0.438,0.416,0.432,0.442,0.444],
     ['EBITDA Margin',0.204,0.164,0.150,0.163,0.139],
     ['Net Margin',0.127,0.093,0.075,0.078,0.051],
@@ -5575,63 +5783,181 @@ function exportXLSX() {
     ['Interest Coverage','6.8x','3.5x','2.9x','2.3x','1.6x'],
     ['FCF Conversion',1.138,0.271,1.046,1.227,1.202],
   ];
-  var ws5 = XLSX.utils.aoa_to_sheet(ratiosData);
-  // Apply % format to margin/return rows (rows 1-6 and 11, 0-based)
-  var pctRows = [1,2,3,4,5,6,11];
-  for (var pi = 0; pi < pctRows.length; pi++) {
-    applyNumFmt(ws5, '0.0%', pctRows[pi], pctRows[pi], 1, 5);
-  }
-  setColWidths(ws5, [18,10,10,10,10,10]);
-  XLSX.utils.book_append_sheet(wb, ws5, 'Ratios');
+  // Which rows are percentages (0-indexed)
+  const pctRatioRows = new Set([0,1,2,3,4,5,10]);
 
-  // ── Tab 6: Segments ─────────────────────────────────────────────────────────
-  var segData = [
-    ['Segment','FY2025 Revenue ($M)','FY2025 Op Income ($M)','OI Margin','% of Total Revenue'],
+  ratiosHeaders.forEach((h,i) => {
+    const cell = ws5.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('5B21B6','FFFFFF'));
+  });
+
+  ratiosData.forEach((row, ri) => {
+    const rowNum = ri + 2;
+    const isPct = pctRatioRows.has(ri);
+    const altBg = ri % 2 === 0 ? C.purpleLight : 'F5F3FF';
+    ws5.getRow(rowNum).height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws5.getCell(rowNum, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); }
+      else {
+        styleCell(cell, dataStyle(altBg));
+        if (isPct && typeof val==='number') { cell.numFmt = '0.0%'; }
+        // Colour trend: last year vs first
+        if (ci > 1 && typeof val==='number' && typeof row[1]==='number') {
+          if (ri <= 5) { // margins/returns: higher=green, lower=red
+            if (val > row[1]) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green} };
+            else if (val < row[1]) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red} };
+          }
+        }
+      }
+    });
+  });
+
+  // ── TAB 6: SEGMENTS ─────────────────────────────────────────────────────────
+  const ws6 = wb.addWorksheet('Segments', { properties:{tabColor:{argb:'FF0F766E'}} });
+  setCols(ws6, [30,22,22,14,18]);
+  freezeTopRow(ws6);
+  ws6.getRow(1).height = 28;
+
+  const segHeaders = ['Segment','FY2025 Revenue ($M)','FY2025 Op Income ($M)','OI Margin','% of Total Revenue'];
+  const segData = [
     ['North America Wholesale (Mfg)',2430.0,553.0,0.228,0.325],
     ['Mattress Firm (Retail)',3505.0,191.0,0.054,0.469],
     ['International',1542.0,221.0,0.143,0.206],
     ['Total / Consolidated',7476.5,965.0,0.129,1.000],
   ];
-  var ws6 = XLSX.utils.aoa_to_sheet(segData);
-  applyNumFmt(ws6, '#,##0.0', 1, 4, 1, 2);
-  applyNumFmt(ws6, '0.0%', 1, 4, 3, 4);
-  setColWidths(ws6, [30,22,22,12,18]);
-  XLSX.utils.book_append_sheet(wb, ws6, 'Segments');
+  const segBgs = ['D1FAE5','A7F3D0','6EE7B7','34D399'];
 
-  // ── Tab 7: Estimates ────────────────────────────────────────────────────────
-  var estData = [
-    ['Year','Revenue ($M)','EBITDA ($M)','EBITDA Margin','Net Income ($M)','EPS ($)','FCF ($M)','Rev Growth YoY'],
-    ['FY2025A',7476.5,1040.5,0.139,384.1,1.84,633.2,''],
+  segHeaders.forEach((h,i) => {
+    const cell = ws6.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('0F766E','FFFFFF'));
+  });
+  segData.forEach((row, ri) => {
+    const isTotal = row[0].startsWith('Total');
+    const altBg = isTotal ? C.navyBg : segBgs[ri];
+    ws6.getRow(ri+2).height = 20;
+    row.forEach((val, ci) => {
+      const cell = ws6.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) {
+        styleCell(cell, labelStyle(altBg, isTotal));
+        if (isTotal) { cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FFFFFFFF'} }; cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+C.navyBg}}; }
+      } else {
+        if (isTotal) { styleCell(cell, dataStyle(C.navyBg,'FFFFFF')); }
+        else { styleCell(cell, dataStyle(altBg)); }
+        if (ci===3||ci===4) { cell.numFmt='0.0%'; }
+        else { cell.numFmt='#,##0.0'; }
+        if (isTotal && (ci===1||ci===2)) cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FFFFFFFF'} };
+      }
+    });
+  });
+
+  // ── TAB 7: ESTIMATES ────────────────────────────────────────────────────────
+  const ws7 = wb.addWorksheet('Estimates', { properties:{tabColor:{argb:'FF92400E'}} });
+  setCols(ws7, [10,14,13,15,16,10,12,15]);
+  freezeTopRow(ws7);
+  ws7.getRow(1).height = 28;
+
+  const estHeaders = ['Year','Revenue ($M)','EBITDA ($M)','EBITDA Margin','Net Income ($M)','EPS ($)','FCF ($M)','Rev Growth YoY'];
+  const estData = [
+    ['FY2025A',7476.5,1040.5,0.139,384.1,1.84,633.2,null],
     ['FY2026E',7952.0,1478.0,0.186,711.0,4.82,745.0,0.064],
     ['FY2027E',8369.0,1673.0,0.200,881.0,5.82,915.0,0.052],
     ['FY2028E',8881.0,1886.0,0.212,1055.0,7.08,1124.0,0.061],
   ];
-  var ws7 = XLSX.utils.aoa_to_sheet(estData);
-  applyNumFmt(ws7, '#,##0.0', 1, 4, 1, 2);
-  applyNumFmt(ws7, '#,##0.0', 1, 4, 4, 4);
-  applyNumFmt(ws7, '#,##0.0', 1, 4, 6, 6);
-  applyNumFmt(ws7, '0.0%', 1, 4, 3, 3);
-  applyNumFmt(ws7, '#,##0.00', 1, 4, 5, 5);
-  applyNumFmt(ws7, '0.0%', 1, 4, 7, 7);
-  setColWidths(ws7, [10,14,13,15,16,10,12,15]);
-  XLSX.utils.book_append_sheet(wb, ws7, 'Estimates');
+  const estBgs = ['FEF3C7','FDE68A','FCD34D','F59E0B'];
 
-  // ── Tab 8: Peer Comparison ──────────────────────────────────────────────────
-  var peerData = [
-    ['Company','Ticker','Market Cap ($B)','P/E','EV/EBITDA','Gross Margin','Net Margin','Rev Growth YoY','Debt/Equity','FCF Yield','Div Yield','ROE'],
+  estHeaders.forEach((h,i) => {
+    const cell = ws7.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.gold,'FFFFFF'));
+  });
+  estData.forEach((row, ri) => {
+    const isActual = String(row[0]).endsWith('A');
+    const altBg = isActual ? C.gray1 : estBgs[ri];
+    ws7.getRow(ri+2).height = 20;
+    row.forEach((val, ci) => {
+      const cell = ws7.getCell(ri+2, ci+1);
+      cell.value = val === null ? '' : val;
+      if (ci===0) {
+        styleCell(cell, labelStyle(altBg, true));
+        if (!isActual) cell.font = { ...cell.font, color:{argb:'FF'+C.gold}, bold:true };
+      } else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===3||ci===7) { cell.numFmt='0.0%'; }
+        else if (ci===5) { cell.numFmt='#,##0.00'; }
+        else if (typeof val==='number') { cell.numFmt='#,##0.0'; }
+        if (!isActual && typeof val==='number') cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.amber}, bold:true };
+      }
+    });
+  });
+
+  // ── TAB 8: PEER COMPARISON ──────────────────────────────────────────────────
+  const ws8 = wb.addWorksheet('Peer Comparison', { properties:{tabColor:{argb:'FF1D4ED8'}} });
+  setCols(ws8, [26,8,16,8,12,14,12,15,13,11,11,10]);
+  freezeTopRow(ws8);
+  ws8.getRow(1).height = 32;
+
+  const peerHeaders = ['Company','Ticker','Market Cap ($B)','P/E','EV/EBITDA','Gross Margin','Net Margin','Rev Growth YoY','Debt/Equity','FCF Yield','Div Yield','ROE'];
+  const peerData = [
     ['Somnigroup International','SGI','14.6','14.4x','21.9x','44.4%','5.1%','+51.6%','1.31x','4.3%','1.0%','5.8%'],
     ['Sleep Number','SNBR','0.3','NM','6.2x','62.1%','-3.2%','-12.4%','NM','NM','0.0%','NM'],
     ['Purple Innovation','PRPL','0.2','NM','NM','28.4%','-8.1%','-15.6%','1.87x','NM','0.0%','NM'],
     ['La-Z-Boy','LZB','1.6','15.2x','8.1x','47.8%','4.8%','-2.3%','0.22x','5.2%','2.4%','18.4%'],
     ['Leggett & Platt','LEG','1.4','NM','8.6x','20.3%','-4.2%','-7.8%','3.14x','NM','10.1%','NM'],
   ];
-  var ws8 = XLSX.utils.aoa_to_sheet(peerData);
-  setColWidths(ws8, [24,8,16,8,12,14,12,15,13,11,11,10]);
-  XLSX.utils.book_append_sheet(wb, ws8, 'Peer Comparison');
 
-  // ── Tab 9: Valuation ────────────────────────────────────────────────────────
-  var valData = [
-    ['Valuation Method','Low','Base Case','High','Notes'],
+  peerHeaders.forEach((h,i) => {
+    const cell = ws8.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('1D4ED8','FFFFFF'));
+  });
+  peerData.forEach((row, ri) => {
+    const isSGI = row[1]==='SGI';
+    const altBg = isSGI ? 'DBEAFE' : (ri % 2 === 0 ? C.gray1 : 'FFFFFF');
+    ws8.getRow(ri+2).height = 20;
+    row.forEach((val, ci) => {
+      const cell = ws8.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0||ci===1) {
+        styleCell(cell, labelStyle(altBg, isSGI));
+        if (isSGI) cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF1D4ED8'} };
+        if (ci===1) cell.alignment = { horizontal:'center', vertical:'middle' };
+      } else {
+        styleCell(cell, dataStyle(altBg, null, 'center'));
+        // Highlight negative values
+        if (typeof val==='string' && val.startsWith('-')) {
+          cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red} };
+        }
+        if (typeof val==='string' && val.startsWith('+')) {
+          cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green}, bold:isSGI };
+        }
+        if (val==='NM') {
+          cell.font = { size:10, name:'Calibri', color:{argb:'FF94A3B8'}, italic:true };
+        }
+      }
+      if (isSGI) {
+        cell.border = {
+          top:{style:'medium',color:{argb:'FF1D4ED8'}},
+          bottom:{style:'medium',color:{argb:'FF1D4ED8'}},
+          left:{style:'thin',color:{argb:'FF'+C.grayBorder}},
+          right:{style:'thin',color:{argb:'FF'+C.grayBorder}}
+        };
+      }
+    });
+  });
+
+  // ── TAB 9: VALUATION ────────────────────────────────────────────────────────
+  const ws9 = wb.addWorksheet('Valuation', { properties:{tabColor:{argb:'FF065F46'}} });
+  setCols(ws9, [34,10,14,10,50]);
+  freezeTopRow(ws9);
+  ws9.getRow(1).height = 28;
+
+  const valHeaders = ['Valuation Method','Low','Base Case','High','Notes'];
+  const valData = [
     ['DCF (WACC 9.5%, TGR 2.5%)','$74','$88','$106','10-year DCF; terminal value ~65% of intrinsic value'],
     ['Forward P/E on FY2026E EPS','$82','$99','$120','P/E range 17x-25x on $4.82E EPS'],
     ['EV/EBITDA on FY2026E','$52','$62','$74','EV/EBITDA range 13x-17x on $1,478M EBITDA'],
@@ -5640,90 +5966,227 @@ function exportXLSX() {
     ['Monte Carlo (5,000 simulations)','$67','$94','$115','50th percentile base; 10th/90th pct bounds'],
     ['Current Price (Mar 2026)','~$69','~$69','~$69','Implies ~28% discount to base DCF'],
   ];
-  var ws9 = XLSX.utils.aoa_to_sheet(valData);
-  setColWidths(ws9, [30,8,12,8,48]);
-  XLSX.utils.book_append_sheet(wb, ws9, 'Valuation');
 
-  // ── Tab 10: References ──────────────────────────────────────────────────────
-  var refData = [
-    ['#','Citation (APA 7th Edition)','URL / Source'],
+  valHeaders.forEach((h,i) => {
+    const cell = ws9.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('065F46','FFFFFF'));
+  });
+  valData.forEach((row, ri) => {
+    const isPrice = row[0].startsWith('Current');
+    const altBg = isPrice ? 'FEF9C3' : (ri % 2 === 0 ? C.gray1 : 'FFFFFF');
+    ws9.getRow(ri+2).height = 22;
+    row.forEach((val, ci) => {
+      const cell = ws9.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); }
+      else if (ci===4) {
+        styleCell(cell, { font:{size:9,name:'Calibri',color:{argb:'FF475569'}}, fill:{type:'pattern',pattern:'solid',fgColor:{argb:'FF'+(altBg)}}, alignment:{horizontal:'left',wrapText:true,vertical:'middle'}, border:borderAll(true) });
+      } else {
+        styleCell(cell, dataStyle(altBg, null, 'center'));
+        if (ci===2) cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF065F46'} }; // Base case: teal
+        if (ci===3) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green} };           // High: green
+        if (ci===1) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red} };             // Low: red
+        if (isPrice) cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+C.amber} };
+      }
+    });
+  });
+
+  // ── TAB 10: REFERENCES ──────────────────────────────────────────────────────
+  const ws10 = wb.addWorksheet('References', { properties:{tabColor:{argb:'FF475569'}} });
+  setCols(ws10, [5,85,65]);
+  ws10.getRow(1).height = 28;
+
+  const refHeaders = ['#','Citation (APA 7th Edition)','URL / Source'];
+  const refData = [
     [1,'IBISWorld. (2025). Mattress manufacturing in the US (NAICS 33791). IBISWorld Industry Report.','https://my.ibisworld.com/us/en/industry/33791'],
     [2,'IBISWorld. (2025). Bed and mattress stores in the US (NAICS OD5462). IBISWorld Industry Report.','https://my.ibisworld.com/us/en/industry/OD5462'],
-    [3,'Somnigroup International Inc. (2026, February 17). Fourth quarter and full year 2025 earnings call transcript. Somnigroup Investor Relations.','https://somnigroup.com'],
-    [4,'Somnigroup International Inc. (2025, February 5). Tempur Sealy successfully completes acquisition of Mattress Firm [Press release].','https://somnigroup.com/newsroom'],
-    [5,'Somnigroup International Inc. (2026, March 4). 2026 investor day presentation. Somnigroup Investor Relations.','https://somnigroup.com'],
-    [6,'International Sleep Products Association. (2025). Q1 2025 mattress industry report. ISPA.','https://www.sleepproducts.org'],
-    [7,'Federal Reserve Bank of St. Louis. (2025). Producer price index: Mattress manufacturing (PCU337910337910). FRED Economic Data.','https://fred.stlouisfed.org'],
+    [3,'Somnigroup International Inc. (2026, February 17). Fourth quarter and full year 2025 earnings call transcript.','https://somnigroup.com'],
+    [4,'Somnigroup International Inc. (2025, February 5). Tempur Sealy successfully completes acquisition of Mattress Firm.','https://somnigroup.com/newsroom'],
+    [5,'Somnigroup International Inc. (2026, March 4). 2026 investor day presentation.','https://somnigroup.com'],
+    [6,'International Sleep Products Association. (2025). Q1 2025 mattress industry report.','https://www.sleepproducts.org'],
+    [7,'Federal Reserve Bank of St. Louis. (2025). PPI: Mattress manufacturing. FRED Economic Data.','https://fred.stlouisfed.org'],
     [8,'U.S. Census Bureau. (2025). New residential construction (housing starts).','https://www.census.gov/construction/nrc/'],
     [9,'Mintel Group Ltd. (2025). Pillows and mattresses - US, 2025. Mintel Reports.','https://www.mintel.com'],
     [10,'Damodaran, A. (2026). Cost of capital by sector (US). NYU Stern School of Business.','https://pages.stern.nyu.edu/~adamodar/'],
-    [11,'Bloomberg L.P. (2026). SGI equity analysis and consensus estimates. Bloomberg Terminal.','Bloomberg Terminal (subscription required)'],
-    [12,'S&P Capital IQ. (2026). Somnigroup International Inc. financial data. S&P Global Market Intelligence.','S&P Capital IQ (subscription required)'],
-    [13,'Altman, E. I. (1968). Financial ratios, discriminant analysis and the prediction of corporate bankruptcy. The Journal of Finance, 23(4), 589-609.','https://doi.org/10.1111/j.1540-6261.1968.tb00843.x'],
-    [14,'Piotroski, J. D. (2000). Value investing: The use of historical financial statement information to separate winners from losers. Journal of Accounting Research, 38, 1-41.','https://doi.org/10.2307/2672906'],
-    [15,'Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on stocks and bonds. Journal of Financial Economics, 33(1), 3-56.','https://doi.org/10.1016/0304-405X(93)90023-5'],
-    [16,'Somnigroup International Inc. (2025). Annual Report on Form 10-K for fiscal year ended December 31, 2025. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=TPX&type=10-K'],
+    [11,'Bloomberg L.P. (2026). SGI equity analysis and consensus estimates.','Bloomberg Terminal (subscription required)'],
+    [12,'S&P Capital IQ. (2026). Somnigroup International Inc. financial data.','S&P Capital IQ (subscription required)'],
+    [13,'Altman, E. I. (1968). Financial ratios, discriminant analysis and the prediction of corporate bankruptcy. J. Finance, 23(4).','https://doi.org/10.1111/j.1540-6261.1968.tb00843.x'],
+    [14,'Piotroski, J. D. (2000). Value investing: Historical financial statement information. JAR, 38.','https://doi.org/10.2307/2672906'],
+    [15,'Fama, E. F., & French, K. R. (1993). Common risk factors in returns on stocks and bonds. JFE, 33(1).','https://doi.org/10.1016/0304-405X(93)90023-5'],
+    [16,'Somnigroup International Inc. (2025). Annual Report on Form 10-K. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=TPX&type=10-K'],
     [17,'Somnigroup International Inc. (2025). Form 10-Q for Q3 2025. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=TPX&type=10-Q'],
   ];
-  var ws10 = XLSX.utils.aoa_to_sheet(refData);
-  setColWidths(ws10, [5,80,60]);
-  XLSX.utils.book_append_sheet(wb, ws10, 'References');
 
-  // ── Tab 11: Sentiment Analysis ──────────────────────────────────────────────
-  // Source: NLP analysis of SGI earnings call transcripts Q1-Q4 2025
-  var sentData = [
-    ['Quarter','Overall Polarity','Domain Sentiment','CEO Sentiment','CFO Sentiment','Confidence Index','Subjectivity','Positive Terms (#)','Negative Terms (#)','Forward-Looking Terms (#)','Net Sentiment','Sentiment Signal'],
-    // Q1 2025: Acquisition close quarter - elevated uncertainty, integration costs
+  refHeaders.forEach((h,i) => {
+    const cell = ws10.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('475569','FFFFFF'));
+  });
+  refData.forEach((row, ri) => {
+    const altBg = ri % 2 === 0 ? C.gray1 : 'FFFFFF';
+    ws10.getRow(ri+2).height = 28;
+    row.forEach((val, ci) => {
+      const cell = ws10.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) {
+        styleCell(cell, dataStyle(altBg, null, 'center'));
+        cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+C.navyBg} };
+      } else if (ci===1) {
+        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font = {size:9, name:'Calibri', color:{argb:'FF1E293B'}};
+        cell.alignment = {horizontal:'left', wrapText:true, vertical:'middle'};
+        cell.border = borderAll(true);
+      } else {
+        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font = {size:9, name:'Calibri', color:{argb:'FF1D4ED8'}, underline: val.startsWith('http')};
+        cell.alignment = {horizontal:'left', wrapText:true, vertical:'middle'};
+        cell.border = borderAll(true);
+      }
+    });
+  });
+
+  // ── TAB 11: SENTIMENT ANALYSIS ───────────────────────────────────────────────
+  const ws11 = wb.addWorksheet('Sentiment Analysis', { properties:{tabColor:{argb:'FF7C3AED'}} });
+  setCols(ws11, [12,16,17,14,14,16,13,18,18,22,14,18]);
+  ws11.getRow(1).height = 36;
+
+  const sentHeaders = ['Quarter','Overall Polarity','Domain Sentiment','CEO Sentiment','CFO Sentiment','Confidence Index','Subjectivity','Positive Terms (#)','Negative Terms (#)','Forward-Looking Terms (#)','Net Sentiment','Sentiment Signal'];
+  const sentData = [
     ['Q1 2025',0.0812,0.1375,0.0912,-0.0345,0.7647,0.3730,91,69,44,0.0467,'Cautiously Positive'],
-    // Q2 2025: First full quarter post-acquisition, early synergy realization
     ['Q2 2025',0.0919,0.4453,0.1110,0.0093,0.3846,0.3869,99,38,57,0.0826,'Positive'],
-    // Q3 2025: Synergy acceleration, strong top-line growth
     ['Q3 2025',0.0950,0.3584,0.1112,-0.0073,0.5897,0.3876,307,145,102,0.0877,'Positive'],
-    // Q4 2025: Full-year results, 2026 guidance setting
     ['Q4 2025',0.0980,0.4315,0.1173,0.0059,0.6000,0.3907,423,168,138,0.0921,'Positive'],
   ];
-  // Add methodology note rows
-  var sentNote = [
-    [''],
-    ['METHODOLOGY NOTES'],
-    ['Overall Polarity: Composite TextBlob/VADER sentiment score (-1.0 to +1.0). Positive values indicate net positive tone.'],
-    ['Domain Sentiment: Finance-specific lexicon score (Loughran-McDonald dictionary) applied to earnings call text.'],
-    ['CEO / CFO Sentiment: Individual speaker turn scores extracted via speaker diarization of transcript.'],
-    ['Confidence Index: Proportion of high-certainty language tokens ("will", "expect", "committed") vs hedging tokens ("may", "could", "uncertain").'],
-    ['Subjectivity: 0.0 = fully objective; 1.0 = fully subjective. Finance transcripts typically 0.30-0.45.'],
-    ['Positive/Negative Terms: Raw count of Loughran-McDonald positive/negative word occurrences per transcript.'],
-    ['Forward-Looking Terms: Count of forward-looking statements per SEC Reg FD definition guidance.'],
-    ['Net Sentiment: Overall Polarity minus absolute value of negative component (directional signal).'],
-    ['Source: NLP analysis of SGI earnings call transcripts; Loughran & McDonald (2011) financial sentiment dictionary.'],
-  ];
-  var ws11 = XLSX.utils.aoa_to_sheet(sentData);
-  XLSX.utils.sheet_add_aoa(ws11, sentNote, { origin: { r: 6, c: 0 } });
-  applyNumFmt(ws11, '0.0000', 1, 4, 1, 4);
-  applyNumFmt(ws11, '0.0000', 1, 4, 9, 10);
-  applyNumFmt(ws11, '0.0000', 1, 4, 5, 6);
-  applyNumFmt(ws11, '#,##0', 1, 4, 7, 9);
-  setColWidths(ws11, [10,16,17,14,14,16,13,18,18,22,14,18]);
-  XLSX.utils.book_append_sheet(wb, ws11, 'Sentiment Analysis');
+  const sentSignalColors = {
+    'Cautiously Positive': { bg:'FEF9C3', fg:'92400E' },
+    'Positive':            { bg:'DCFCE7', fg:'166534' },
+  };
 
-  // ── Tab 12: ML Analysis ─────────────────────────────────────────────────────
-  var mlData = [
-    ['SGI MACHINE LEARNING & QUANTITATIVE ANALYSIS'],
-    [''],
-    ['SECTION A: Revenue Trend Analysis (Structural Break at Acquisition)'],
-    ['Period','Quarter','Revenue ($M)','QoQ Growth','YoY Growth','Regime','Fitted Trend ($M)','Residual ($M)'],
-    ['Pre-Acquisition','Q3 2023',1277.1,'','',  'Legacy TSI','1255.0',22.1],
-    ['Pre-Acquisition','Q4 2023',1170.5,-0.083,'','Legacy TSI','1208.0',-37.5],
-    ['Pre-Acquisition','Q1 2024',1189.4,0.016,'','Legacy TSI','1195.0',-5.6],
-    ['Pre-Acquisition','Q2 2024',1233.6,0.037,'','Legacy TSI','1228.0',5.6],
-    ['Pre-Acquisition','Q3 2024',1300.0,0.054,0.018,'Legacy TSI','1262.0',38.0],
-    ['Pre-Acquisition','Q4 2024',1207.9,-0.071,0.032,'Legacy TSI','1210.0',-2.1],
-    ['Post-Acquisition','Q1 2025',1604.7,0.328,'','Combined Entity','1720.0',-115.3],
-    ['Post-Acquisition','Q2 2025',1880.8,0.172,'','Combined Entity','1895.0',-14.2],
-    ['Post-Acquisition','Q3 2025',2122.6,0.129,0.633,'Combined Entity','2090.0',32.6],
-    ['Post-Acquisition','Q4 2025',1868.4,-0.120,0.546,'Combined Entity','1920.0',-51.6],
-    [''],
-    ['SECTION B: EPS Anomaly Detection (Z-Score Analysis)'],
-    ['Quarter','Reported EPS','Consensus Est','Surprise ($)','Surprise %','Z-Score','Anomaly Flag'],
+  sentHeaders.forEach((h,i) => {
+    const cell = ws11.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('7C3AED','FFFFFF'));
+  });
+  sentData.forEach((row, ri) => {
+    const altBg = ri % 2 === 0 ? C.purpleLight : 'F5F3FF';
+    ws11.getRow(ri+2).height = 20;
+    row.forEach((val, ci) => {
+      const cell = ws11.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); cell.font = {...cell.font, color:{argb:'FF7C3AED'}}; }
+      else if (ci===11) {
+        const sc = sentSignalColors[val] || { bg:'FFFFFF', fg:'1E293B' };
+        styleCell(cell, dataStyle(sc.bg, sc.fg, 'center'));
+        cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+sc.fg} };
+      } else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci <= 10 && typeof val==='number') { cell.numFmt = '0.0000'; }
+        if (ci >= 7 && ci <= 9 && typeof val==='number') { cell.numFmt = '#,##0'; }
+        // Negative sentiment values → red
+        if (typeof val==='number' && val < 0) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.red} };
+        else if (typeof val==='number' && val > 0 && ci <= 4) cell.font = { size:10, name:'Calibri', color:{argb:'FF'+C.green} };
+      }
+    });
+  });
+
+  // Methodology notes
+  const sentNotes = [
+    '',
+    'METHODOLOGY NOTES',
+    'Overall Polarity: Composite TextBlob/VADER sentiment score (−1.0 to +1.0). Positive values indicate net positive tone.',
+    'Domain Sentiment: Finance-specific lexicon score (Loughran-McDonald dictionary) applied to earnings call text.',
+    'CEO / CFO Sentiment: Individual speaker turn scores extracted via speaker diarization of transcript.',
+    'Confidence Index: Proportion of high-certainty language tokens ("will", "expect", "committed") vs hedging tokens ("may", "could", "uncertain").',
+    'Subjectivity: 0.0 = fully objective; 1.0 = fully subjective. Finance transcripts typically 0.30–0.45.',
+    'Positive/Negative Terms: Raw count of Loughran-McDonald positive/negative word occurrences per transcript.',
+    'Forward-Looking Terms: Count of forward-looking statements per SEC Reg FD definition guidance.',
+    'Net Sentiment: Overall Polarity minus absolute value of negative component (directional signal).',
+    'Source: NLP analysis of SGI earnings call transcripts; Loughran & McDonald (2011) financial sentiment dictionary.',
+  ];
+  sentNotes.forEach((note, ni) => {
+    const rn = sentData.length + 2 + ni;
+    ws11.mergeCells(rn, 1, rn, 12);
+    const cell = ws11.getCell(rn, 1);
+    cell.value = note;
+    ws11.getRow(rn).height = ni===1 ? 22 : 18;
+    if (ni===1) {
+      styleCell(cell, sectionTitleStyle('7C3AED'));
+    } else if (note) {
+      styleCell(cell, noteStyle());
+    }
+  });
+  freezeTopRow(ws11);
+
+  // ── TAB 12: ML ANALYSIS ──────────────────────────────────────────────────────
+  const ws12 = wb.addWorksheet('ML Analysis', { properties:{tabColor:{argb:'FF0F172A'}} });
+  setCols(ws12, [24,22,14,13,13,25,16,14]);
+  ws12.getRow(1).height = 28;
+
+  // Section A Title
+  ws12.mergeCells(1,1,1,8);
+  const mlTitle = ws12.getCell(1,1);
+  mlTitle.value = 'SGI MACHINE LEARNING & QUANTITATIVE ANALYSIS';
+  styleCell(mlTitle, sectionTitleStyle(C.navyBg));
+
+  function mlSectionHeader(ws, rowNum, text, bgHex, colCount) {
+    ws.mergeCells(rowNum, 1, rowNum, colCount||8);
+    const cell = ws.getCell(rowNum, 1);
+    cell.value = text;
+    styleCell(cell, sectionTitleStyle(bgHex));
+    ws.getRow(rowNum).height = 22;
+  }
+
+  // Section A: Revenue Trend
+  mlSectionHeader(ws12, 2, 'SECTION A: Revenue Trend Analysis (Structural Break at Acquisition)', '1E3A5F');
+  const revHdrs = ['Period','Quarter','Revenue ($M)','QoQ Growth','YoY Growth','Regime','Fitted Trend ($M)','Residual ($M)'];
+  revHdrs.forEach((h,i) => {
+    const cell = ws12.getCell(3, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('1E3A5F','FFFFFF'));
+  });
+  const revData = [
+    ['Pre-Acquisition','Q3 2023',1277.1,null,null,'Legacy TSI',1255.0,22.1],
+    ['Pre-Acquisition','Q4 2023',1170.5,-0.083,null,'Legacy TSI',1208.0,-37.5],
+    ['Pre-Acquisition','Q1 2024',1189.4,0.016,null,'Legacy TSI',1195.0,-5.6],
+    ['Pre-Acquisition','Q2 2024',1233.6,0.037,null,'Legacy TSI',1228.0,5.6],
+    ['Pre-Acquisition','Q3 2024',1300.0,0.054,0.018,'Legacy TSI',1262.0,38.0],
+    ['Pre-Acquisition','Q4 2024',1207.9,-0.071,0.032,'Legacy TSI',1210.0,-2.1],
+    ['Post-Acquisition','Q1 2025',1604.7,0.328,null,'Combined Entity',1720.0,-115.3],
+    ['Post-Acquisition','Q2 2025',1880.8,0.172,null,'Combined Entity',1895.0,-14.2],
+    ['Post-Acquisition','Q3 2025',2122.6,0.129,0.633,'Combined Entity',2090.0,32.6],
+    ['Post-Acquisition','Q4 2025',1868.4,-0.120,0.546,'Combined Entity',1920.0,-51.6],
+  ];
+  revData.forEach((row, ri) => {
+    const isPost = row[0]==='Post-Acquisition';
+    const altBg = isPost ? C.tealLight : (ri%2===0 ? C.gray1 : 'FFFFFF');
+    const rn = ri + 4;
+    ws12.getRow(rn).height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws12.getCell(rn, ci+1);
+      cell.value = val;
+      if (ci===0||ci===1||ci===5) { styleCell(cell, labelStyle(altBg, isPost&&ci===0)); if(isPost&&ci===0) cell.font={...cell.font,color:{argb:'FF'+C.teal}}; }
+      else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===3||ci===4) { if(val!==null) cell.numFmt='0.0%'; }
+        else if (ci===2||ci===6) { cell.numFmt='#,##0.0'; }
+        else { if(typeof val==='number') cell.numFmt='#,##0.0'; }
+        if (typeof val==='number' && val<0) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red}};
+        else if (typeof val==='number' && val>0 && (ci===7)) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green}};
+      }
+    });
+  });
+
+  // Section B: EPS Anomaly Detection
+  const secBRow = 15;
+  mlSectionHeader(ws12, secBRow, 'SECTION B: EPS Anomaly Detection (Z-Score Analysis)', '92400E');
+  const epsHdrs = ['Quarter','Reported EPS','Consensus Est','Surprise ($)','Surprise %','Z-Score','Anomaly Flag'];
+  epsHdrs.forEach((h,i) => {
+    const cell = ws12.getCell(secBRow+1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('92400E','FFFFFF'));
+  });
+  const epsData = [
     ['Q3 2023',0.64,0.60,0.04,0.067,0.82,'Normal'],
     ['Q4 2023',0.43,0.46,-0.03,-0.065,-0.61,'Normal'],
     ['Q1 2024',0.43,0.45,-0.02,-0.044,-0.42,'Normal'],
@@ -5734,110 +6197,291 @@ function exportXLSX() {
     ['Q2 2025',0.47,0.43,0.04,0.093,0.93,'Normal'],
     ['Q3 2025',0.83,0.78,0.05,0.064,1.05,'Normal'],
     ['Q4 2025',0.66,0.63,0.03,0.048,0.60,'Normal'],
-    [''],
-    ['SECTION C: Price Momentum & Technical Indicators (as of Mar 2026)'],
-    ['Indicator','Value','Signal','Notes'],
+  ];
+  epsData.forEach((row, ri) => {
+    const isOutlier = row[6].startsWith('Outlier');
+    const altBg = isOutlier ? C.redBg : (ri%2===0?C.gray1:'FFFFFF');
+    const rn = secBRow + 2 + ri;
+    ws12.getRow(rn).height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws12.getCell(rn, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg)); }
+      else if (ci===6) {
+        styleCell(cell, dataStyle(altBg, isOutlier?C.red:'166534', 'center'));
+        cell.font = { bold:isOutlier, size:10, name:'Calibri', color:{argb:'FF'+(isOutlier?C.red:'166534')} };
+      } else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===1||ci===2||ci===3) { cell.numFmt='#,##0.00'; }
+        else if (ci===4) { cell.numFmt='0.0%'; }
+        else if (ci===5) { cell.numFmt='0.00'; }
+        if (typeof val==='number' && val<0) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red},bold:isOutlier};
+        else if (typeof val==='number' && val>0) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green}};
+      }
+    });
+  });
+
+  // Section C: Price Momentum
+  const secCRow = secBRow + 12;
+  mlSectionHeader(ws12, secCRow, 'SECTION C: Price Momentum & Technical Indicators (as of Mar 2026)', '065F46');
+  const techHdrs = ['Indicator','Value','Signal','Notes'];
+  techHdrs.forEach((h,i) => {
+    const cell = ws12.getCell(secCRow+1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('065F46','FFFFFF'));
+    // Merge unused columns for this 4-col section
+  });
+  const techData = [
     ['RSI (14-day)',61.8,'Neutral-Bullish','Above 50 midline; approaching overbought at 70'],
-    ['Implied Volatility (30-day)',0.313,'Elevated','vs. S&P 500 avg ~0.18; reflects integration uncertainty'],
-    ['50-Day Moving Average','$64.20','Price Above','Bullish signal; support level'],
-    ['200-Day Moving Average','$71.50','Price Below','Bearish signal; resistance level'],
-    ['52-Week High','$97.82','','Current price ~29% below 52-wk high'],
-    ['52-Week Low','$58.14','','Current price ~19% above 52-wk low'],
+    ['Implied Volatility (30-day)','31.3%','Elevated','vs. S&P 500 avg ~0.18; reflects integration uncertainty'],
+    ['50-Day Moving Average','$64.20','Price Above (Bullish)','Bullish signal; support level'],
+    ['200-Day Moving Average','$71.50','Price Below (Bearish)','Bearish signal; resistance level'],
+    ['52-Week High','$97.82','—','Current price ~29% below 52-wk high'],
+    ['52-Week Low','$58.14','—','Current price ~19% above 52-wk low'],
     ['Beta (vs. S&P 500)',1.42,'High','Amplified market sensitivity post-acquisition'],
-    ['Average Daily Volume (30d)','1.4M shares','','Normal range for mid-cap'],
+    ['Avg Daily Volume (30d)','1.4M shares','Normal','Normal range for mid-cap'],
     ['Short Interest','8.2%','Moderate','8.2% of float; squeeze potential if catalyst emerges'],
-    [''],
-    ['SECTION D: Factor Correlation Matrix (Monthly Returns, 36 months)'],
-    ['Factor','SGI','S&P 500','Housing Starts','Consumer Conf','10-Yr Treasury','Foam/Input Costs'],
+  ];
+  const signalColors = {
+    'Neutral-Bullish':{'bg':'DCFCE7','fg':'166534'},
+    'Elevated':{'bg':C.redBg,'fg':C.red},
+    'Price Above (Bullish)':{'bg':'DCFCE7','fg':'166534'},
+    'Price Below (Bearish)':{'bg':C.redBg,'fg':C.red},
+    'High':{'bg':C.amberBg,'fg':C.amber},
+    'Moderate':{'bg':C.amberBg,'fg':C.amber},
+    'Normal':{'bg':C.gray1,'fg':'475569'},
+    '—':{'bg':C.gray1,'fg':'94A3B8'},
+  };
+  techData.forEach((row, ri) => {
+    const rn = secCRow + 2 + ri;
+    const altBg = ri%2===0 ? C.gray1 : 'F0FDF4';
+    ws12.getRow(rn).height = 20;
+    row.forEach((val, ci) => {
+      const cell = ws12.getCell(rn, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); }
+      else if (ci===2) {
+        const sc = signalColors[val] || {bg:C.gray1,fg:'1E293B'};
+        styleCell(cell, dataStyle(sc.bg, sc.fg, 'center'));
+        cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+sc.fg} };
+      } else if (ci===3) {
+        cell.value = val;
+        cell.fill = {type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font = {italic:true, size:9, name:'Calibri', color:{argb:'FF475569'}};
+        cell.alignment = {horizontal:'left',wrapText:true,vertical:'middle'};
+        cell.border = borderAll(true);
+      } else {
+        styleCell(cell, dataStyle(altBg, null, 'center'));
+      }
+    });
+  });
+
+  // Section D: Correlation Matrix
+  const secDRow = secCRow + techData.length + 3;
+  mlSectionHeader(ws12, secDRow, 'SECTION D: Factor Correlation Matrix (Monthly Returns, 36 months)', '1D4ED8');
+  const corrHdrs = ['Factor','SGI','S&P 500','Housing Starts','Consumer Conf','10-Yr Treasury','Foam/Input Costs'];
+  corrHdrs.forEach((h,i) => {
+    const cell = ws12.getCell(secDRow+1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('1D4ED8','FFFFFF'));
+  });
+  const corrData = [
     ['SGI',1.000,0.623,0.412,-0.198,-0.315,-0.287],
     ['S&P 500',0.623,1.000,0.318,-0.124,-0.428,-0.156],
     ['Housing Starts',0.412,0.318,1.000,0.285,-0.389,-0.112],
     ['Consumer Conf',-0.198,-0.124,0.285,1.000,-0.231,-0.088],
     ['10-Yr Treasury',-0.315,-0.428,-0.389,-0.231,1.000,0.341],
     ['Foam/Input Costs',-0.287,-0.156,-0.112,-0.088,0.341,1.000],
-    [''],
-    ['SECTION E: Leverage Trajectory & Deleveraging Model'],
-    ['Year','Total Debt ($M)','EBITDA ($M)','Net Debt/EBITDA','Annual Debt Paydown ($M)','FCF Applied to Debt ($M)','Cumulative Paydown ($M)'],
-    ['FY2024 (Pre-Acq)',4632.2,804.2,5.41,'','',''],
+  ];
+  corrData.forEach((row, ri) => {
+    const rn = secDRow + 2 + ri;
+    ws12.getRow(rn).height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws12.getCell(rn, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(ri%2===0?C.gray1:'FFFFFF', true)); }
+      else {
+        cell.numFmt = '0.000';
+        cell.alignment = {horizontal:'center', vertical:'middle'};
+        cell.border = borderAll(true);
+        if (typeof val==='number') {
+          if (val===1.000) {
+            cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+C.navyBg}};
+            cell.font={bold:true,size:10,name:'Calibri',color:{argb:'FFFFFFFF'}};
+          } else if (val > 0.4) {
+            cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+C.greenBg}};
+            cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green}};
+          } else if (val < -0.3) {
+            cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+C.redBg}};
+            cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red}};
+          } else {
+            cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFFAFAFA'}};
+            cell.font={size:10,name:'Calibri',color:{argb:'FF475569'}};
+          }
+        }
+      }
+    });
+  });
+
+  // Section E: Leverage Trajectory
+  const secERow = secDRow + corrData.length + 3;
+  mlSectionHeader(ws12, secERow, 'SECTION E: Leverage Trajectory & Deleveraging Model', C.amber);
+  const levHdrs = ['Year','Total Debt ($M)','EBITDA ($M)','Net Debt/EBITDA','Annual Debt Paydown ($M)','FCF Applied to Debt ($M)','Cumulative Paydown ($M)'];
+  levHdrs.forEach((h,i) => {
+    const cell = ws12.getCell(secERow+1, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.amber,'FFFFFF'));
+  });
+  const levData = [
+    ['FY2024 (Pre-Acq)',4632.2,804.2,5.41,null,null,null],
     ['FY2025 (Acquisition)',8620.2,1040.5,7.81,0,0,0],
     ['FY2026E (Target)',8100.0,1478.0,5.14,520.2,520.2,520.2],
     ['FY2027E (Target)',7300.0,1673.0,3.94,800.0,800.0,1320.2],
     ['FY2028E (Target)',6200.0,1886.0,2.83,1100.0,1100.0,2420.2],
     ['FY2029E (Target)',4800.0,2100.0,1.83,1400.0,1400.0,3820.2],
-    [''],
-    ['Model Notes: Revenue structural break detected at Q1 2025 (F-statistic > 38.2, p < 0.001). Chow test confirms regime change.'],
-    ['EPS z-scores computed over trailing 8-quarter rolling window. Q1 2025 outlier excluded from run-rate modeling.'],
-    ['Correlation matrix uses 36-month rolling returns. Housing Starts = U.S. Census Bureau monthly data. Foam costs = PPI proxy.'],
-    ['Leverage trajectory assumes 80% of FCF directed to debt repayment through FY2028, per management guidance (2026 Investor Day).'],
   ];
-  var ws12 = XLSX.utils.aoa_to_sheet(mlData);
-  // Format numeric sections
-  // Revenue trend: rows 4-13 (0-based), cols 2,7
-  applyNumFmt(ws12, '#,##0.0', 4, 13, 2, 2);
-  applyNumFmt(ws12, '0.0%', 4, 13, 3, 4);
-  applyNumFmt(ws12, '#,##0.0', 4, 13, 6, 7);
-  // EPS section: rows 16-25, cols 1-4
-  applyNumFmt(ws12, '#,##0.00', 16, 25, 1, 3);
-  applyNumFmt(ws12, '0.0%', 16, 25, 4, 4);
-  applyNumFmt(ws12, '0.00', 16, 25, 5, 5);
-  // Volatility row
-  applyNumFmt(ws12, '0.0%', 30, 30, 1, 1);
-  // Correlation matrix: rows 39-44
-  applyNumFmt(ws12, '0.000', 39, 44, 1, 6);
-  // Leverage table: rows 47-52
-  applyNumFmt(ws12, '#,##0.0', 47, 52, 1, 2);
-  applyNumFmt(ws12, '0.00', 47, 52, 3, 3);
-  applyNumFmt(ws12, '#,##0.0', 47, 52, 4, 6);
-  setColWidths(ws12, [22,22,14,13,13,25,16,14]);
-  XLSX.utils.book_append_sheet(wb, ws12, 'ML Analysis');
+  levData.forEach((row, ri) => {
+    const isEst = String(row[0]).includes('E)');
+    const altBg = isEst ? C.amberBg : (ri%2===0?C.gray1:'FFFFFF');
+    const rn = secERow + 2 + ri;
+    ws12.getRow(rn).height = 18;
+    row.forEach((val, ci) => {
+      const cell = ws12.getCell(rn, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, isEst)); if(isEst) cell.font={...cell.font,color:{argb:'FF'+C.amber}}; }
+      else {
+        styleCell(cell, dataStyle(altBg));
+        if (ci===3) { cell.numFmt='0.00'; if(typeof val==='number'&&val>5) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red},bold:true}; else if(typeof val==='number'&&val<3) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green},bold:true}; }
+        else if (typeof val==='number') { cell.numFmt='#,##0.0'; }
+        if (typeof val==='number'&&val>0&&ci>=4) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green}};
+      }
+    });
+  });
 
-  // ── Tab 13: Topic Frequency ─────────────────────────────────────────────────
-  // Source: Keyword frequency analysis of SGI earnings call transcripts Q1-Q4 2025
-  var topicData = [
-    ['Topic / Keyword Cluster','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Total','Trend'],
-    // Core strategic themes
+  // Model notes
+  const mlNotes = [
+    'Model Notes: Revenue structural break detected at Q1 2025 (F-statistic > 38.2, p < 0.001). Chow test confirms regime change.',
+    'EPS z-scores computed over trailing 8-quarter rolling window. Q1 2025 outlier excluded from run-rate modeling.',
+    'Correlation matrix uses 36-month rolling returns. Housing Starts = U.S. Census Bureau monthly data. Foam costs = PPI proxy.',
+    'Leverage trajectory assumes 80% of FCF directed to debt repayment through FY2028, per management guidance (2026 Investor Day).',
+  ];
+  mlNotes.forEach((note, ni) => {
+    const rn = secERow + levData.length + 2 + ni;
+    ws12.mergeCells(rn,1,rn,8);
+    const cell = ws12.getCell(rn,1);
+    cell.value = note;
+    styleCell(cell, noteStyle());
+    ws12.getRow(rn).height = 18;
+  });
+
+  // ── TAB 13: TOPIC FREQUENCY ──────────────────────────────────────────────────
+  const ws13 = wb.addWorksheet('Topic Frequency', { properties:{tabColor:{argb:'FF7C3AED'}} });
+  setCols(ws13, [34,10,10,10,10,8,32]);
+  freezeTopRow(ws13);
+  ws13.getRow(1).height = 28;
+
+  const topicHeaders = ['Topic / Keyword Cluster','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Total','Trend'];
+  const topicData = [
     ['Synergy Mentions',4,13,28,51,96,'Accelerating (+1175%)'],
     ['Mattress Firm Mentions',53,45,151,198,447,'Strong Growth (+274%)'],
     ['Integration Mentions',38,22,19,12,91,'Decelerating (normalized)'],
     ['Acquisition Mentions',47,18,14,11,90,'Decelerating (normalized)'],
-    // Macro/external headwinds
     ['Tariff Mentions',19,4,26,26,75,'Volatile (reemergence Q3/Q4)'],
     ['Supply Chain Mentions',14,8,11,9,42,'Moderate/Stable'],
     ['Inflation Mentions',12,6,8,7,33,'Declining'],
     ['Housing/Consumer Mentions',8,11,15,18,52,'Gradually Rising'],
-    // Growth & performance topics
     ['International Mentions',22,19,31,35,107,'Rising (+59%)'],
     ['Innovation Mentions',11,16,24,29,80,'Rising (+164%)'],
     ['Margin Mentions',18,27,39,44,128,'Rising (+144%)'],
     ['Guidance Mentions',9,12,17,22,60,'Rising (+144%)'],
-    // Financial structure
     ['Leverage / Debt Mentions',31,24,18,14,87,'Decelerating (positive signal)'],
     ['Deleveraging Mentions',8,14,21,28,71,'Accelerating (+250%)'],
     ['Free Cash Flow Mentions',7,11,19,24,61,'Rising (+243%)'],
-    // Marketing & brand
     ['Advertising Mentions',14,19,28,33,94,'Rising (+136%)'],
     ['Brand Mentions',19,22,34,41,116,'Rising (+116%)'],
     ['Market Share Mentions',6,9,14,18,47,'Rising (+200%)'],
-    // Technology & product
     ['Smart Bed / Technology Mentions',8,11,17,21,57,'Rising (+163%)'],
     ['Product Launch Mentions',5,8,12,15,40,'Rising (+200%)'],
   ];
-  var ws13 = XLSX.utils.aoa_to_sheet(topicData);
-  applyNumFmt(ws13, '#,##0', 1, 20, 1, 5);
-  // Add note rows
-  var topicNote = [
-    [''],
-    ['METHODOLOGY: Keyword counts derived from NLP analysis of SGI/Tempur Sealy earnings call transcripts.'],
-    ['Keyword clusters use lemmatization and synonym grouping (e.g., "synergies", "synergy", "synergistic" all counted under Synergy Mentions).'],
-    ['Q1 2025 transcript: Feb 2025 acquisition close call. Q2-Q4 2025: quarterly earnings calls.'],
-    ['Trend % calculated as (Q4 2025 - Q1 2025) / Q1 2025. "Decelerating" = declining frequency, typically positive for integration risk.'],
-    ['Source: Somnigroup International earnings call transcripts Q1-Q4 2025; Loughran-McDonald NLP pipeline.'],
-  ];
-  XLSX.utils.sheet_add_aoa(ws13, topicNote, { origin: { r: 22, c: 0 } });
-  setColWidths(ws13, [32,10,10,10,10,8,30]);
-  XLSX.utils.book_append_sheet(wb, ws13, 'Topic Frequency');
 
-  XLSX.writeFile(wb, 'SGI_Financial_Data_2026.xlsx');
+  topicHeaders.forEach((h,i) => {
+    const cell = ws13.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('7C3AED','FFFFFF'));
+  });
+
+  // Colour categories
+  const trendColors = {
+    'Accelerating': {bg:'DCFCE7',fg:'166534'},
+    'Strong Growth': {bg:'DCFCE7',fg:'166534'},
+    'Rising':        {bg:'D1FAE5',fg:'065F46'},
+    'Gradually Rising': {bg:'D1FAE5',fg:'065F46'},
+    'Decelerating':  {bg:C.amberBg,fg:C.amber},
+    'Volatile':      {bg:C.redBg,fg:C.red},
+    'Moderate':      {bg:C.gray1,fg:'475569'},
+    'Declining':     {bg:C.orangeLight,fg:C.orange},
+  };
+
+  topicData.forEach((row, ri) => {
+    const altBg = ri%2===0 ? C.purpleLight : 'F5F3FF';
+    ws13.getRow(ri+2).height = 18;
+    const trendStr = row[6];
+    const trendKey = Object.keys(trendColors).find(k => trendStr.startsWith(k)) || null;
+    const tc = trendKey ? trendColors[trendKey] : {bg:'FFFFFF',fg:'1E293B'};
+
+    row.forEach((val, ci) => {
+      const cell = ws13.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, false)); }
+      else if (ci===6) {
+        styleCell(cell, dataStyle(tc.bg, tc.fg, 'left'));
+        cell.font = { size:9, name:'Calibri', color:{argb:'FF'+tc.fg} };
+      } else {
+        styleCell(cell, dataStyle(altBg));
+        if (typeof val==='number') { cell.numFmt='#,##0'; }
+        // Colour-scale the count: higher = greener
+        if (ci>=1&&ci<=4&&typeof val==='number') {
+          if (val>100) { cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green},bold:true}; cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+C.greenBg}}; }
+          else if (val>30) { cell.font={size:10,name:'Calibri',color:{argb:'FF065F46'}}; }
+          else if (val<10) { cell.font={size:10,name:'Calibri',color:{argb:'FF94A3B8'}}; }
+        }
+        if (ci===5&&typeof val==='number'&&val>100) { cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green},bold:true}; }
+      }
+    });
+  });
+
+  // Methodology notes
+  const topicNotes = [
+    '',
+    'METHODOLOGY: Keyword counts derived from NLP analysis of SGI/Tempur Sealy earnings call transcripts.',
+    'Keyword clusters use lemmatization and synonym grouping (e.g., "synergies", "synergy", "synergistic" all counted under Synergy Mentions).',
+    'Q1 2025 transcript: Feb 2025 acquisition close call. Q2–Q4 2025: quarterly earnings calls.',
+    'Trend % calculated as (Q4 2025 − Q1 2025) / Q1 2025. "Decelerating" = declining frequency, typically positive for integration risk.',
+    'Source: Somnigroup International earnings call transcripts Q1–Q4 2025; Loughran-McDonald NLP pipeline.',
+  ];
+  topicNotes.forEach((note, ni) => {
+    const rn = topicData.length + 2 + ni;
+    ws13.mergeCells(rn,1,rn,7);
+    const cell = ws13.getCell(rn,1);
+    cell.value = note;
+    ws13.getRow(rn).height = ni===1 ? 22 : 18;
+    if (ni===1) styleCell(cell, sectionTitleStyle('7C3AED'));
+    else if (note) styleCell(cell, noteStyle());
+  });
+
+  ws13.autoFilter = { from:'A1', to:{row:1,column:topicHeaders.length} };
+
+  // ── GENERATE & DOWNLOAD ──────────────────────────────────────────────────────
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'SGI_Financial_Data_2026.xlsx';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ===== LAZY CHART INIT =====
