@@ -5530,7 +5530,7 @@ async function exportXLSX() {
 
   // Apply a style object to a cell
   function styleCell(cell, style) {
-    if (style.font)      Object.assign(cell.font, style.font);
+    if (style.font)      cell.font = { ...(cell.font||{}), ...style.font };
     if (style.fill)      cell.fill = style.fill;
     if (style.alignment) cell.alignment = style.alignment;
     if (style.border)    cell.border = style.border;
@@ -5556,8 +5556,8 @@ async function exportXLSX() {
   // Auto-colour a numeric cell: green if positive, red if negative
   function colorNumeric(cell, val) {
     if (typeof val === 'number') {
-      if (val > 0) { cell.font = { ...cell.font, color:{argb:'FF'+C.green} }; }
-      else if (val < 0) { cell.font = { ...cell.font, color:{argb:'FF'+C.red} }; }
+      if (val > 0) { cell.font = { ...(cell.font||{}), color:{argb:'FF'+C.green} }; }
+      else if (val < 0) { cell.font = { ...(cell.font||{}), color:{argb:'FF'+C.red} }; }
     }
   }
 
@@ -5597,7 +5597,7 @@ async function exportXLSX() {
       cell.value = val === '' ? null : val;
       if (ci === 0) {
         styleCell(cell, labelStyle(altBg, isEstimate));
-        if (isEstimate) cell.font = { ...cell.font, color:{argb:'FF'+C.gold}, bold:true };
+        if (isEstimate) cell.font = { ...(cell.font||{}), color:{argb:'FF'+C.gold}, bold:true };
       } else {
         const s = dataStyle(altBg);
         styleCell(cell, s);
@@ -5738,7 +5738,7 @@ async function exportXLSX() {
       cell.value = val === '' ? null : val;
       if (ci===0) {
         styleCell(cell, labelStyle(altBg, isPost));
-        if (isPost) cell.font = { ...cell.font, color:{argb:'FF'+C.teal}, bold:true };
+        if (isPost) cell.font = { ...(cell.font||{}), color:{argb:'FF'+C.teal}, bold:true };
       } else {
         styleCell(cell, dataStyle(altBg));
         if (ci===10||ci===11) { cell.numFmt = '0.0%'; }
@@ -5884,7 +5884,7 @@ async function exportXLSX() {
       cell.value = val === null ? '' : val;
       if (ci===0) {
         styleCell(cell, labelStyle(altBg, true));
-        if (!isActual) cell.font = { ...cell.font, color:{argb:'FF'+C.gold}, bold:true };
+        if (!isActual) cell.font = { ...(cell.font||{}), color:{argb:'FF'+C.gold}, bold:true };
       } else {
         styleCell(cell, dataStyle(altBg));
         if (ci===3||ci===7) { cell.numFmt='0.0%'; }
@@ -6074,7 +6074,7 @@ async function exportXLSX() {
     row.forEach((val, ci) => {
       const cell = ws11.getCell(ri+2, ci+1);
       cell.value = val;
-      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); cell.font = {...cell.font, color:{argb:'FF7C3AED'}}; }
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); cell.font = { ...(cell.font||{}), color:{argb:'FF7C3AED'}}; }
       else if (ci===11) {
         const sc = sentSignalColors[val] || { bg:'FFFFFF', fg:'1E293B' };
         styleCell(cell, dataStyle(sc.bg, sc.fg, 'center'));
@@ -6165,7 +6165,7 @@ async function exportXLSX() {
     row.forEach((val, ci) => {
       const cell = ws12.getCell(rn, ci+1);
       cell.value = val;
-      if (ci===0||ci===1||ci===5) { styleCell(cell, labelStyle(altBg, isPost&&ci===0)); if(isPost&&ci===0) cell.font={...cell.font,color:{argb:'FF'+C.teal}}; }
+      if (ci===0||ci===1||ci===5) { styleCell(cell, labelStyle(altBg, isPost&&ci===0)); if(isPost&&ci===0) cell.font={ ...(cell.font||{}),color:{argb:'FF'+C.teal}}; }
       else {
         styleCell(cell, dataStyle(altBg));
         if (ci===3||ci===4) { if(val!==null) cell.numFmt='0.0%'; }
@@ -6348,7 +6348,7 @@ async function exportXLSX() {
     row.forEach((val, ci) => {
       const cell = ws12.getCell(rn, ci+1);
       cell.value = val;
-      if (ci===0) { styleCell(cell, labelStyle(altBg, isEst)); if(isEst) cell.font={...cell.font,color:{argb:'FF'+C.amber}}; }
+      if (ci===0) { styleCell(cell, labelStyle(altBg, isEst)); if(isEst) cell.font={ ...(cell.font||{}),color:{argb:'FF'+C.amber}}; }
       else {
         styleCell(cell, dataStyle(altBg));
         if (ci===3) { cell.numFmt='0.00'; if(typeof val==='number'&&val>5) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.red},bold:true}; else if(typeof val==='number'&&val<3) cell.font={size:10,name:'Calibri',color:{argb:'FF'+C.green},bold:true}; }
