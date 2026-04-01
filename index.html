@@ -604,6 +604,51 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 .scenario-card-dcf.base { border-color:rgba(0,180,216,0.4); background:rgba(0,180,216,0.04); }
 .scenario-card-dcf.bear { border-color:rgba(255,77,109,0.4); background:rgba(255,77,109,0.04); }
 
+
+/* ===== REGULATORY FILINGS TRACKER ===== */
+.filings-filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
+.filings-filter-btn { font-size:11px; font-weight:500; padding:5px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--gray-200); cursor:pointer; transition:all 0.15s; font-family:var(--font-body); }
+.filings-filter-btn:hover { border-color:var(--teal-dim); color:var(--white); }
+.filings-filter-btn.active { background:var(--teal-glow); border-color:var(--teal); color:var(--teal); font-weight:600; }
+.filings-search { flex:1; max-width:280px; background:var(--navy-700); border:1px solid var(--border); border-radius:6px; padding:6px 12px; color:var(--white); font-size:12px; outline:none; font-family:var(--font-body); }
+.filings-search:focus { border-color:var(--teal); }
+[data-theme="light"] .filings-search { background:#f3f4f6; color:#111827; }
+.filings-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.filings-table thead th { background:var(--navy-700); color:var(--gray-200); padding:9px 14px; text-align:left; font-size:10px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; white-space:nowrap; border-bottom:2px solid var(--teal); position:sticky; top:56px; z-index:1; cursor:pointer; user-select:none; }
+.filings-table thead th:hover { color:var(--teal); }
+.filings-table thead th.sort-asc::after { content:' ↑'; color:var(--teal); }
+.filings-table thead th.sort-desc::after { content:' ↓'; color:var(--teal); }
+.filings-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.12s; }
+.filings-table tbody tr:hover { background:var(--teal-glow); }
+.filings-table tbody td { padding:9px 14px; vertical-align:middle; }
+.filing-type-badge { display:inline-block; font-family:var(--font-mono); font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; letter-spacing:0.05em; white-space:nowrap; }
+.ftype-10k   { background:rgba(0,180,216,0.15); color:var(--teal); border:1px solid rgba(0,180,216,0.3); }
+.ftype-10q   { background:rgba(0,208,132,0.12); color:var(--green); border:1px solid rgba(0,208,132,0.25); }
+.ftype-8k    { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.25); }
+.ftype-proxy { background:rgba(109,40,217,0.12); color:#a78bfa; border:1px solid rgba(109,40,217,0.25); }
+.ftype-sc13  { background:rgba(156,163,175,0.12); color:var(--gray-200); border:1px solid rgba(156,163,175,0.25); }
+.ftype-s3    { background:rgba(245,158,11,0.12); color:var(--orange); border:1px solid rgba(245,158,11,0.25); }
+.ftype-other { background:rgba(255,255,255,0.05); color:var(--gray-300); border:1px solid var(--border); }
+.filing-link { color:var(--teal); text-decoration:none; font-size:11px; font-weight:500; display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border:1px solid var(--border-accent); border-radius:4px; transition:all 0.15s; white-space:nowrap; }
+.filing-link:hover { background:var(--teal-glow); border-color:var(--teal); text-decoration:none; }
+.filing-date { font-family:var(--font-mono); font-size:12px; color:var(--gray-200); }
+.filing-desc { font-size:12px; color:var(--white); font-weight:500; }
+.filing-desc small { display:block; font-size:10px; color:var(--gray-300); font-weight:400; margin-top:2px; }
+.filing-period { font-family:var(--font-mono); font-size:11px; color:var(--gray-300); }
+.filings-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px; }
+.filings-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; text-align:center; }
+.filings-stat-card .val { font-family:var(--font-mono); font-size:20px; font-weight:700; color:var(--teal); }
+.filings-stat-card .lbl { font-size:10px; color:var(--gray-300); text-transform:uppercase; letter-spacing:0.08em; margin-top:3px; }
+.upcoming-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; display:flex; align-items:center; gap:14px; }
+.upcoming-card .uc-type { width:60px; font-family:var(--font-mono); font-size:11px; font-weight:700; }
+.upcoming-card .uc-date { font-size:12px; color:var(--gray-200); }
+.upcoming-card .uc-note { font-size:11px; color:var(--gray-300); }
+.upcoming-card .uc-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:3px; }
+.uc-upcoming { background:rgba(255,215,0,0.12); color:var(--gold); border:1px solid rgba(255,215,0,0.3); }
+.uc-due      { background:rgba(255,77,109,0.12); color:var(--red);  border:1px solid rgba(255,77,109,0.3); }
+.uc-filed    { background:rgba(0,208,132,0.12); color:var(--green); border:1px solid rgba(0,208,132,0.3); }
+#filings-count { font-size:11px; color:var(--gray-300); font-family:var(--font-mono); }
+
 </style>
 </head>
 <body>
@@ -641,6 +686,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div class="nav-item" data-target="modeling-lab" onclick="scrollToSection('modeling-lab')"><span class="nav-icon">🧲</span>Modeling Lab<span class="nav-number">16</span></div>
   <div class="nav-section-title">Macro &amp; Data</div>
   <div class="nav-item" data-target="macro-dashboard" onclick="scrollToSection('macro-dashboard')"><span class="nav-icon">🌐</span>Macro Dashboard<span class="nav-number">18</span></div>
+  <div class="nav-item" data-target="regulatory-filings" onclick="scrollToSection('regulatory-filings')"><span class="nav-icon">📋</span>Regulatory Filings<span class="nav-number">19b</span></div>
   <div class="nav-item" data-target="references" onclick="scrollToSection('references')"><span class="nav-icon">📚</span>References<span class="nav-number">19</span></div>
   <div class="sidebar-footer">
     <div style="font-weight:600;color:var(--gray-200);margin-bottom:6px;font-size:11px;">SGI Research</div>
@@ -3816,6 +3862,98 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 </section>
 
 
+<!-- ===== REGULATORY FILINGS TRACKER ===== -->
+<section class="section" id="regulatory-filings">
+  <div class="section-anchor" id="regulatory-filings-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 19b</div>
+    <div class="section-title">Regulatory Filings Tracker</div>
+    <div class="section-subtitle">Real-time SEC EDGAR filings for Somnigroup International (CIK: 0001206264) · 10-K, 10-Q, 8-K, Proxy, 13G, S-3 and more</div>
+    <div class="section-actions">
+      <button class="btn btn-ghost" onclick="refreshFilings()">🔄 Refresh from EDGAR</button>
+      <button class="btn btn-ghost" onclick="exportFilingsCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="filings-stats">
+    <div class="filings-stat-card"><div class="val" id="fstat-total">50</div><div class="lbl">Total Filings</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-annual" style="color:var(--teal);">2</div><div class="lbl">Annual Reports</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-quarterly" style="color:var(--green);">4</div><div class="lbl">Quarterly Reports</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-current" style="color:var(--gold);">12</div><div class="lbl">Current Reports (8-K)</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-other">8</div><div class="lbl">Other Filings</div></div>
+  </div>
+
+  <!-- Upcoming / Key Dates -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title" style="margin-bottom:12px;">Upcoming Filing Obligations</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div class="upcoming-card">
+        <div>
+          <div class="uc-type ftype-10q" style="display:inline-block;margin-bottom:6px;">10-Q</div>
+          <div class="uc-date" style="font-weight:600;">Q1 2026 (Mar 31)</div>
+          <div class="uc-note">Due ~May 12, 2026 · 40 days after quarter end</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-upcoming">Upcoming</span></div>
+      </div>
+      <div class="upcoming-card">
+        <div>
+          <div class="ftype-proxy" style="display:inline-block;margin-bottom:6px;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;">PROXY</div>
+          <div class="uc-date" style="font-weight:600;">Annual Meeting 2026</div>
+          <div class="uc-note">DEF 14A filed Mar 31, 2026 · Vote pending</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-filed">Filed ✓</span></div>
+      </div>
+      <div class="upcoming-card">
+        <div>
+          <div class="ftype-10k" style="display:inline-block;margin-bottom:6px;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;">10-K</div>
+          <div class="uc-date" style="font-weight:600;">FY2026 Annual Report</div>
+          <div class="uc-note">Due ~Feb 28, 2027 · 60 days after FY end</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-upcoming">Future</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filings-filter-bar">
+    <input class="filings-search" type="text" id="filingsSearch" placeholder="🔍  Search filings…" oninput="filterFilings()">
+    <button class="filings-filter-btn active" onclick="setFilingType('all', this)">All</button>
+    <button class="filings-filter-btn" onclick="setFilingType('10-K', this)">10-K Annual</button>
+    <button class="filings-filter-btn" onclick="setFilingType('10-Q', this)">10-Q Quarterly</button>
+    <button class="filings-filter-btn" onclick="setFilingType('8-K', this)">8-K Current</button>
+    <button class="filings-filter-btn" onclick="setFilingType('proxy', this)">Proxy / DEF 14A</button>
+    <button class="filings-filter-btn" onclick="setFilingType('sc13', this)">Schedule 13G/D</button>
+    <button class="filings-filter-btn" onclick="setFilingType('other', this)">Other</button>
+    <span id="filings-count" style="margin-left:auto;">50 filings</span>
+  </div>
+
+  <!-- Filings table -->
+  <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+    <div style="max-height:600px;overflow-y:auto;">
+      <table class="filings-table" id="filingsTable">
+        <thead>
+          <tr>
+            <th onclick="sortFilings(0)">Filed Date</th>
+            <th onclick="sortFilings(1)">Type</th>
+            <th onclick="sortFilings(2)">Description</th>
+            <th onclick="sortFilings(3)">Period</th>
+            <th>View Filing</th>
+          </tr>
+        </thead>
+        <tbody id="filingsBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--gray-300);">
+    <span>Source: <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=&dateb=&owner=include&count=40" target="_blank" style="color:var(--teal);">SEC EDGAR — CIK 0001206264</a></span>
+    <span id="filings-updated">Data as of April 1, 2026</span>
+  </div>
+</section>
+
+
 <!-- ===== SECTION 19: REFERENCES ===== -->
 
 <!-- ===== SECTION 18: MACRO DASHBOARD ===== -->
@@ -3996,6 +4134,98 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
         Sentiment recovery: 98.3 → 110 = 11.9% uplift = +$300M TAM
       </div>
     </div>
+  </div>
+</section>
+
+
+<!-- ===== REGULATORY FILINGS TRACKER ===== -->
+<section class="section" id="regulatory-filings">
+  <div class="section-anchor" id="regulatory-filings-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 19b</div>
+    <div class="section-title">Regulatory Filings Tracker</div>
+    <div class="section-subtitle">Real-time SEC EDGAR filings for Somnigroup International (CIK: 0001206264) · 10-K, 10-Q, 8-K, Proxy, 13G, S-3 and more</div>
+    <div class="section-actions">
+      <button class="btn btn-ghost" onclick="refreshFilings()">🔄 Refresh from EDGAR</button>
+      <button class="btn btn-ghost" onclick="exportFilingsCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="filings-stats">
+    <div class="filings-stat-card"><div class="val" id="fstat-total">50</div><div class="lbl">Total Filings</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-annual" style="color:var(--teal);">2</div><div class="lbl">Annual Reports</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-quarterly" style="color:var(--green);">4</div><div class="lbl">Quarterly Reports</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-current" style="color:var(--gold);">12</div><div class="lbl">Current Reports (8-K)</div></div>
+    <div class="filings-stat-card"><div class="val" id="fstat-other">8</div><div class="lbl">Other Filings</div></div>
+  </div>
+
+  <!-- Upcoming / Key Dates -->
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title" style="margin-bottom:12px;">Upcoming Filing Obligations</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div class="upcoming-card">
+        <div>
+          <div class="uc-type ftype-10q" style="display:inline-block;margin-bottom:6px;">10-Q</div>
+          <div class="uc-date" style="font-weight:600;">Q1 2026 (Mar 31)</div>
+          <div class="uc-note">Due ~May 12, 2026 · 40 days after quarter end</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-upcoming">Upcoming</span></div>
+      </div>
+      <div class="upcoming-card">
+        <div>
+          <div class="ftype-proxy" style="display:inline-block;margin-bottom:6px;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;">PROXY</div>
+          <div class="uc-date" style="font-weight:600;">Annual Meeting 2026</div>
+          <div class="uc-note">DEF 14A filed Mar 31, 2026 · Vote pending</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-filed">Filed ✓</span></div>
+      </div>
+      <div class="upcoming-card">
+        <div>
+          <div class="ftype-10k" style="display:inline-block;margin-bottom:6px;font-family:var(--font-mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;">10-K</div>
+          <div class="uc-date" style="font-weight:600;">FY2026 Annual Report</div>
+          <div class="uc-note">Due ~Feb 28, 2027 · 60 days after FY end</div>
+        </div>
+        <div style="margin-left:auto;"><span class="uc-badge uc-upcoming">Future</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filings-filter-bar">
+    <input class="filings-search" type="text" id="filingsSearch" placeholder="🔍  Search filings…" oninput="filterFilings()">
+    <button class="filings-filter-btn active" onclick="setFilingType('all', this)">All</button>
+    <button class="filings-filter-btn" onclick="setFilingType('10-K', this)">10-K Annual</button>
+    <button class="filings-filter-btn" onclick="setFilingType('10-Q', this)">10-Q Quarterly</button>
+    <button class="filings-filter-btn" onclick="setFilingType('8-K', this)">8-K Current</button>
+    <button class="filings-filter-btn" onclick="setFilingType('proxy', this)">Proxy / DEF 14A</button>
+    <button class="filings-filter-btn" onclick="setFilingType('sc13', this)">Schedule 13G/D</button>
+    <button class="filings-filter-btn" onclick="setFilingType('other', this)">Other</button>
+    <span id="filings-count" style="margin-left:auto;">50 filings</span>
+  </div>
+
+  <!-- Filings table -->
+  <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+    <div style="max-height:600px;overflow-y:auto;">
+      <table class="filings-table" id="filingsTable">
+        <thead>
+          <tr>
+            <th onclick="sortFilings(0)">Filed Date</th>
+            <th onclick="sortFilings(1)">Type</th>
+            <th onclick="sortFilings(2)">Description</th>
+            <th onclick="sortFilings(3)">Period</th>
+            <th>View Filing</th>
+          </tr>
+        </thead>
+        <tbody id="filingsBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--gray-300);">
+    <span>Source: <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=&dateb=&owner=include&count=40" target="_blank" style="color:var(--teal);">SEC EDGAR — CIK 0001206264</a></span>
+    <span id="filings-updated">Data as of April 1, 2026</span>
   </div>
 </section>
 
@@ -5229,7 +5459,7 @@ function sortTable(tableId, colIdx) {
 
 // ===== SCROLLSPY =====
 function initScrollspy() {
-  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','references'];
+  const sectionIds = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references'];
   const navItems = document.querySelectorAll('.nav-item[data-target]');
 
   function getActive() {
@@ -9059,6 +9289,7 @@ const chartInits = {
   'quant-risk': [initReturnDistChart, initROICWaccChart],
   'advanced-valuation': [initValuationBridgeChart, initMonteCarloChart],
   'macro-dashboard': [initMacroDashboard],
+  'regulatory-filings': [initRegulatoryFilings],
   'references': [],
   'ml-prediction': [initSensitivityChart, initFeatureImportanceChart],
   'dcf-analysis': [initDCFAnalysis],
@@ -9082,7 +9313,7 @@ function initSection(sectionId) {
 
 // ===== INTERSECTION OBSERVER FOR LAZY INIT =====
 function setupLazyCharts() {
-  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','references'];
+  const sections = ['exec-summary','company-overview','industry-analysis','financial-performance','segment-analysis','balance-sheet','valuation','catalysts-risks','technical-analysis','peer-comparison','comps-studio','analyst-consensus','investment-narrative','quant-risk','advanced-valuation','ml-prediction','deep-research','dcf-analysis','modeling-lab','macro-dashboard','regulatory-filings','references'];
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -13448,6 +13679,230 @@ function updateRefCount() {
   const visible = document.querySelectorAll('.ref-entry:not([style*="none"])').length;
   const el = document.getElementById('refCount');
   if (el) el.textContent = visible + ' reference' + (visible !== 1 ? 's' : '') + ' · APA 7th Edition · Last updated March 2026';
+}
+
+
+// ===== REGULATORY FILINGS TRACKER =====
+
+const SGI_FILINGS = [
+  // [date, type, description, period, accessionNumber, primaryDoc]
+  ['2026-03-31','DEFA14A','Additional Proxy Materials — 2026 Annual Meeting Supplement','','0001206264-26-000037','sgi2026defa14aadditionalma.htm'],
+  ['2026-03-31','DEF 14A','Definitive Proxy Statement — 2026 Annual Meeting of Shareholders','2026-03-31','0001206264-26-000035','sgi-20260330.htm'],
+  ['2026-03-27','SCHEDULE 13G/A','Schedule 13G/A — Institutional Ownership Amendment','','0000102909-26-002384','xslSCHEDULE_13G_X02/primary_doc.xml'],
+  ['2026-03-18','PRE 14A','Preliminary Proxy Statement — 2026 Annual Meeting','2026-03-18','0001206264-26-000029','sgi-20260317.htm'],
+  ['2026-03-04','8-K','Current Report — 2026 Investor Day Presentation & Strategic Update','2026-03-04','0001206264-26-000019','sgi-20260304.htm'],
+  ['2026-02-27','10-K','Annual Report on Form 10-K — Fiscal Year Ended December 31, 2025','2025-12-31','0001206264-26-000015','sgi-20251231.htm'],
+  ['2026-02-17','8-K','Current Report — Q4 & FY2025 Earnings Results & Conference Call','2026-02-17','0001206264-26-000011','sgi-20260217.htm'],
+  ['2026-02-17','SCHEDULE 13G/A','Schedule 13G/A — Institutional Ownership Amendment (Vanguard)','','0001104659-26-016394','xslSCHEDULE_13G_X01/primary_doc.xml'],
+  ['2026-02-17','8-K','Current Report — Q4 2025 Earnings Press Release Exhibit','2026-02-17','0001206264-26-000008','sgi-20260217.htm'],
+  ['2026-01-20','8-K','Current Report — Officer Compensation and Incentive Plan Update','2026-01-20','0001206264-26-000002','sgi-20260120.htm'],
+  ['2025-12-01','8-K','Current Report — Mattress Firm Integration Update','2025-12-01','0001140361-25-043720','ef20060239_8k.htm'],
+  ['2025-11-14','SCHEDULE 13G/A','Schedule 13G/A — Institutional Ownership Amendment (BlackRock)','','0001104659-25-112560','xslSCHEDULE_13G_X01/primary_doc.xml'],
+  ['2025-11-07','10-Q','Quarterly Report on Form 10-Q — Quarter Ended September 30, 2025','2025-09-30','0001206264-25-000194','sgi-20250930.htm'],
+  ['2025-11-06','8-K','Current Report — Q3 2025 Earnings Results & Conference Call','2025-11-06','0001206264-25-000191','sgi-20251106.htm'],
+  ['2025-11-06','8-K','Current Report — Q3 2025 Earnings Press Release','2025-11-06','0001206264-25-000188','sgi-20251106.htm'],
+  ['2025-10-09','8-K','Current Report — Director/Officer Stock Ownership Update','2025-10-09','0001206264-25-000183','sgi-20251009.htm'],
+  ['2025-09-30','8-K','Current Report — Quarterly Update & Business Operations','2025-09-30','0001206264-25-000180','sgi-20250930.htm'],
+  ['2025-09-02','8-K','Current Report — Capital Allocation and Debt Management Update','2025-09-02','0001206264-25-000176','sgi-20250902.htm'],
+  ['2025-08-18','8-K','Current Report — Executive Compensation Amendment','2025-08-14','0001206264-25-000173','sgi-20250814.htm'],
+  ['2025-08-14','SCHEDULE 13G','Schedule 13G — New Institutional Position Filing','','0001999371-25-011393','xslSCHEDULE_13G_X01/primary_doc.xml'],
+  ['2025-08-08','10-Q','Quarterly Report on Form 10-Q — Quarter Ended June 30, 2025','2025-06-30','0001206264-25-000168','sgi-20250630.htm'],
+  ['2025-08-07','8-K','Current Report — Q2 2025 Earnings Results & Conference Call','2025-08-07','0001206264-25-000166','sgi-20250807.htm'],
+  ['2025-08-07','8-K','Current Report — Q2 2025 Earnings Press Release Exhibit','2025-08-07','0001206264-25-000164','sgi-20250807.htm'],
+  ['2025-06-24','8-K','Current Report — Synergy Update & Revised Full-Year Guidance','2025-06-24','0001206264-25-000151','sgi-20250624.htm'],
+  ['2025-06-24','8-K','Current Report — Mattress Firm Integration Milestone','2025-06-23','0001206264-25-000147','sgi-20250623.htm'],
+  ['2025-05-15','SCHEDULE 13G/A','Schedule 13G/A — Institutional Ownership Amendment','','0001104659-25-049475','xslSCHEDULE_13G_X01/primary_doc.xml'],
+  ['2025-05-14','8-K','Current Report — Director Appointment & Board Update','2025-05-14','0001206264-25-000119','tpx-20250514.htm'],
+  ['2025-05-12','10-Q','Quarterly Report on Form 10-Q — Quarter Ended March 31, 2025 (First Post-Acquisition)','2025-03-31','0001206264-25-000116','sgi-20250331.htm'],
+  ['2025-05-08','8-K','Current Report — Q1 2025 Earnings Results & Conference Call','2025-05-08','0001206264-25-000113','sgi-20250508.htm'],
+  ['2025-05-08','8-K','Current Report — Q1 2025 Earnings Press Release Exhibit','2025-05-08','0001206264-25-000111','sgi-20250508.htm'],
+  ['2025-04-22','8-K','Current Report — Debt Refinancing & Credit Facility Update','2025-04-22','0001206264-25-000102','sgi-20250422.htm'],
+  ['2025-03-31','DEFA14A','Additional Proxy Materials — 2025 Annual Meeting Supplement','','0001206264-25-000100','sgi2025defa14aadditionalma.htm'],
+  ['2025-03-31','DEF 14A','Definitive Proxy Statement — 2025 Annual Meeting of Shareholders','2025-03-31','0001206264-25-000098','sgi-20250331.htm'],
+  ['2025-03-24','8-K','Current Report — Mattress Firm Acquisition Close Announcement','2025-03-18','0001206264-25-000090','sgi-20250318.htm'],
+  ['2025-03-07','8-K','Current Report — Q4 2024 Earnings Results (Tempur Sealy pre-rebrand)','2025-03-04','0001206264-25-000084','sgi-20250304.htm'],
+  ['2025-02-28','S-3ASR','Automatic Shelf Registration Statement — Debt & Equity Securities','','0001206264-25-000061','a022825sgi-fo.htm'],
+  ['2025-02-28','8-K/A','Amendment to Current Report — Mattress Firm Acquisition Closing','2025-02-05','0001206264-25-000059','sgi-20250205.htm'],
+  ['2025-02-28','10-K','Annual Report on Form 10-K — Fiscal Year Ended December 31, 2024','2024-12-31','0001206264-25-000058','sgi-20241231.htm'],
+  ['2025-02-20','8-K','Current Report — Corporate Rebranding to Somnigroup International','2025-02-20','0001206264-25-000050','sgi-20250220.htm'],
+  ['2025-02-20','8-K','Current Report — Mattress Firm Acquisition Completion (Feb 5, 2025)','2025-02-20','0001206264-25-000049','sgi-20250220.htm'],
+  ['2025-02-12','8-K','Current Report — FY2024 Earnings Results (Tempur Sealy International)','2025-02-12','0001206264-25-000033','tpx-20250212.htm'],
+];
+
+const FILING_TYPE_META = {
+  '10-K':       { cls:'ftype-10k',   label:'10-K',       desc:'Annual report — audited financials, business overview, risk factors' },
+  '10-Q':       { cls:'ftype-10q',   label:'10-Q',       desc:'Quarterly report — unaudited financials, MD&A update' },
+  '8-K':        { cls:'ftype-8k',    label:'8-K',        desc:'Current report — material events, earnings releases, guidance' },
+  '8-K/A':      { cls:'ftype-8k',    label:'8-K/A',      desc:'Amendment to current report' },
+  'DEF 14A':    { cls:'ftype-proxy', label:'DEF 14A',    desc:'Definitive proxy statement — annual meeting, executive compensation' },
+  'DEFA14A':    { cls:'ftype-proxy', label:'DEFA14A',    desc:'Additional proxy soliciting materials' },
+  'PRE 14A':    { cls:'ftype-proxy', label:'PRE 14A',    desc:'Preliminary proxy statement' },
+  'SCHEDULE 13G':  { cls:'ftype-sc13', label:'13G',      desc:'Passive institutional ownership disclosure (≥5% stake)' },
+  'SCHEDULE 13G/A':{ cls:'ftype-sc13', label:'13G/A',    desc:'Amendment to institutional ownership disclosure' },
+  'S-3ASR':     { cls:'ftype-s3',    label:'S-3ASR',     desc:'Automatic shelf registration — securities offering' },
+  '424B7':      { cls:'ftype-s3',    label:'424B7',      desc:'Prospectus supplement — securities offering terms' },
+};
+
+let filingsCurrentType = 'all';
+let filingsCurrentSort = { col: 0, dir: 'desc' };
+
+function getFilingMeta(type) {
+  return FILING_TYPE_META[type] || { cls:'ftype-other', label:type, desc:'Other regulatory filing' };
+}
+
+function getTypeGroup(type) {
+  if (type === '10-K') return '10-K';
+  if (type === '10-Q') return '10-Q';
+  if (type === '8-K' || type === '8-K/A') return '8-K';
+  if (type.includes('14A') || type.includes('PROXY')) return 'proxy';
+  if (type.includes('13G') || type.includes('13D')) return 'sc13';
+  return 'other';
+}
+
+function filingURL(acc, doc) {
+  const cleanAcc = acc.replace(/-/g, '');
+  return `https://www.sec.gov/Archives/edgar/data/1206264/${cleanAcc}/${doc}`;
+}
+
+function renderFilings() {
+  const tbody = document.getElementById('filingsBody');
+  const searchQ = (document.getElementById('filingsSearch')?.value || '').toLowerCase();
+  const typeFilter = filingsCurrentType;
+
+  let rows = SGI_FILINGS.filter(r => {
+    const group = getTypeGroup(r[1]);
+    const matchType = typeFilter === 'all' || group === typeFilter;
+    const matchSearch = !searchQ || r[0].includes(searchQ) || r[1].toLowerCase().includes(searchQ) || r[2].toLowerCase().includes(searchQ) || r[3].includes(searchQ);
+    return matchType && matchSearch;
+  });
+
+  // Sort
+  const col = filingsCurrentSort.col;
+  const dir = filingsCurrentSort.dir === 'asc' ? 1 : -1;
+  rows.sort((a, b) => {
+    const av = a[col] || '', bv = b[col] || '';
+    return av < bv ? -dir : av > bv ? dir : 0;
+  });
+
+  // Count stats
+  const all = SGI_FILINGS;
+  document.getElementById('fstat-total').textContent     = all.length;
+  document.getElementById('fstat-annual').textContent    = all.filter(r=>r[1]==='10-K').length;
+  document.getElementById('fstat-quarterly').textContent = all.filter(r=>r[1]==='10-Q').length;
+  document.getElementById('fstat-current').textContent   = all.filter(r=>r[1]==='8-K'||r[1]==='8-K/A').length;
+  document.getElementById('fstat-other').textContent     = all.filter(r=>getTypeGroup(r[1])!=='10-K'&&getTypeGroup(r[1])!=='10-Q'&&getTypeGroup(r[1])!=='8-K').length;
+
+  const countEl = document.getElementById('filings-count');
+  if (countEl) countEl.textContent = rows.length + ' filing' + (rows.length !== 1 ? 's' : '');
+
+  let html = '';
+  rows.forEach(r => {
+    const meta = getFilingMeta(r[1]);
+    const url  = filingURL(r[4], r[5]);
+    const edgarUrl = `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=${encodeURIComponent(r[1])}&dateb=&owner=include&count=10`;
+    // Highlight important filings
+    const isKey = r[1]==='10-K' || r[1]==='10-Q' || (r[1]==='8-K' && (r[2].includes('Earnings') || r[2].includes('Investor Day') || r[2].includes('Acquisition')));
+    html += `<tr${isKey ? ' style="background:rgba(0,180,216,0.03);"' : ''}>
+      <td class="filing-date">${r[0]}</td>
+      <td><span class="filing-type-badge ${meta.cls}" title="${meta.desc}">${meta.label}</span></td>
+      <td class="filing-desc">${r[2]}<small>${meta.desc}</small></td>
+      <td class="filing-period">${r[3] || '—'}</td>
+      <td>
+        <a href="${url}" target="_blank" class="filing-link">📄 View</a>
+      </td>
+    </tr>`;
+  });
+  tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--gray-300);">No filings match your filter.</td></tr>';
+
+  // Sort indicators
+  document.querySelectorAll('#filingsTable thead th').forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === col) th.classList.add(filingsCurrentSort.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+  });
+}
+
+function filterFilings() { renderFilings(); }
+
+function setFilingType(type, btn) {
+  filingsCurrentType = type;
+  document.querySelectorAll('.filings-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFilings();
+}
+
+function sortFilings(col) {
+  if (filingsCurrentSort.col === col) {
+    filingsCurrentSort.dir = filingsCurrentSort.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    filingsCurrentSort = { col, dir: col === 0 ? 'desc' : 'asc' };
+  }
+  renderFilings();
+}
+
+function exportFilingsCSV() {
+  const headers = ['Filed Date','Type','Description','Period','URL'];
+  const rows = SGI_FILINGS.map(r => [r[0], r[1], r[2], r[3], filingURL(r[4], r[5])]);
+  const csv = [headers, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'SGI_SEC_Filings_' + getTimestamp() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+async function refreshFilings() {
+  const btn = document.querySelector('[onclick="refreshFilings()"]');
+  if (btn) btn.textContent = '⏳ Fetching…';
+  try {
+    const resp = await fetch('https://data.sec.gov/submissions/CIK0001206264.json', {
+      headers: { 'User-Agent': 'SGI-Research research@sgireport.com' }
+    });
+    if (!resp.ok) throw new Error('EDGAR API error');
+    const data = await resp.json();
+    const recent = data.filings?.recent || {};
+    const forms = recent.form || [];
+    const dates = recent.filingDate || [];
+    const accs  = recent.accessionNumber || [];
+    const docs  = recent.primaryDocument || [];
+    const periods = recent.reportDate || [];
+    // Update the tracker with fresh data
+    SGI_FILINGS.length = 0;
+    const seen = new Set();
+    for (let i = 0; i < forms.length && i < 60; i++) {
+      const key = accs[i];
+      if (seen.has(key)) continue;
+      seen.add(key);
+      // Skip Form 4, 3, 144 (insider trading forms)
+      if (['4','3','144','SC TO-I'].includes(forms[i])) continue;
+      const desc = {
+        '10-K':'Annual Report on Form 10-K',
+        '10-Q':'Quarterly Report on Form 10-Q',
+        '8-K':'Current Report on Form 8-K',
+        '8-K/A':'Amendment to Current Report (8-K/A)',
+        'DEF 14A':'Definitive Proxy Statement',
+        'DEFA14A':'Additional Proxy Soliciting Materials',
+        'PRE 14A':'Preliminary Proxy Statement',
+        'SCHEDULE 13G':'Schedule 13G — Institutional Ownership',
+        'SCHEDULE 13G/A':'Schedule 13G/A — Ownership Amendment',
+        'S-3ASR':'Automatic Shelf Registration',
+        '424B7':'Prospectus Supplement',
+        '425':'M&A Communication Filing (Rule 425)',
+      }[forms[i]] || forms[i] + ' Filing';
+      SGI_FILINGS.push([dates[i], forms[i], desc, periods[i] || '', accs[i], docs[i]]);
+    }
+    const updEl = document.getElementById('filings-updated');
+    if (updEl) updEl.textContent = 'Updated: ' + new Date().toLocaleString();
+    renderFilings();
+    if (btn) btn.textContent = '✓ Refreshed';
+    setTimeout(() => { if(btn) btn.textContent = '🔄 Refresh from EDGAR'; }, 2000);
+  } catch (e) {
+    if (btn) btn.textContent = '⚠ Failed — CORS limited';
+    setTimeout(() => { if(btn) btn.textContent = '🔄 Refresh from EDGAR'; }, 3000);
+  }
+}
+
+function initRegulatoryFilings() {
+  renderFilings();
 }
 
 // ===== INIT =====
