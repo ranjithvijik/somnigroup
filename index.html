@@ -5564,8 +5564,7 @@ async function exportPDF() {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(...msGray);
-      const titleW = doc.getTextWidth('Somnigroup International Inc.');
-      doc.text('SGI', 10 + titleW + 3, 16);
+      doc.text('SGI', 98, 16); // positioned after company name at 14pt bold
       doc.setTextColor(...msOrange);
       doc.setFontSize(8);
       doc.text('4 Stars', W - 10, 16, {align:'right'});
