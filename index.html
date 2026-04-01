@@ -9149,9 +9149,13 @@ async function exportSection(sectionId) {
 
 // ===== XLSX EXPORT (ExcelJS) =====
 async function exportXLSX() {
-  if (!window.ExcelJS) { alert('ExcelJS not loaded. Please refresh and try again.'); return; }
+  const xlsxBtn = document.querySelector('[onclick="exportXLSX()"]');
+  if (xlsxBtn) { xlsxBtn.textContent = '... Generating...'; xlsxBtn.disabled = true; }
+  try {
+  const _ExcelJS = window.ExcelJS || (typeof ExcelJS !== 'undefined' ? ExcelJS : null);
+  if (!_ExcelJS) { alert('ExcelJS library not loaded. Please refresh the page and try again.'); return; }
 
-  const wb = new ExcelJS.Workbook();
+  const wb = new _ExcelJS.Workbook();
   wb.creator = 'SGI Investment Analysis';
   wb.created = new Date();
 
@@ -11309,6 +11313,12 @@ async function exportXLSX() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  } catch(err) {
+    console.error('Excel export failed:', err);
+    alert('Excel export failed: ' + err.message + '\n\nCheck browser console for details.');
+  } finally {
+    if (xlsxBtn) { xlsxBtn.textContent = '\u2B07 Excel Data'; xlsxBtn.disabled = false; }
+  }
 }
 
 // ===== LAZY CHART INIT =====
