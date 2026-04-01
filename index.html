@@ -2804,8 +2804,191 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
 </section>
 
 
-<!-- ===== SECTION 17: REFERENCES (was 15) ===== -->
-<!-- ===== SECTION 15: REFERENCES ===== -->
+<!-- ===== SECTION 19: REFERENCES ===== -->
+
+<!-- ===== SECTION 18: MACRO DASHBOARD ===== -->
+<section class="section" id="macro-dashboard">
+  <div class="section-anchor" id="macro-dashboard-anchor" style="position:absolute;top:-60px;"></div>
+  <div class="section-header">
+    <div class="section-label">Section 18</div>
+    <div class="section-title">Macroeconomic Dashboard</div>
+    <div class="section-subtitle">Leveraging macro data in SGI valuation — key indicators and their direct impact on WACC, revenue model, and price target</div>
+    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('macro-dashboard')">📄 Export Section</button></div>
+  </div>
+
+  <!-- Row 1: Macro KPI Cards -->
+  <div class="kpi-grid" style="margin-bottom:24px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;">
+    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
+      <div class="kpi-label">Fed Funds Rate</div>
+      <div class="kpi-val" style="color:var(--orange);">4.25%</div>
+      <div class="kpi-sub" style="color:var(--orange);">Elevated — compresses multiples</div>
+    </div>
+    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
+      <div class="kpi-label">10-Yr Treasury</div>
+      <div class="kpi-val" style="color:var(--orange);">4.35%</div>
+      <div class="kpi-sub" style="color:var(--orange);">Risk-free rate elevated</div>
+    </div>
+    <div class="kpi-card card" style="border-top:3px solid var(--green);">
+      <div class="kpi-label">CPI YoY</div>
+      <div class="kpi-val" style="color:var(--green);">2.8%</div>
+      <div class="kpi-sub" style="color:var(--green);">Normalizing ↓</div>
+    </div>
+    <div class="kpi-card card" style="border-top:3px solid var(--green);">
+      <div class="kpi-label">GDP Growth</div>
+      <div class="kpi-val" style="color:var(--green);">2.1%</div>
+      <div class="kpi-sub" style="color:var(--green);">Resilient expansion</div>
+    </div>
+    <div class="kpi-card card" style="border-top:3px solid var(--red);">
+      <div class="kpi-label">Housing Starts</div>
+      <div class="kpi-val" style="color:var(--red);">1.38M</div>
+      <div class="kpi-sub" style="color:var(--red);">Below 1.5M threshold</div>
+    </div>
+    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
+      <div class="kpi-label">Consumer Confidence</div>
+      <div class="kpi-val" style="color:var(--orange);">98.3</div>
+      <div class="kpi-sub" style="color:var(--orange);">Below pre-COVID ~125</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Time-Series Charts -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+    <div class="chart-card">
+      <div class="chart-title">Fed Funds Rate + 10-Yr Treasury</div>
+      <div class="chart-subtitle">Jan 2022 – Mar 2026 · Monthly · Orange=Fed Funds · Blue=10-Yr</div>
+      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroRatesChart"></canvas></div>
+      <div class="chart-source">Source: Federal Reserve FRED · St. Louis Fed</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Housing Starts vs SGI Revenue</div>
+      <div class="chart-subtitle">Blue bars=Starts (M, left) · Teal line=SGI Rev $M (right) · r=0.41</div>
+      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroHousingChart"></canvas></div>
+      <div class="chart-source">Source: U.S. Census Bureau · SGI quarterly filings</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">CPI + Consumer Sentiment</div>
+      <div class="chart-subtitle">Red area=CPI YoY% (left) · Blue line=UMich Sentiment (right)</div>
+      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroCPIChart"></canvas></div>
+      <div class="chart-source">Source: BLS CPI · University of Michigan Consumer Sentiment Survey</div>
+    </div>
+  </div>
+
+  <!-- Row 3: WACC Calculator -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">Interactive WACC Calculator &amp; DCF Sensitivity</div>
+    <div class="chart-subtitle">Adjust macro inputs → live WACC recomputes → DCF sensitivity table updates automatically</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;">
+      <!-- Sliders -->
+      <div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Risk-Free Rate (10-Yr Treasury)</label>
+            <span id="rfr-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">4.35%</span>
+          </div>
+          <input type="range" id="rfr-slider" min="300" max="600" value="435" step="5"
+            style="width:100%;accent-color:var(--teal);"
+            oninput="updateWACC()">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>3.0%</span><span>6.0%</span></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Equity Risk Premium</label>
+            <span id="erp-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">5.50%</span>
+          </div>
+          <input type="range" id="erp-slider" min="400" max="700" value="550" step="10"
+            style="width:100%;accent-color:var(--teal);"
+            oninput="updateWACC()">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>4.0%</span><span>7.0%</span></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Debt Spread (over risk-free)</label>
+            <span id="dsp-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">2.80%</span>
+          </div>
+          <input type="range" id="dsp-slider" min="200" max="500" value="280" step="10"
+            style="width:100%;accent-color:var(--teal);"
+            oninput="updateWACC()">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>2.0%</span><span>5.0%</span></div>
+        </div>
+        <!-- Fixed params -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;color:var(--gray-200);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Beta (1Y):</span><strong style="color:var(--white);">1.42</strong></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Tax Rate:</span><strong style="color:var(--white);">25.0%</strong></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Capital Structure:</span><strong style="color:var(--white);">55% Debt / 45% Equity</strong></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Base FCF (FY2026E):</span><strong style="color:var(--white);">$745M</strong></div>
+          <div style="display:flex;justify-content:space-between;"><span>Shares Outstanding:</span><strong style="color:var(--white);">208.8M</strong></div>
+        </div>
+      </div>
+      <!-- WACC Output -->
+      <div>
+        <div style="background:var(--surface2);border:1px solid var(--border-accent);border-radius:8px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:11px;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Computed WACC Components</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div style="text-align:center;padding:10px;background:var(--surface);border-radius:6px;border:1px solid var(--border);">
+              <div style="font-size:10px;color:var(--gray-200);margin-bottom:4px;">Cost of Equity (CoE)</div>
+              <div id="coe-display" style="font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">12.17%</div>
+              <div style="font-size:10px;color:var(--gray-300);">Rf + β×ERP</div>
+            </div>
+            <div style="text-align:center;padding:10px;background:var(--surface);border-radius:6px;border:1px solid var(--border);">
+              <div style="font-size:10px;color:var(--gray-200);margin-bottom:4px;">Cost of Debt (after-tax)</div>
+              <div id="cod-display" style="font-size:20px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">5.36%</div>
+              <div style="font-size:10px;color:var(--gray-300);">(Rf + Spread) × (1−Tax)</div>
+            </div>
+          </div>
+          <div style="text-align:center;padding:14px;background:rgba(0,180,216,0.1);border:1px solid var(--teal);border-radius:8px;">
+            <div style="font-size:11px;color:var(--gray-200);margin-bottom:4px;">WACC</div>
+            <div id="wacc-display" style="font-size:32px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">8.43%</div>
+            <div style="font-size:10px;color:var(--gray-300);">CoE × 45% + CoD × 55%</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--gray-300);line-height:1.6;padding:8px 12px;background:var(--surface);border-radius:6px;border-left:2px solid var(--teal);">
+          <strong style="color:var(--teal);">Rate Sensitivity:</strong> Every 50bps drop in 10-yr Treasury reduces WACC by ~35bps, adding ~$4/share to intrinsic value via DCF. If rates normalize to 3.5% (2027E consensus), that alone adds <strong style="color:var(--white);">$8–$10/share</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- DCF Sensitivity Table -->
+    <div style="margin-top:20px;">
+      <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:10px;">Implied DCF Price — Perpetuity Growth Model (updates with WACC)</div>
+      <div style="font-size:11px;color:var(--gray-200);margin-bottom:12px;">BaseFCF = $745M · Shares = 208.8M · Perpetuity: PV = FCF×(1+g)/(WACC−g) / Shares × scaleFactor</div>
+      <div id="wacc-table-container" style="overflow-x:auto;"></div>
+    </div>
+    <div class="chart-source" style="margin-top:8px;">Model uses simplified perpetuity (Gordon Growth). Calibrated: WACC=9.5%, g=2.5% → ~$88/share. Green &gt;$100 · Amber $75–$100 · Red &lt;$75</div>
+  </div>
+
+  <!-- Row 4: Macro Insight Cards -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
+    <div class="chart-card" style="border-top:3px solid var(--teal);">
+      <div class="chart-title" style="color:var(--teal);">🏠 Housing Recovery Upside</div>
+      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
+        Each 100K increase in housing starts historically adds ~$180M to SGI's addressable revenue. If starts recover from <strong style="color:var(--white);">1.38M to 1.6M</strong> (consensus 2027 estimate), that's <strong style="color:var(--teal);">+$396M potential revenue uplift</strong> — pure upside not in current estimates.
+      </div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(0,180,216,0.08);border-radius:4px;font-size:11px;color:var(--teal);">
+        Impact: +$396M rev → +$72M EBITDA → +$4–$5/share to DCF
+      </div>
+    </div>
+    <div class="chart-card" style="border-top:3px solid var(--gold);">
+      <div class="chart-title" style="color:var(--gold);">📉 Rate Environment Impact</div>
+      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
+        Every 50bps drop in the 10-yr Treasury reduces SGI's WACC by ~35bps, which increases our DCF value by ~$4/share. If rates normalize to <strong style="color:var(--white);">3.5% (2027E consensus)</strong>, that alone adds <strong style="color:var(--gold);">$8–$10/share</strong> to intrinsic value.
+      </div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(255,215,0,0.08);border-radius:4px;font-size:11px;color:var(--gold);">
+        Current 10-Yr: 4.35% → 3.5% target = 85bps = +$6.8/share
+      </div>
+    </div>
+    <div class="chart-card" style="border-top:3px solid var(--green);">
+      <div class="chart-title" style="color:var(--green);">📊 Consumer Confidence Correlation</div>
+      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
+        SGI's revenue has a <strong style="color:var(--white);">0.62 correlation</strong> with the S&P 500 and a lagged correlation with consumer confidence. Current sentiment at 98.3 (vs. pre-COVID avg 125) represents significant pent-up demand — a recovery to 110 would add <strong style="color:var(--green);">~$300M to the TAM</strong>.
+      </div>
+      <div style="margin-top:12px;padding:8px 12px;background:rgba(0,208,132,0.08);border-radius:4px;font-size:11px;color:var(--green);">
+        Sentiment recovery: 98.3 → 110 = 11.9% uplift = +$300M TAM
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== SECTION 19: REFERENCES ===== -->
 <section class="section" id="references">
   <div class="section-anchor" id="references-anchor" style="position:absolute;top:-60px;"></div>
   <div class="section-header">
@@ -3044,188 +3227,6 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
     </div>
   </div>
 
-</section>
-
-
-<!-- ===== SECTION 18: MACRO DASHBOARD ===== -->
-<section class="section" id="macro-dashboard">
-  <div class="section-anchor" id="macro-dashboard-anchor" style="position:absolute;top:-60px;"></div>
-  <div class="section-header">
-    <div class="section-label">Section 18</div>
-    <div class="section-title">Macroeconomic Dashboard</div>
-    <div class="section-subtitle">Leveraging macro data in SGI valuation — key indicators and their direct impact on WACC, revenue model, and price target</div>
-    <div class="section-actions"><button class="btn btn-ghost" onclick="exportSection('macro-dashboard')">📄 Export Section</button></div>
-  </div>
-
-  <!-- Row 1: Macro KPI Cards -->
-  <div class="kpi-grid" style="margin-bottom:24px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;">
-    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
-      <div class="kpi-label">Fed Funds Rate</div>
-      <div class="kpi-val" style="color:var(--orange);">4.25%</div>
-      <div class="kpi-sub" style="color:var(--orange);">Elevated — compresses multiples</div>
-    </div>
-    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
-      <div class="kpi-label">10-Yr Treasury</div>
-      <div class="kpi-val" style="color:var(--orange);">4.35%</div>
-      <div class="kpi-sub" style="color:var(--orange);">Risk-free rate elevated</div>
-    </div>
-    <div class="kpi-card card" style="border-top:3px solid var(--green);">
-      <div class="kpi-label">CPI YoY</div>
-      <div class="kpi-val" style="color:var(--green);">2.8%</div>
-      <div class="kpi-sub" style="color:var(--green);">Normalizing ↓</div>
-    </div>
-    <div class="kpi-card card" style="border-top:3px solid var(--green);">
-      <div class="kpi-label">GDP Growth</div>
-      <div class="kpi-val" style="color:var(--green);">2.1%</div>
-      <div class="kpi-sub" style="color:var(--green);">Resilient expansion</div>
-    </div>
-    <div class="kpi-card card" style="border-top:3px solid var(--red);">
-      <div class="kpi-label">Housing Starts</div>
-      <div class="kpi-val" style="color:var(--red);">1.38M</div>
-      <div class="kpi-sub" style="color:var(--red);">Below 1.5M threshold</div>
-    </div>
-    <div class="kpi-card card" style="border-top:3px solid var(--orange);">
-      <div class="kpi-label">Consumer Confidence</div>
-      <div class="kpi-val" style="color:var(--orange);">98.3</div>
-      <div class="kpi-sub" style="color:var(--orange);">Below pre-COVID ~125</div>
-    </div>
-  </div>
-
-  <!-- Row 2: Time-Series Charts -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
-    <div class="chart-card">
-      <div class="chart-title">Fed Funds Rate + 10-Yr Treasury</div>
-      <div class="chart-subtitle">Jan 2022 – Mar 2026 · Monthly · Orange=Fed Funds · Blue=10-Yr</div>
-      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroRatesChart"></canvas></div>
-      <div class="chart-source">Source: Federal Reserve FRED · St. Louis Fed</div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Housing Starts vs SGI Revenue</div>
-      <div class="chart-subtitle">Blue bars=Starts (M, left) · Teal line=SGI Rev $M (right) · r=0.41</div>
-      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroHousingChart"></canvas></div>
-      <div class="chart-source">Source: U.S. Census Bureau · SGI quarterly filings</div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">CPI + Consumer Sentiment</div>
-      <div class="chart-subtitle">Red area=CPI YoY% (left) · Blue line=UMich Sentiment (right)</div>
-      <div class="chart-wrap" style="height:220px;position:relative;"><canvas id="macroCPIChart"></canvas></div>
-      <div class="chart-source">Source: BLS CPI · University of Michigan Consumer Sentiment Survey</div>
-    </div>
-  </div>
-
-  <!-- Row 3: WACC Calculator -->
-  <div class="chart-card" style="margin-bottom:24px;">
-    <div class="chart-title">Interactive WACC Calculator &amp; DCF Sensitivity</div>
-    <div class="chart-subtitle">Adjust macro inputs → live WACC recomputes → DCF sensitivity table updates automatically</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;">
-      <!-- Sliders -->
-      <div>
-        <div style="margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Risk-Free Rate (10-Yr Treasury)</label>
-            <span id="rfr-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">4.35%</span>
-          </div>
-          <input type="range" id="rfr-slider" min="300" max="600" value="435" step="5"
-            style="width:100%;accent-color:var(--teal);"
-            oninput="updateWACC()">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>3.0%</span><span>6.0%</span></div>
-        </div>
-        <div style="margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Equity Risk Premium</label>
-            <span id="erp-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">5.50%</span>
-          </div>
-          <input type="range" id="erp-slider" min="400" max="700" value="550" step="10"
-            style="width:100%;accent-color:var(--teal);"
-            oninput="updateWACC()">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>4.0%</span><span>7.0%</span></div>
-        </div>
-        <div style="margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <label style="font-size:12px;color:var(--gray-100);font-weight:600;">Debt Spread (over risk-free)</label>
-            <span id="dsp-val" style="font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700;">2.80%</span>
-          </div>
-          <input type="range" id="dsp-slider" min="200" max="500" value="280" step="10"
-            style="width:100%;accent-color:var(--teal);"
-            oninput="updateWACC()">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-300);margin-top:2px;"><span>2.0%</span><span>5.0%</span></div>
-        </div>
-        <!-- Fixed params -->
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;color:var(--gray-200);">
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Beta (1Y):</span><strong style="color:var(--white);">1.42</strong></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Tax Rate:</span><strong style="color:var(--white);">25.0%</strong></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Capital Structure:</span><strong style="color:var(--white);">55% Debt / 45% Equity</strong></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Base FCF (FY2026E):</span><strong style="color:var(--white);">$745M</strong></div>
-          <div style="display:flex;justify-content:space-between;"><span>Shares Outstanding:</span><strong style="color:var(--white);">208.8M</strong></div>
-        </div>
-      </div>
-      <!-- WACC Output -->
-      <div>
-        <div style="background:var(--surface2);border:1px solid var(--border-accent);border-radius:8px;padding:16px;margin-bottom:16px;">
-          <div style="font-size:11px;color:var(--gray-200);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Computed WACC Components</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-            <div style="text-align:center;padding:10px;background:var(--surface);border-radius:6px;border:1px solid var(--border);">
-              <div style="font-size:10px;color:var(--gray-200);margin-bottom:4px;">Cost of Equity (CoE)</div>
-              <div id="coe-display" style="font-size:20px;font-weight:700;color:var(--gold);font-family:var(--font-mono);">12.17%</div>
-              <div style="font-size:10px;color:var(--gray-300);">Rf + β×ERP</div>
-            </div>
-            <div style="text-align:center;padding:10px;background:var(--surface);border-radius:6px;border:1px solid var(--border);">
-              <div style="font-size:10px;color:var(--gray-200);margin-bottom:4px;">Cost of Debt (after-tax)</div>
-              <div id="cod-display" style="font-size:20px;font-weight:700;color:var(--orange);font-family:var(--font-mono);">5.36%</div>
-              <div style="font-size:10px;color:var(--gray-300);">(Rf + Spread) × (1−Tax)</div>
-            </div>
-          </div>
-          <div style="text-align:center;padding:14px;background:rgba(0,180,216,0.1);border:1px solid var(--teal);border-radius:8px;">
-            <div style="font-size:11px;color:var(--gray-200);margin-bottom:4px;">WACC</div>
-            <div id="wacc-display" style="font-size:32px;font-weight:700;color:var(--teal);font-family:var(--font-mono);">8.43%</div>
-            <div style="font-size:10px;color:var(--gray-300);">CoE × 45% + CoD × 55%</div>
-          </div>
-        </div>
-        <div style="font-size:11px;color:var(--gray-300);line-height:1.6;padding:8px 12px;background:var(--surface);border-radius:6px;border-left:2px solid var(--teal);">
-          <strong style="color:var(--teal);">Rate Sensitivity:</strong> Every 50bps drop in 10-yr Treasury reduces WACC by ~35bps, adding ~$4/share to intrinsic value via DCF. If rates normalize to 3.5% (2027E consensus), that alone adds <strong style="color:var(--white);">$8–$10/share</strong>.
-        </div>
-      </div>
-    </div>
-
-    <!-- DCF Sensitivity Table -->
-    <div style="margin-top:20px;">
-      <div style="font-size:13px;font-weight:600;color:var(--white);margin-bottom:10px;">Implied DCF Price — Perpetuity Growth Model (updates with WACC)</div>
-      <div style="font-size:11px;color:var(--gray-200);margin-bottom:12px;">BaseFCF = $745M · Shares = 208.8M · Perpetuity: PV = FCF×(1+g)/(WACC−g) / Shares × scaleFactor</div>
-      <div id="wacc-table-container" style="overflow-x:auto;"></div>
-    </div>
-    <div class="chart-source" style="margin-top:8px;">Model uses simplified perpetuity (Gordon Growth). Calibrated: WACC=9.5%, g=2.5% → ~$88/share. Green &gt;$100 · Amber $75–$100 · Red &lt;$75</div>
-  </div>
-
-  <!-- Row 4: Macro Insight Cards -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
-    <div class="chart-card" style="border-top:3px solid var(--teal);">
-      <div class="chart-title" style="color:var(--teal);">🏠 Housing Recovery Upside</div>
-      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
-        Each 100K increase in housing starts historically adds ~$180M to SGI's addressable revenue. If starts recover from <strong style="color:var(--white);">1.38M to 1.6M</strong> (consensus 2027 estimate), that's <strong style="color:var(--teal);">+$396M potential revenue uplift</strong> — pure upside not in current estimates.
-      </div>
-      <div style="margin-top:12px;padding:8px 12px;background:rgba(0,180,216,0.08);border-radius:4px;font-size:11px;color:var(--teal);">
-        Impact: +$396M rev → +$72M EBITDA → +$4–$5/share to DCF
-      </div>
-    </div>
-    <div class="chart-card" style="border-top:3px solid var(--gold);">
-      <div class="chart-title" style="color:var(--gold);">📉 Rate Environment Impact</div>
-      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
-        Every 50bps drop in the 10-yr Treasury reduces SGI's WACC by ~35bps, which increases our DCF value by ~$4/share. If rates normalize to <strong style="color:var(--white);">3.5% (2027E consensus)</strong>, that alone adds <strong style="color:var(--gold);">$8–$10/share</strong> to intrinsic value.
-      </div>
-      <div style="margin-top:12px;padding:8px 12px;background:rgba(255,215,0,0.08);border-radius:4px;font-size:11px;color:var(--gold);">
-        Current 10-Yr: 4.35% → 3.5% target = 85bps = +$6.8/share
-      </div>
-    </div>
-    <div class="chart-card" style="border-top:3px solid var(--green);">
-      <div class="chart-title" style="color:var(--green);">📊 Consumer Confidence Correlation</div>
-      <div style="font-size:12px;color:var(--gray-100);line-height:1.7;margin-top:8px;">
-        SGI's revenue has a <strong style="color:var(--white);">0.62 correlation</strong> with the S&P 500 and a lagged correlation with consumer confidence. Current sentiment at 98.3 (vs. pre-COVID avg 125) represents significant pent-up demand — a recovery to 110 would add <strong style="color:var(--green);">~$300M to the TAM</strong>.
-      </div>
-      <div style="margin-top:12px;padding:8px 12px;background:rgba(0,208,132,0.08);border-radius:4px;font-size:11px;color:var(--green);">
-        Sentiment recovery: 98.3 → 110 = 11.9% uplift = +$300M TAM
-      </div>
-    </div>
-  </div>
 </section>
 
 
@@ -6230,6 +6231,209 @@ async function exportPDF() {
 
     footer('');
 
+
+    // ══════════════════════════════════════════
+    // PAGE 22  -  TECHNICAL ANALYSIS
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Technical Analysis', y);
+    y += 2;
+
+    // KPI row
+    const techKPIs = [
+      { label:'Current Price', value:'$69.37', color:teal },
+      { label:'52W High',      value:'$97.82', color:red  },
+      { label:'52W Low',       value:'$58.14', color:green},
+      { label:'MA-50',         value:'$64.20', color:gold },
+      { label:'MA-200',        value:'$71.50', color:red  },
+      { label:'RSI-14',        value:'61.8',   color:teal },
+    ];
+    const tkW = (W-20)/techKPIs.length;
+    techKPIs.forEach((k,i) => {
+      const kx = 10 + i*tkW;
+      doc.setFillColor(...ltGray); doc.roundedRect(kx, y, tkW-2, 18, 2, 2, 'F');
+      doc.setTextColor(...midGray); doc.setFontSize(6); doc.setFont('helvetica','normal');
+      doc.text(k.label.toUpperCase(), kx+tkW/2-1, y+6, {align:'center'});
+      doc.setTextColor(...k.color); doc.setFontSize(11); doc.setFont('helvetica','bold');
+      doc.text(k.value, kx+tkW/2-1, y+15, {align:'center'});
+    });
+    y += 22;
+
+    // Technical price chart (canvas-rendered PNG)
+    {
+      const pngTA = makeChartPDF({
+        title: '1-Year Price Chart — MA50 (Orange) · MA200 (Red) · Support $62 · Resistance $75 / $82',
+        type: 'line',
+        labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+        datasets: [
+          { label:'Price',        data:[92,88,83,78,72,65,60,58,61,64,67,69], color:'#1A4080' },
+          { label:'MA-50',        data:[94,90,86,82,77,71,65,61,59,61,63,64], color:'#F59E0B' },
+          { label:'MA-200',       data:[88,88,87,86,84,82,80,78,76,74,73,71], color:'#DC2626' },
+          { label:'Support $62',  data:[62,62,62,62,62,62,62,62,62,62,62,62], color:'#10B981' },
+          { label:'Resistance $75',data:[75,75,75,75,75,75,75,75,75,75,75,75], color:'#F59E0B'},
+        ],
+        width:700, height:220
+      });
+      y = checkY(y, 60);
+      addChartToPDF(doc, pngTA, 10, y, W-20, 58);
+      y += 62;
+    }
+
+    // RSI chart
+    {
+      const pngRSI = makeChartPDF({
+        title: 'RSI-14 Oscillator (Overbought >70 · Oversold <30 · Current: 61.8)',
+        type: 'line',
+        labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+        datasets: [
+          { label:'RSI-14', data:[55,52,48,44,38,32,29,35,42,50,57,62], color:'#0E7490' },
+          { label:'OB 70',  data:[70,70,70,70,70,70,70,70,70,70,70,70], color:'#DC2626' },
+          { label:'OS 30',  data:[30,30,30,30,30,30,30,30,30,30,30,30], color:'#166534' },
+        ],
+        width:700, height:180
+      });
+      y = checkY(y, 52);
+      addChartToPDF(doc, pngRSI, 10, y, W-20, 50);
+      y += 54;
+    }
+
+    // Signal summary table
+    y = checkY(y, 50);
+    doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text('Technical Signal Summary', 10, y); y += 5;
+    const sigCols = [10, 80, 130, 175]; const sigH = 8;
+    y = tableHeader(['Indicator','Value','Signal','Implication'], sigCols, y, sigH);
+    const signals = [
+      ['RSI-14','61.8','NEUTRAL-BULLISH','Room to run before overbought'],
+      ['Price vs MA-50','Above (+8%)','BULLISH','Short-term momentum positive'],
+      ['Price vs MA-200','Below (-3%)','BEARISH','Key resistance at $71.50'],
+      ['52-Week Position','29% below high','NEUTRAL','Significant recovery potential'],
+      ['Beta (vs S&P)','1.42','CAUTION','High market sensitivity'],
+      ['Short Interest','8.2% of float','NEUTRAL','Moderate; squeeze possible'],
+      ['Volume Trend','↑ vs 30d avg','BULLISH','Accumulation pattern'],
+      ['MACD Signal','Positive cross','BULLISH','Momentum turning higher'],
+    ];
+    const sigColors = {'BULLISH':green,'BEARISH':red,'NEUTRAL-BULLISH':teal,'NEUTRAL':navy,'CAUTION':gold};
+    signals.forEach((row,i) => {
+      if(i%2===0){doc.setFillColor(...ltGray);doc.rect(10,y,W-20,sigH,'F');}
+      sigCols.forEach((x,ci) => {
+        if(ci===2){
+          const sc = sigColors[row[2]]||navy;
+          doc.setTextColor(...sc); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+        } else {
+          doc.setTextColor(...(ci===0?gray:navy)); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+        }
+        doc.text(row[ci], x+1, y+5.5);
+      });
+      y += sigH;
+    });
+
+    // Macro context callout
+    y = checkY(y, 20);
+    const tcLines = doc.splitTextToSize('Macro Context: SGI\'s beta of 1.42 amplifies S&P 500 moves by 42%. Price trading 3% below MA-200 ($71.50) — a confirmed break above this level would be a strong technical buy signal. RSI at 61.8 leaves room before the 70 overbought threshold. The MA50/MA200 golden cross is approaching (MA50 at $64.20 vs MA200 at $71.50 — gap narrowing).', W-28);
+    doc.setFillColor(224,242,254); doc.roundedRect(10,y,W-20,tcLines.length*4.5+8,2,2,'F');
+    doc.setFillColor(...teal); doc.rect(10,y,2.5,tcLines.length*4.5+8,'F');
+    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(tcLines,15,y+6); y += tcLines.length*4.5+12;
+    footer('');
+
+
+    // ══════════════════════════════════════════
+    // PAGE 23  -  MACRO DASHBOARD
+    // ══════════════════════════════════════════
+    newPage();
+    y = 15;
+    y = sectionTitle('Macroeconomic Dashboard — Macro Drivers of SGI Valuation', y);
+    y += 2;
+
+    // KPI cards row
+    const macroKPIs = [
+      { label:'Fed Funds Rate', value:'4.25%', color:gold,  note:'Elevated — ↑ WACC' },
+      { label:'10-Yr Treasury', value:'4.35%', color:gold,  note:'Risk-free rate input' },
+      { label:'CPI YoY',        value:'2.8%',  color:green, note:'Normalizing ✓' },
+      { label:'GDP Growth',     value:'2.1%',  color:green, note:'Steady expansion' },
+      { label:'Housing Starts', value:'1.38M', color:red,   note:'↓ Below 1.5M threshold' },
+      { label:'Consumer Conf.', value:'98.3',  color:gold,  note:'↓ Below avg 125' },
+    ];
+    const mkW = (W-20)/macroKPIs.length;
+    macroKPIs.forEach((k,i) => {
+      const kx = 10 + i*mkW;
+      doc.setFillColor(...ltGray); doc.roundedRect(kx, y, mkW-2, 22, 2, 2, 'F');
+      doc.setFillColor(...k.color); doc.rect(kx, y, mkW-2, 1.5, 'F');
+      doc.setTextColor(...midGray); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+      doc.text(k.label.toUpperCase(), kx+mkW/2-1, y+7, {align:'center'});
+      doc.setTextColor(...k.color); doc.setFontSize(11); doc.setFont('helvetica','bold');
+      doc.text(k.value, kx+mkW/2-1, y+16, {align:'center'});
+      doc.setTextColor(...midGray); doc.setFontSize(5); doc.setFont('helvetica','italic');
+      doc.text(k.note, kx+mkW/2-1, y+21, {align:'center'});
+    });
+    y += 27;
+
+    // Rates chart
+    {
+      const pngRates = makeChartPDF({
+        title: 'Fed Funds Rate & 10-Year Treasury (2022–2026)',
+        type: 'line',
+        labels: ['Q1\'22','Q2\'22','Q3\'22','Q4\'22','Q1\'23','Q2\'23','Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26'],
+        datasets: [
+          { label:'Fed Funds Rate', data:[0.25,0.83,2.50,4.33,4.75,5.08,5.33,5.33,5.33,5.33,5.00,4.58,4.33,4.08,4.33,4.25,4.25], color:'#F59E0B' },
+          { label:'10-Yr Treasury',  data:[1.83,2.98,3.83,3.88,3.96,3.84,4.57,4.36,4.20,4.48,4.24,4.36,4.29,4.40,4.22,4.35,4.35], color:'#1A4080' },
+        ],
+        width:700, height:200
+      });
+      y = checkY(y, 58);
+      addChartToPDF(doc, pngRates, 10, y, W-20, 56);
+      y += 60;
+    }
+
+    // Housing starts chart
+    {
+      const pngHousing = makeChartPDF({
+        title: 'Housing Starts Annualized (M units) — Key SGI Demand Driver',
+        type: 'bar',
+        labels: ['Q1\'22','Q2\'22','Q3\'22','Q4\'22','Q1\'23','Q2\'23','Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25'],
+        datasets: [
+          { label:'Housing Starts (M ann.)', data:[1.73,1.63,1.43,1.38,1.43,1.53,1.35,1.42,1.52,1.33,1.35,1.29,1.32,1.38,1.41,1.38], color:'#0E7490' },
+        ],
+        width:700, height:180
+      });
+      y = checkY(y, 54);
+      addChartToPDF(doc, pngHousing, 10, y, W-20, 52);
+      y += 56;
+    }
+
+    // Macro → Valuation impact table
+    y = checkY(y, 40);
+    doc.setTextColor(...teal); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text('Macro Impact on SGI Valuation', 10, y); y += 5;
+    const macroImpCols = [10, 65, 115, 155]; const miH = 9;
+    y = tableHeader(['Macro Factor','Current Level','SGI Impact','DCF Price Change'], macroImpCols, y, miH);
+    const macroImpact = [
+      ['10-Yr Treasury Rate','4.35% (elevated)','WACC +35bps per +50bps','Each +50bps rate → -$4/share'],
+      ['Housing Starts','1.38M (depressed)','TAM -$396M vs 1.6M norm','100K starts = +$180M revenue'],
+      ['CPI / Foam Costs','2.8% (normalizing)','Gross margin +50bps uplift','→ +$0.30 EPS per 50bps margin'],
+      ['Consumer Confidence','98.3 (below avg)','Pent-up demand building','Recovery to 110 = +$300M TAM'],
+      ['GDP Growth','2.1% (steady)','Steady macro tailwind','No near-term recession risk'],
+    ];
+    macroImpact.forEach((row,i) => {
+      if(i%2===0){doc.setFillColor(...ltGray);doc.rect(10,y,W-20,miH,'F');}
+      macroImpCols.forEach((x,ci) => {
+        doc.setTextColor(...(ci===3?teal:ci===0?gray:navy)); doc.setFontSize(7.5); doc.setFont('helvetica',ci===3?'bold':'normal');
+        doc.text(row[ci], x+1, y+6);
+      });
+      y += miH;
+    });
+    y += 4;
+
+    // Macro plain-English box
+    const mpLines = doc.splitTextToSize('💡  Key Insight: The macro environment is mixed but transitioning constructively for SGI. Rates are elevated (compressing the multiple) but normalizing — every 50bps decline in the 10-yr adds ~$4/share to our DCF. Housing starts at 1.38M are 300K below the historic norm; recovery is not in estimates — it\'s pure upside. Consumer confidence at 98.3 vs. pre-COVID 125 represents structural pent-up demand.', W-28);
+    doc.setFillColor(255,251,235); doc.roundedRect(10,y,W-20,mpLines.length*4.5+8,2,2,'F');
+    doc.setFillColor(...gold); doc.rect(10,y,2.5,mpLines.length*4.5+8,'F');
+    doc.setTextColor(...gray); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(mpLines,15,y+6); y += mpLines.length*4.5+12;
+    footer('');
+
     // ══════════════════════════════════════════
     // PAGE 21  -  DISCLAIMER & REFERENCES
     // ══════════════════════════════════════════
@@ -6259,7 +6463,7 @@ async function exportPDF() {
     doc.setTextColor(...teal);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text('References (APA 7th Edition)', 10, y);
+    doc.text('References (APA 7th Edition) — 50 sources · 7 categories · Last updated March 2026', 10, y);
     y += 6;
 
     const refs = [
@@ -7700,6 +7904,238 @@ async function exportXLSX() {
         { label:'Q4 2025', data: c5Data.map(r=>r[4]), color:'#C4B5FD' },
       ]
     }), 2, 7, 30, 22);
+
+
+  // ── Tab: Technical Analysis ──────────────────────────────────────────────────
+  const wsTech = wb.addWorksheet('Technical Analysis', { properties:{tabColor:{argb:'FF1A4080'}} });
+  setCols(wsTech, [22,16,16,12,48]);
+  wsTech.getRow(1).height = 28;
+  // Title row
+  wsTech.mergeCells(1,1,1,5);
+  const techTitle = wsTech.getCell(1,1);
+  techTitle.value = 'SGI Technical Analysis — 1-Year Summary (as of March 2026)';
+  styleCell(techTitle, sectionTitleStyle(C.navyBg));
+
+  // KPI table
+  const techKPIHdrs = ['Indicator','Value','Signal','Basis','Notes'];
+  techKPIHdrs.forEach((h,i) => {
+    const cell = wsTech.getCell(2, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle(C.navyBg, C.navyFg));
+  });
+  const techSignals = [
+    ['Current Price','$69.37','—','Mar 31 2026 close','29% below 52W high'],
+    ['52-Week High','$97.82','—','Apr 2025','Post-acquisition enthusiasm'],
+    ['52-Week Low','$58.14','—','Oct 2025','Integration concerns'],
+    ['MA-50 (50-day MA)','$64.20','BULLISH','Price above MA50','Short-term momentum positive'],
+    ['MA-200 (200-day MA)','$71.50','BEARISH','Price below MA200','Key resistance level'],
+    ['RSI-14','61.8','NEUTRAL-BULLISH','Wilder RSI (14-day)','Room before 70 overbought'],
+    ['MACD Signal','Positive cross','BULLISH','12/26/9 EMA params','Momentum turning higher'],
+    ['Bollinger Band','Mid-upper band','NEUTRAL','20-day, 2σ','Not extended in either direction'],
+    ['52-Week Position','29% below high','NEUTRAL','vs $97.82 high','Significant recovery potential'],
+    ['Beta (vs S&P 500)','1.42','CAUTION','36-month regression','Amplified market sensitivity'],
+    ['Short Interest','8.2% of float','NEUTRAL','Latest filing','Moderate; squeeze catalyst possible'],
+    ['Volume Trend','↑ vs 30d avg','BULLISH','30-day comparison','Accumulation pattern'],
+    ['Support Level 1','$62.00','—','Horizontal support','Jan 2025 base'],
+    ['Support Level 2','$58.14','—','52W low','Hard floor'],
+    ['Resistance Level 1','$75.00','—','Horizontal resistance','Nov 2025 rejection'],
+    ['Resistance Level 2','$82.00','—','Horizontal resistance','Aug 2025 rejection'],
+    ['Resistance Level 3','$97.82','—','52W high','Apr 2025 peak'],
+  ];
+  const signalColorMap = {
+    'BULLISH': C.green, 'BEARISH': C.red, 'NEUTRAL-BULLISH': C.teal,
+    'NEUTRAL': '1E293B', 'CAUTION': C.amber, '—': '64748B'
+  };
+  techSignals.forEach((row, ri) => {
+    const altBg = ri%2===0 ? C.gray1 : 'FFFFFF';
+    wsTech.getRow(ri+3).height = 18;
+    row.forEach((val, ci) => {
+      const cell = wsTech.getCell(ri+3, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); }
+      else if (ci===2) {
+        const sc = signalColorMap[val] || '1E293B';
+        styleCell(cell, dataStyle(altBg, sc, 'center'));
+        cell.font = { bold:true, size:10, name:'Calibri', color:{argb:'FF'+sc} };
+      } else {
+        styleCell(cell, dataStyle(altBg, null, ci===1?'center':'left'));
+      }
+    });
+  });
+  // Technical chart
+  await embedChart(wsTech,
+    makeChartCanvas({ title:'1-Year Price vs MA50 vs MA200 (Apr 2025–Mar 2026)', type:'line',
+      labels:['Apr\'25','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan\'26','Feb','Mar'],
+      datasets:[
+        {label:'Price',data:[92,88,83,78,72,65,60,58,61,64,67,69],color:'#1A4080'},
+        {label:'MA-50',data:[94,90,86,82,77,71,65,61,59,61,63,64],color:'#F59E0B'},
+        {label:'MA-200',data:[88,88,87,86,84,82,80,78,76,74,73,71],color:'#DC2626'},
+        {label:'Support $62',data:[62,62,62,62,62,62,62,62,62,62,62,62],color:'#10B981'},
+        {label:'Resist $75',data:[75,75,75,75,75,75,75,75,75,75,75,75],color:'#F59E0B'},
+      ]
+    }), 3, 7, 28, 20);
+
+  // ── Tab: Macro Dashboard ──────────────────────────────────────────────────────
+  const wsMacro = wb.addWorksheet('Macro Dashboard', { properties:{tabColor:{argb:'FF6366F1'}} });
+  setCols(wsMacro, [28,14,14,20,14,30,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]);
+  wsMacro.getRow(1).height = 28;
+  wsMacro.mergeCells(1,1,1,6);
+  const macroTitle = wsMacro.getCell(1,1);
+  macroTitle.value = 'Macroeconomic Dashboard — Key Indicators & SGI Valuation Impact';
+  styleCell(macroTitle, sectionTitleStyle('6366F1'));
+
+  // Macro KPIs
+  const macroKpiHdrs = ['Indicator','Current Value','Status','SGI Impact','Trend','Notes'];
+  macroKpiHdrs.forEach((h,i) => {
+    const cell = wsMacro.getCell(2, i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('6366F1','FFFFFF'));
+  });
+  const macroRows = [
+    ['Federal Funds Rate','4.25%','ELEVATED','↑ WACC by ~35bps per +50bps rate','Cutting','Rate cuts support multiple expansion: each -50bps ≈ +$4/share DCF'],
+    ['10-Year Treasury Yield','4.35%','ELEVATED','Risk-free rate in CAPM/DCF','Normalizing','Current WACC ~9.5%; drops to ~9.0% if 10-yr falls to 3.5%'],
+    ['30-Yr Mortgage Rate','6.82%','HIGH','↓ housing starts → ↓ mattress demand','Declining','Strong correlation with SGI revenue; every 50bps drop = +demand'],
+    ['CPI (YoY)','2.8%','NORMALIZING','Foam/input cost relief → ↑ gross margin','↓ Declining','1% input cost deflation ≈ +50bps gross margin ≈ +$0.30 EPS'],
+    ['GDP Growth (QoQ ann.)','2.1%','STEADY','Steady consumer spending backdrop','Stable','No recession signal; supports SGI revenue outlook'],
+    ['Housing Starts (ann.)','1.38M','DEPRESSED','Each 100K starts = +$180M SGI TAM','↑ Recovering','Recovery to 1.6M = +$396M potential revenue uplift (not in estimates)'],
+    ['Consumer Confidence','98.3','BELOW AVG','Pent-up demand signal','Mixed','Pre-COVID avg 125; recovery to 110 = +$300M TAM'],
+    ['UMich Sentiment','67.8','WEAK','Correlates with mattress purchase timing','Declining','Weakness = headwind; but already below fair value'],
+    ['PPI: Mattress Mfg.','1.2% YoY','MODERATE','Input cost pressure normalizing','Stable','Foam (TDI/MDI) prices stabilized post-COVID surge'],
+    ['S&P 500 (YTD)','+4.2%','POSITIVE','SGI beta 1.42 → amplified upside','Positive','Market strength = SGI outperforms on momentum days'],
+  ];
+  const macroStatusColors = {
+    'ELEVATED':'redBg','HIGH':'redBg','NORMALIZING':'greenBg','STEADY':'gray1',
+    'DEPRESSED':'redBg','BELOW AVG':'amberBg','WEAK':'redBg','MODERATE':'gray1','POSITIVE':'greenBg'
+  };
+  macroRows.forEach((row, ri) => {
+    const altBg = ri%2===0 ? C.gray1 : 'FFFFFF';
+    wsMacro.getRow(ri+3).height = 20;
+    row.forEach((val, ci) => {
+      const cell = wsMacro.getCell(ri+3, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, labelStyle(altBg, true)); }
+      else if (ci===2) {
+        const bg = macroStatusColors[val] || 'FFFFFF';
+        const bgHex = {redBg:C.redBg,greenBg:C.greenBg,amberBg:C.amberBg,gray1:C.gray1}[bg]||'FFFFFF';
+        const fgHex = bg==='redBg'?C.red:bg==='greenBg'?C.green:bg==='amberBg'?C.amber:'1E293B';
+        styleCell(cell, dataStyle(bgHex, fgHex, 'center'));
+        cell.font = {bold:true,size:10,name:'Calibri',color:{argb:'FF'+fgHex}};
+      } else {
+        styleCell(cell, dataStyle(altBg, null, ci===1?'center':ci===4?'center':'left'));
+      }
+    });
+  });
+  // Rates chart
+  await embedChart(wsMacro,
+    makeChartCanvas({title:'Fed Funds Rate vs 10-Yr Treasury (2022–2026)',type:'line',
+      labels:['Q1\'22','Q2\'22','Q3\'22','Q4\'22','Q1\'23','Q2\'23','Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25','Q1\'26'],
+      datasets:[
+        {label:'Fed Funds Rate',data:[0.25,0.83,2.50,4.33,4.75,5.08,5.33,5.33,5.33,5.33,5.00,4.58,4.33,4.08,4.33,4.25,4.25],color:'#F59E0B'},
+        {label:'10-Yr Treasury', data:[1.83,2.98,3.83,3.88,3.96,3.84,4.57,4.36,4.20,4.48,4.24,4.36,4.29,4.40,4.22,4.35,4.35],color:'#1A4080'},
+      ]
+    }), 3, 8, 24, 20);
+  // Housing chart
+  await embedChart(wsMacro,
+    makeChartCanvas({title:'Housing Starts (M ann.) vs SGI Quarterly Revenue ($M)',type:'bar',
+      labels:['Q3\'23','Q4\'23','Q1\'24','Q2\'24','Q3\'24','Q4\'24','Q1\'25','Q2\'25','Q3\'25','Q4\'25'],
+      datasets:[
+        {label:'Housing Starts (×1000)',data:[1350,1420,1520,1330,1350,1290,1320,1380,1410,1380],color:'#1A4080'},
+        {label:'SGI Revenue ($M÷10)',   data:[127.7,117.1,118.9,123.4,130.0,120.8,160.5,188.1,212.3,186.8],color:'#0E7490'},
+      ]
+    }), 26, 8, 46, 20);
+
+  // ── Tab: References (enhanced) ────────────────────────────────────────────────
+  const wsRef = wb.addWorksheet('References', { properties:{tabColor:{argb:'FF475569'}} });
+  setCols(wsRef, [5,8,70,60]);
+  wsRef.getRow(1).height = 32;
+  const refHdrs = ['#','Category','Citation (APA 7th Edition)','URL / DOI'];
+  refHdrs.forEach((h,i) => {
+    const cell = wsRef.getCell(1,i+1);
+    cell.value = h;
+    styleCell(cell, headerStyle('475569','FFFFFF'));
+  });
+  const catColors = {
+    'Filings':C.teal,'Industry':C.amber,'Macro':'6366F1','Market':C.green,
+    'Academic':C.orange,'NLP/ML':'A855F7','Software':'94A3B8'
+  };
+  const allRefs = [
+    [1,'Filings','Somnigroup International Inc. (2026, Feb 17). Annual report on Form 10-K for FY2025. SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-K'],
+    [2,'Filings','Somnigroup International Inc. (2025). Quarterly reports on Form 10-Q (Q1–Q3 2025). SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-Q'],
+    [3,'Filings','Somnigroup International Inc. (2026, Feb 17). Q4 & FY2025 earnings press release [Form 8-K, Exhibit 99.1].','https://www.sec.gov/Archives/edgar/data/1206264/'],
+    [4,'Filings','Somnigroup International Inc. (2025–2026). Earnings call transcripts Q1–Q4 2025. Somnigroup IR.','https://www.somnigroup.com/investors'],
+    [5,'Filings','Somnigroup International Inc. (2025, Feb 5). Completes acquisition of Mattress Firm [Press release].','https://www.somnigroup.com/newsroom'],
+    [6,'Filings','Somnigroup International Inc. (2026, Mar 4). 2026 investor day presentation.','https://www.somnigroup.com/investors'],
+    [7,'Filings','Somnigroup International Inc. (2025). Definitive proxy statement (DEF 14A). SEC EDGAR.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=DEF+14A'],
+    [8,'Filings','Somnigroup International Inc. (2025). Form S-4 registration statement — Mattress Firm acquisition.','https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=S-4'],
+    [9,'Filings','Somnigroup International Inc. (2026). Corporate governance guidelines. Somnigroup IR.','https://www.somnigroup.com/investors/governance'],
+    [10,'Industry','IBISWorld. (2026). Mattress manufacturing in the US (NAICS 33791). IBISWorld.','https://my.ibisworld.com/us/en/industry/33791'],
+    [11,'Industry','IBISWorld. (2026). Bed and mattress stores in the US (NAICS OD5462). IBISWorld.','https://my.ibisworld.com/us/en/industry/OD5462'],
+    [12,'Industry','ISPA. (2026, Q1). Mattress industry quarterly shipment report. ISPA.','https://www.sleepproducts.org/programs-resources/industry-data'],
+    [13,'Industry','Mintel Group Ltd. (2025). Pillows and mattresses — US, 2025 annual report. Mintel.','https://www.mintel.com/store/us-market-research/pillows-and-mattresses-us/'],
+    [14,'Industry','Grand View Research. (2025). Global mattress market analysis, 2025–2030.','https://www.grandviewresearch.com/industry-analysis/mattress-market'],
+    [15,'Industry','Furniture Today. (2026). Top 25 US bedding producers & retailers — annual ranking.','https://www.furnituretoday.com/bedding/'],
+    [16,'Industry','Sleep Foundation. (2026). Sleep industry market size and growth trends — annual report.','https://www.sleepfoundation.org'],
+    [17,'Industry','Technavio. (2025). Smart mattress market: Global growth & forecast 2025–2029.','https://www.technavio.com/report/smart-mattress-market-industry-analysis'],
+    [18,'Macro','Federal Reserve Bank of St. Louis. (2026). Federal funds effective rate (DFF). FRED.','https://fred.stlouisfed.org/series/DFF'],
+    [19,'Macro','Federal Reserve Bank of St. Louis. (2026). 10-Year Treasury yield (DGS10). FRED.','https://fred.stlouisfed.org/series/DGS10'],
+    [20,'Macro','Federal Reserve Bank of St. Louis. (2026). 30-year mortgage average (MORTGAGE30US). FRED.','https://fred.stlouisfed.org/series/MORTGAGE30US'],
+    [21,'Macro','Federal Reserve Bank of St. Louis. (2025). PPI: Mattress manufacturing (PCU337910337910). FRED.','https://fred.stlouisfed.org/series/PCU337910337910'],
+    [22,'Macro','U.S. Census Bureau. (2026, March). New residential construction: Housing starts (Jan 2026).','https://www.census.gov/construction/nrc/'],
+    [23,'Macro','The Conference Board. (2026, March). Consumer confidence index — March 2026 release.','https://www.conference-board.org/topics/consumer-confidence'],
+    [24,'Macro','University of Michigan. (2026). Consumer sentiment index (UMCSENT). FRED.','https://fred.stlouisfed.org/series/UMCSENT'],
+    [25,'Macro','U.S. Bureau of Labor Statistics. (2026). CPI: Furniture and bedding (CUUR0000SAH3).','https://www.bls.gov/cpi/'],
+    [26,'Macro','Bureau of Economic Analysis. (2026, Q4). GDP advance estimate, Q4 2025. BEA.','https://www.bea.gov/data/gdp/gross-domestic-product'],
+    [27,'Market','Damodaran, A. (2026). Cost of capital by sector (US). NYU Stern.','https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datacurrent.html'],
+    [28,'Market','Yahoo Finance. (2026). SGI historical prices and real-time quotes.','https://finance.yahoo.com/quote/SGI/'],
+    [29,'Market','Alpha Vantage Inc. (2026). TIME_SERIES_DAILY and Global Quote API for SGI.','https://www.alphavantage.co/documentation/'],
+    [30,'Market','Perplexity Finance. (2026). SGI consensus estimates, analyst ratings, financials.','https://www.perplexity.ai/finance/SGI'],
+    [31,'Market','FactSet Research Systems. (2026). SGI consensus EPS & revenue FY2026E–FY2028E.','FactSet (subscription required)'],
+    [32,'Market','Bloomberg L.P. (2026). SGI equity analysis, peer comparables, consensus targets.','Bloomberg Terminal (subscription required)'],
+    [33,'Market','S&P Capital IQ. (2026). Somnigroup International financial statements and comps.','S&P Global Market Intelligence (subscription required)'],
+    [34,'Academic','Altman, E. I. (1968). Financial ratios, discriminant analysis, and bankruptcy prediction. J. Finance, 23(4).','https://doi.org/10.1111/j.1540-6261.1968.tb00843.x'],
+    [35,'Academic','Piotroski, J. D. (2000). Value investing: Historical financial statement information. JAR, 38.','https://doi.org/10.2307/2672906'],
+    [36,'Academic','Fama, E. F., & French, K. R. (1993). Common risk factors in stock and bond returns. JFE, 33(1).','https://doi.org/10.1016/0304-405X(93)90023-5'],
+    [37,'Academic','Sharpe, W. F. (1964). Capital asset prices: Market equilibrium under risk. J. Finance, 19(3).','https://doi.org/10.1111/j.1540-6261.1964.tb02865.x'],
+    [38,'Academic','Gordon, M. J. (1959). Dividends, earnings, and stock prices. RES, 41(2).','https://doi.org/10.2307/1927792'],
+    [39,'Academic','Soliman, M. T. (2008). The use of DuPont analysis by market participants. The Accounting Review, 83(3).','https://doi.org/10.2308/accr.2008.83.3.823'],
+    [40,'Academic','Wilder, J. W. (1978). New concepts in technical trading systems. [RSI methodology]','Trend Research (print)'],
+    [41,'Academic','Murphy, J. J. (1999). Technical analysis of the financial markets. [MA methodology]','New York Institute of Finance (print)'],
+    [42,'NLP/ML','Loughran, T., & McDonald, B. (2011). When is a liability not a liability? J. Finance, 66(1).','https://doi.org/10.1111/j.1540-6261.2010.01625.x'],
+    [43,'NLP/ML','Loughran, T., & McDonald, B. (2016). Textual analysis in accounting and finance. JAR, 54(4).','https://doi.org/10.1111/1475-679X.12123'],
+    [44,'NLP/ML','Hutto, C., & Gilbert, E. (2014). VADER: Parsimonious rule-based sentiment analysis. ICWSM-14.','https://github.com/cjhutto/vaderSentiment'],
+    [45,'NLP/ML','Pedregosa, F. et al. (2011). Scikit-learn: Machine learning in Python. JMLR, 12.','https://jmlr.org/papers/v12/pedregosa11a.html'],
+    [46,'Software','Chart.js Contributors. (2024). Chart.js v4.4.0 [JavaScript library].','https://www.chartjs.org/'],
+    [47,'Software','ExcelJS Contributors. (2024). ExcelJS v4.4.0 — XLSX with cell-level formatting.','https://github.com/exceljs/exceljs'],
+    [48,'Software','Parallax Inc. (2024). jsPDF v2.5.1 — client-side PDF generation.','https://github.com/parallax/jsPDF'],
+    [49,'Software','Niklasvh. (2024). html2canvas v1.4.1 — DOM-to-canvas rendering.','https://html2canvas.hertzen.com/'],
+    [50,'Software','MathJax Consortium. (2024). MathJax v3.0 — browser math rendering.','https://www.mathjax.org/'],
+  ];
+  allRefs.forEach((row, ri) => {
+    const catColor = catColors[row[1]] || '475569';
+    const altBg = ri%2===0 ? C.gray1 : 'FFFFFF';
+    wsRef.getRow(ri+2).height = 24;
+    row.forEach((val, ci) => {
+      const cell = wsRef.getCell(ri+2, ci+1);
+      cell.value = val;
+      if (ci===0) { styleCell(cell, dataStyle(altBg,null,'center')); cell.font={bold:true,size:10,name:'Calibri',color:{argb:'FF'+C.navyBg}}; }
+      else if (ci===1) {
+        cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font={bold:true,size:9,name:'Calibri',color:{argb:'FF'+catColor}};
+        cell.alignment={horizontal:'center',vertical:'middle'};
+        cell.border=borderAll(true);
+      } else if (ci===2) {
+        cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font={size:9,name:'Calibri',color:{argb:'FF1E293B'}};
+        cell.alignment={horizontal:'left',wrapText:true,vertical:'middle'};
+        cell.border=borderAll(true);
+      } else {
+        cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+altBg}};
+        cell.font={size:9,name:'Calibri',color:{argb:'FF1D4ED8'},underline:String(val).startsWith('http')};
+        cell.alignment={horizontal:'left',wrapText:true,vertical:'middle'};
+        cell.border=borderAll(true);
+      }
+    });
+  });
 
   // ── GENERATE & DOWNLOAD ──────────────────────────────────────────────────────
   const buffer = await wb.xlsx.writeBuffer();
@@ -11977,6 +12413,29 @@ function renderWACCTable(baseWACC) {
   container.innerHTML = html;
 }
 
+
+
+// ===== REFERENCE FILTERING =====
+function filterRefs() {
+  const q = document.getElementById('refSearch').value.toLowerCase();
+  document.querySelectorAll('.ref-entry').forEach(el => {
+    el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+  updateRefCount();
+}
+function filterRefCat(btn, cat) {
+  document.querySelectorAll('.ref-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ref-group').forEach(g => {
+    g.style.display = (cat === 'all' || g.dataset.cat === cat) ? '' : 'none';
+  });
+  updateRefCount();
+}
+function updateRefCount() {
+  const visible = document.querySelectorAll('.ref-entry:not([style*="none"])').length;
+  const el = document.getElementById('refCount');
+  if (el) el.textContent = visible + ' reference' + (visible !== 1 ? 's' : '') + ' · APA 7th Edition · Last updated March 2026';
+}
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
