@@ -8892,8 +8892,8 @@ async function exportPDF() {
     let p32y = 34;
     p32y = msSectionHead('Dividend History & Capital Return Policy', p32y);
     const divHdrs = ['Fiscal Year','Annual DPS','YoY Change','Payout Ratio','Yield (yr-end)','FCF/Share','FCF Payout'];
-    const divXs   = [10, 40, 62, 86, 108, 130, 155];
-    msTableRow(divHdrs, divXs, p32y, 7, true, false); p32y+=7;
+    const divXs32 = [10, 40, 62, 86, 108, 130, 155];
+    msTableRow(divHdrs, divXs32, p32y, 7, true, false); p32y+=7;
     [
       ['FY2015','$0.36','--','21.4%','1.2%','$2.82','12.8%'],
       ['FY2016','$0.40','+11.1%','20.9%','1.0%','$3.14','12.7%'],
@@ -8906,7 +8906,7 @@ async function exportPDF() {
       ['FY2023','$0.96','+9.1%','46.2%','1.3%','$2.18','44.0%'],
       ['FY2024','$1.04','+8.3%','48.1%','1.2%','$3.20','32.5%'],
       ['FY2025','$1.08','+3.8%','39.1% adj','1.6%','$3.03','35.6%'],
-    ].forEach((r,i) => { msTableRow(r, divXs, p32y, 6, false, i%2===0); p32y+=6; });
+    ].forEach((r,i) => { msTableRow(r, divXs32, p32y, 6, false, i%2===0); p32y+=6; });
     doc.setTextColor(...msGray); doc.setFontSize(6.5); doc.setFont('helvetica','italic');
     doc.text('* FY2021 dividend raised +72.7% — first increase following COVID-period freeze. 6 consecutive annual increases since. Policy: maintain or increase annually.', 10, p32y+3); p32y+=8;
     p32y = checkY(p32y, 55);
