@@ -814,7 +814,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       <div class="thesis-card">
         <div class="thesis-number">PILLAR 01</div>
         <div class="thesis-title">Synergies Ahead of Plan</div>
-        <div class="thesis-body">Mattress Firm acquisition closed Feb 2025. $225M total EBITDA synergies raised from $200M. $145M still unrealized. At 20x EBITDA, represents ~$2.9B incremental EV ($14/share).</div>
+        <div class="thesis-body">Mattress Firm acquisition closed Feb 2025. $225M total EBITDA synergies raised from $200M. $80M realized in year one, $145M remaining. At 20x EBITDA, represents ~$2.9B incremental EV ($14/share).</div>
       </div>
       <div class="thesis-card" style="border-left-color:var(--gold);">
         <div class="thesis-number" style="color:var(--gold);">PILLAR 02</div>
@@ -3682,7 +3682,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       </div>
       <div style="padding:14px 16px;background:rgba(0,208,132,0.06);border-radius:6px;border-left:3px solid var(--green);">
         <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Synergy Upside Not Modeled</div>
-        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">$145M unrealized synergies at 20x EBITDA = $2.9B incremental EV ($14/share). Our DCF embeds gradual margin expansion — but does NOT assume full synergy credit as a separate item. Full realization could add $10-18/share to base case. <strong style="color:var(--white);">Upside: +$10-18/share.</strong></div>
+        <div style="font-size:12px;color:var(--gray-200);line-height:1.6;">$80M realized, $145M remaining synergies at 20x EBITDA = $2.9B incremental EV ($14/share). Our DCF embeds gradual margin expansion — but does NOT assume full synergy credit as a separate item. Full realization could add $10-18/share to base case. <strong style="color:var(--white);">Upside: +$10-18/share.</strong></div>
       </div>
     </div>
   </div>
@@ -4768,7 +4768,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
   <div style="padding:16px 20px;background:rgba(0,208,132,0.07);border-radius:8px;border:1px solid rgba(0,208,132,0.2);margin-bottom:20px;">
     <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Enterprise Value Impact</div>
     <div style="font-size:13px;color:var(--white);line-height:1.7;">
-      <strong>$145M unrealized synergies × 20x EBITDA multiple = $2.9B incremental enterprise value</strong><br>
+      <strong>$145M remaining synergies (of $225M total, $80M realized) × 20x EBITDA = $2.9B incremental enterprise value</strong><br>
       <span style="color:var(--gray-200);font-size:12px;">= $14/share of unrealized value at 208.8M shares outstanding · Not priced into current consensus estimates · Represents 20.2% of current market cap of $14.5B</span>
     </div>
   </div>
@@ -5492,7 +5492,7 @@ const noGrid = { display: false };
 // ===== DATA =====
 const D = {
   years: ['2021','2022','2023','2024','2025','2026E','2027E','2028E'],
-  revenue: [4930.8, 4921.2, 4927.0, 4814.0, 7476.5, 7952, 8369, 8881],
+  revenue: [4930.8, 4921.2, 4925.4, 4930.9, 7476.5, 7952, 8369, 8881],
   ebitda: [1003.5, 807.3, 739.3, 804.2, 1040.5, 1478, 1673, 1886],
   adjEbitda: [null, null, 877.3, 923.8, 1306.0, 1450, null, null],
   netIncome: [624.5, 455.7, 368.1, 384.3, 384.1, 711, 881, 1055],
@@ -5700,10 +5700,10 @@ function initRevenueWaterfall() {
   if (!ctx) return;
   // Waterfall: FY2024 base -> MF acq -> organic -> FX -> FY2025
   const labels = ['FY2024\nBase', '+Mattress\nFirm', '+Organic\nGrowth', '+FX &\nOther', 'FY2025\nTotal'];
-  const values = [4814.0, 2517.5, 146.0, 0, 7477.5];
+  const values = [4930.9, 2399.6, 146.0, 0, 7476.5];
   const colors = [rgba('#00b4d8',0.8), rgba('#00d084',0.8), rgba('#ffd700',0.8), rgba('#6070a0',0.6), rgba('#00b4d8',0.9)];
   const isFloat = [false, true, true, true, false];
-  const floatBase = [0, 4814.0, 7331.5, 7477.5, 0];
+  const floatBase = [0, 4930.9, 7330.5, 7476.5, 0];
 
   new Chart(ctx, {
     type: 'bar',
@@ -6520,7 +6520,7 @@ const noGrid = { display: false };
 // ===== DATA =====
 const D = {
   years: ['2021','2022','2023','2024','2025','2026E','2027E','2028E'],
-  revenue: [4930.8, 4921.2, 4927.0, 4814.0, 7476.5, 7952, 8369, 8881],
+  revenue: [4930.8, 4921.2, 4925.4, 4930.9, 7476.5, 7952, 8369, 8881],
   ebitda: [1003.5, 807.3, 739.3, 804.2, 1040.5, 1478, 1673, 1886],
   adjEbitda: [null, null, 877.3, 923.8, 1306.0, 1450, null, null],
   netIncome: [624.5, 455.7, 368.1, 384.3, 384.1, 711, 881, 1055],
@@ -6728,10 +6728,10 @@ function initRevenueWaterfall() {
   if (!ctx) return;
   // Waterfall: FY2024 base -> MF acq -> organic -> FX -> FY2025
   const labels = ['FY2024\nBase', '+Mattress\nFirm', '+Organic\nGrowth', '+FX &\nOther', 'FY2025\nTotal'];
-  const values = [4814.0, 2517.5, 146.0, 0, 7477.5];
+  const values = [4930.9, 2399.6, 146.0, 0, 7476.5];
   const colors = [rgba('#00b4d8',0.8), rgba('#00d084',0.8), rgba('#ffd700',0.8), rgba('#6070a0',0.6), rgba('#00b4d8',0.9)];
   const isFloat = [false, true, true, true, false];
-  const floatBase = [0, 4814.0, 7331.5, 7477.5, 0];
+  const floatBase = [0, 4930.9, 7330.5, 7476.5, 0];
 
   new Chart(ctx, {
     type: 'bar',
@@ -16356,8 +16356,7 @@ async function fetchLiveData() {
     quote = results[0].status === 'fulfilled' ? results[0].value : null;
     history = results[1].status === 'fulfilled' ? results[1].value : null;
     peers = results[2].status === 'fulfilled' ? results[2].value : {};
-    if (quote) console.log('[LiveData] Tier 2: Yahoo quote OK');
-    if (history) console.log('[LiveData] Tier 2: Yahoo history OK (' + history.length + ' pts)');
+    // LiveData Tier 2 fetch results (quote/history)
   } catch(e) {
   }
 
