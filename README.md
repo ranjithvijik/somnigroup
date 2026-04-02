@@ -8,11 +8,11 @@
 [![GitHub Actions](https://img.shields.io/badge/CI/CD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/deploy.yml)
 [![Chart.js](https://img.shields.io/badge/Charts-Chart.js_4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 [![jsPDF](https://img.shields.io/badge/Export-jsPDF_2.5-F7DF1E?style=for-the-badge)](https://github.com/parallax/jsPDF)
-[![SheetJS](https://img.shields.io/badge/Excel-SheetJS-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)](https://sheetjs.com/)
+[![ExcelJS](https://img.shields.io/badge/Excel-ExcelJS_4.4-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)](https://github.com/exceljs/exceljs)
 [![MathJax](https://img.shields.io/badge/Math-MathJax_3-blue?style=for-the-badge)](https://www.mathjax.org/)
 
 **A single-file, zero-build, institutional-grade equity research platform**
-**41 interactive charts · 17 analytical sections · 3 export formats · Live market data**
+**79 interactive charts · 34 analytical sections · 3 export formats · Live market data**
 
 [**View Live Dashboard →**](https://main.d2bz9s024v2yld.amplifyapp.com/)
 
@@ -24,7 +24,7 @@
 
 - [Overview](#-overview)
 - [Features](#-features)
-- [Dashboard Sections](#-dashboard-sections-17)
+- [Dashboard Sections](#-dashboard-sections-34)
 - [Data Sources](#-data-sources)
 - [Methodology & Equations](#-methodology--equations)
 - [Live Data Architecture](#-live-data-architecture)
@@ -48,13 +48,13 @@ The dashboard combines institutional-quality financial analysis with machine lea
 
 | Metric | Value |
 |--------|-------|
-| **Sections** | 17 analytical modules |
-| **Charts** | 41 interactive Chart.js visualizations |
-| **PDF Report** | 17-page A4 portrait research report |
-| **Slide Deck** | 17-slide landscape presentation |
-| **Excel Export** | 13-tab formatted workbook |
-| **Interactive Models** | 4 live simulation modules with 30+ sliders |
-| **File Size** | ~436 KB (single HTML file) |
+| **Sections** | 34 analytical modules |
+| **Charts** | 79 interactive Chart.js visualizations |
+| **PDF Report** | 39-page A4 portrait research report |
+| **Slide Deck** | 37-slide landscape presentation |
+| **Excel Export** | 35-tab formatted workbook (color-coded via ExcelJS) |
+| **Interactive Models** | 4 live simulation modules with 29 sliders |
+| **File Size** | ~1,041 KB (single HTML file) |
 | **Build Dependencies** | None (zero-build architecture) |
 
 ---
@@ -62,9 +62,9 @@ The dashboard combines institutional-quality financial analysis with machine lea
 ## ✨ Features
 
 ### 📊 Visualization & Analysis
-- **41 interactive charts** — bar, line, radar, scatter, doughnut, waterfall, combo, heatmap
+- **79 interactive charts** — bar, line, radar, scatter, doughnut, waterfall, combo, heatmap, area, and candlestick
 - **Financial modeling** — DCF, comparables, sum-of-parts, Monte Carlo simulation, reverse DCF
-- **Quantitative risk analytics** — DuPont decomposition, Altman Z-Score, Piotroski F-Score, ROIC/EVA
+- **Quantitative risk analytics** — DuPont 5-factor decomposition, Altman Z-Score, Piotroski F-Score (7/9), ROIC/EVA
 - **Peer comparison** — multi-dimensional radar charts and scatter plots vs SNBR, PRPL, LZB, LEG
 - **NLP sentiment analysis** — TextBlob polarity + Loughran-McDonald financial lexicon across 4 quarters
 - **ML trend detection** — EPS anomaly detection (z-score), revenue structural breaks, margin trajectory modeling
@@ -77,9 +77,9 @@ The dashboard combines institutional-quality financial analysis with machine lea
 - **Tier 5:** Static HTML data (always available, never blank)
 
 ### 📥 Three Export Formats
-- **PDF Report** — 17-page A4 programmatic report via jsPDF (white background, teal accents)
-- **PDF Slides** — 17-slide landscape presentation via jsPDF (navy headers, white body)
-- **Excel Workbook** — 13-tab XLSX with column widths and number formatting via SheetJS
+- **PDF Report** — 39-page A4 programmatic report via jsPDF (Bloomberg/GS-style, navy/teal/emerald color system)
+- **PDF Slides** — 37-slide landscape presentation via jsPDF (navy headers, white body)
+- **Excel Workbook** — 35-tab XLSX with full color-coding, cell formatting, and embedded charts via ExcelJS
 
 ### 🎨 Design & UX
 - **Light/Dark theme** toggle (light default)
@@ -90,27 +90,44 @@ The dashboard combines institutional-quality financial analysis with machine lea
 
 ---
 
-## 📑 Dashboard Sections (17)
+## 📑 Dashboard Sections (34)
 
-| # | Section | Description | Charts |
-|---|---------|-------------|--------|
-| **01** | 🔷 Executive Summary | KPI grid, stock chart, upside drivers, investment pillars | 2 |
-| **02** | 🏢 Company Overview | Business description, brand portfolio, Mattress Firm M&A timeline | — |
-| **03** | 📊 Industry Analysis | TAM breakdown ($37.7B), CAGR comparison, Porter's Five Forces | 3 |
-| **04** | 💹 Financial Performance | Revenue waterfall, EBITDA trends, margin evolution, quarterly combo | 4 |
-| **05** | 🔧 Segment Analysis | Channel mix (wholesale vs D2C), geographic revenue, segment OI margins | 3 |
-| **06** | ⚖️ Balance Sheet & CF | Leverage trajectory, FCF bridge, capital allocation waterfall | 3 |
-| **07** | 🎯 Valuation & DCF | Football field chart, WACC vs TGR sensitivity heatmap | 2 |
-| **08** | ⚡ Catalysts & Risks | Synergy timeline ($225M target), risk matrix scatter plot | 2 |
-| **09** | 🔍 Peer Comparison | 5-axis radar chart, P/E bar comparison, growth-margin scatter | 3 |
-| **10** | 📈 Analyst Consensus | Rating distribution, earnings surprise history, EPS estimates bridge | 3 |
-| **11** | 📝 Investment Case | Three pillars: vertical integration moat, margin expansion, FCF compounding | — |
-| **12** | 📐 Quant Risk Analytics | Return distribution histogram, ROIC vs WACC trend, correlation matrix | 2+ |
-| **13** | 🔬 Advanced Valuation | Valuation methodology bridge, Monte Carlo simulation histogram (10K runs) | 2 |
-| **14** | 🤖 ML Predictions | Price prediction simulator with sensitivity analysis + feature importance | 2 |
-| **15** | 🧠 Deep Research & ML | NLP sentiment (12 charts), financial ML, technicals, consensus, correlations | 12 |
-| **16** | 🧲 Modeling Lab | Interactive DCF, leverage simulator, M&A modeler, reverse DCF | 4 modules |
-| **17** | 📚 References | 15 APA 7th edition formatted citations with DOIs and URLs | — |
+| # | Section ID | Title | Description |
+|---|-----------|-------|-------------|
+| 01 | `exec-summary` | Executive Summary | KPI grid, stock chart, investment pillars, upside drivers |
+| 02 | `company-overview` | Company Overview | Business description, brand portfolio, Mattress Firm M&A timeline |
+| 03 | `industry-analysis` | Industry Analysis | TAM breakdown ($37.7B), CAGR comparison, Porter's Five Forces |
+| 04 | `financial-performance` | Financial Performance | Revenue waterfall, EBITDA trends, margin evolution, quarterly combo |
+| 05 | `segment-analysis` | Segment Analysis | Channel mix (wholesale vs D2C), geographic revenue, segment OI margins |
+| 06 | `balance-sheet` | Balance Sheet & Cash Flow | Leverage trajectory, FCF bridge, capital allocation waterfall |
+| 07 | `valuation` | Valuation & DCF | Football field chart, WACC vs TGR sensitivity heatmap |
+| 08 | `catalysts-risks` | Catalysts & Risks | Synergy timeline ($225M target), risk matrix scatter plot |
+| 09 | `technical-analysis` | Technical Analysis | 1-year price chart, MA50/MA200, support/resistance, RSI-14, volume |
+| 10 | `peer-comparison` | Peer Comparison | 5-axis radar chart, P/E bar comparison, growth-margin scatter |
+| 11 | `comps-studio` | Trading Comps Studio | Full public comps with EV/EBITDA, P/E, EV/Sales, FCF yield |
+| 12 | `analyst-consensus` | Analyst Consensus | Rating distribution, earnings surprise history, EPS estimates bridge |
+| 13 | `investment-narrative` | Investment Case | Three pillars: vertical integration moat, margin expansion, FCF compounding |
+| 14 | `quant-risk` | Quant Risk Analytics | Return distribution histogram, ROIC vs WACC trend, correlation matrix |
+| 15 | `advanced-valuation` | Advanced Valuation | Valuation methodology bridge, Monte Carlo simulation histogram (10K runs) |
+| 16 | `ml-prediction` | ML Price Prediction | Price prediction simulator with sensitivity analysis + feature importance |
+| 17 | `deep-research` | Deep Research & ML | NLP sentiment (12 charts), financial ML, technicals, consensus, correlations |
+| 18 | `dcf-analysis` | DCF Analysis | Full 5-year DCF model with interactive assumptions |
+| 19 | `modeling-lab` | Modeling Lab | Interactive DCF, leverage simulator, M&A modeler, reverse DCF |
+| 20 | `regulatory-filings` | Regulatory Filings | SEC 8-K, 10-K, 10-Q filings tracker with FTC matter status |
+| 21 | `esg-profile` | ESG Profile | Environmental, Social, Governance ratings and sustainability data |
+| 22 | `institutional-ownership` | Institutional Ownership | Top holder table, ownership concentration, flow analysis |
+| 23 | `management-team` | Management Team | Executive bios, compensation, tenure, and prior experience |
+| 24 | `analyst-notes` | Analyst Notes | Individual analyst ratings and recent coverage actions |
+| 25 | `price-vs-fve` | Price vs FVE | Historical stock price vs fair value estimate with upside/downside bands |
+| 26 | `rating-history` | Rating History | Investment rating evolution timeline |
+| 27 | `longterm-valuation` | Long-Term Valuation History | 10-year EV/EBITDA and P/E history |
+| 28 | `dividend-history` | Dividend History | Annual dividend per share ($0.76→$1.08) and yield history |
+| 29 | `forward-valuation` | Forward Valuation | FY2026E–FY2028E consensus revenue, EPS, and EBITDA estimates |
+| 30 | `synergy-tracker` | Synergy Tracker | $225M total target — $80M realized, $145M remaining with milestones |
+| 31 | `industry-position` | Industry Position | Market share, competitive positioning, housing recovery upside |
+| 32 | `regulatory-history` | Regulatory History | FTC review timeline and antitrust implications |
+| 33 | `macro-dashboard` | Macro Dashboard | Fed Funds (4.35%), 10-Yr Treasury, housing starts, GDP, CPI dashboard |
+| 34 | `references` | References | 50 APA 7th edition citations across 7 categories with search and filter |
 
 ---
 
@@ -121,9 +138,9 @@ All financial data is sourced from primary filings and institutional-grade provi
 ### Primary Sources (Company Filings)
 | Source | Data Used | Access |
 |--------|-----------|--------|
-| **SEC EDGAR** (10-K, 10-Q) | Revenue, COGS, SGA, D&A, interest expense, balance sheet, cash flow | [sec.gov/cgi-bin/browse-edgar](https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=SGI) |
+| **SEC EDGAR** (10-K, 10-Q) | Revenue, COGS, SGA, D&A ($320M), interest expense ($502M), balance sheet ($18,450M total assets), cash flow | [sec.gov/cgi-bin/browse-edgar](https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=SGI) |
 | **Earnings Call Transcripts** | Q1–Q4 FY2025 full verbatim transcripts with speaker diarization | Via Perplexity Finance API |
-| **Investor Day 2026 Presentation** | Long-term guidance, synergy targets, capital allocation framework | [somnigroup.com](https://www.somnigroup.com) |
+| **Investor Day 2026 Presentation** | Long-term guidance, synergy targets ($225M), capital allocation framework | [somnigroup.com](https://www.somnigroup.com) |
 | **Press Releases** | Quarterly earnings, acquisition announcements, guidance revisions | SEC 8-K filings |
 
 ### Market & Consensus Data
@@ -141,17 +158,20 @@ All financial data is sourced from primary filings and institutional-grade provi
 | **IBISWorld** | Mattress Manufacturing (NAICS 33791) and Bed & Mattress Stores (NAICS OD5462) industry reports |
 | **Mintel** | Pillows & Mattresses US consumer research, 2025 |
 | **ISPA** | International Sleep Products Association quarterly market reports |
-| **FRED (St. Louis Fed)** | PPI mattress manufacturing, 30-year mortgage rates, housing starts |
+| **FRED (St. Louis Fed)** | Fed Funds rate (DFF), 10-Yr Treasury (DGS10), PPI, housing starts |
+| **BEA** | GDP growth data |
 | **U.S. Census Bureau** | New residential construction data |
-| **Damodaran (NYU Stern)** | Cost of capital by sector, equity risk premium, beta estimates |
+| **Damodaran (NYU Stern)** | Cost of capital by sector, equity risk premium (5.5%), beta estimates |
 
 ### Academic Methodology References
 | Paper | Used For |
 |-------|----------|
 | Altman, E. I. (1968). *Financial ratios, discriminant analysis and the prediction of corporate bankruptcy.* Journal of Finance, 23(4), 589–609. | Z-Score model |
-| Piotroski, J. D. (2000). *Value investing: The use of historical financial statement information.* Journal of Accounting Research, 38, 1–41. | F-Score model |
+| Piotroski, J. D. (2000). *Value investing: The use of historical financial statement information.* Journal of Accounting Research, 38, 1–41. | F-Score model (SGI: 7/9) |
 | Fama, E. F., & French, K. R. (1993). *Common risk factors in the returns on stocks and bonds.* Journal of Financial Economics, 33(1), 3–56. | Factor analysis |
 | Loughran, T., & McDonald, B. (2011). *When is a liability not a liability?* Journal of Finance, 66(1), 35–65. | Financial sentiment lexicon |
+| Wilder, J. W. (1978). *New Concepts in Technical Trading Systems.* | RSI-14 methodology |
+| Murphy, J. J. (1999). *Technical Analysis of the Financial Markets.* | Moving averages and support/resistance |
 
 ---
 
@@ -170,10 +190,28 @@ Where:
   E/V   = Equity weight (market cap / enterprise value)
   Re    = Cost of equity (CAPM: Rf + β × ERP)
   D/V   = Debt weight (net debt / enterprise value)
-  Rd    = Cost of debt (weighted average interest rate)
+  Rd    = Cost of debt (5.80%)
   Tc    = Corporate tax rate (25%)
   
-Base case: WACC = 7.95% (Rf=4.25%, β=1.0, ERP=5.5%, Rd=5.0%)
+Base case: WACC = 8.0%
+  Rf = 4.30% (10-Yr Treasury)
+  β  = 1.42 (36-month vs S&P 500)
+  ERP = 5.50% (Damodaran US market)
+  Kd = 5.80% (after-tax: 4.35%)
+```
+
+**Unlevered Free Cash Flow (UFCF):**
+
+```
+UFCF = NOPAT + D&A - CapEx - ΔNWC
+
+Where:
+  NOPAT  = EBIT × (1 - Tax Rate) = (EBITDA - D&A) × (1 - T)
+  D&A    = $320M (FY2025)
+  CapEx  = $163M (FY2025)
+
+FY2025 actual FCFe: $633M  (NI $384 + D&A $320 - CapEx $163 + ΔNWC $92)
+FY2026E: $745M | FY2027E: $862M | FY2028E: $980M
 ```
 
 **Intrinsic Value (Gordon Growth Terminal Value):**
@@ -182,25 +220,16 @@ Base case: WACC = 7.95% (Rf=4.25%, β=1.0, ERP=5.5%, Rd=5.0%)
 V₀ = Σ [FCFₜ / (1 + WACC)ᵗ] + TV / (1 + WACC)ⁿ
 
 Where:
-  FCFₜ = Free cash flow in year t
-  TV   = FCFₙ × (1 + g) / (WACC - g)
-  g    = Terminal growth rate (base: 3.0%)
-  n    = Explicit forecast period (3 years)
-```
-
-**Free Cash Flow:**
-
-```
-FCF = EBITDA × (1 - Tax Rate) + D&A - CapEx - ΔWC
-
-FY2025 actual: FCF = $633M
-FY2026E consensus: FCF = $745M
-FY2028E consensus: FCF = $1,124M
+  TV  = FCFₙ × (1 + g) / (WACC - g)
+  g   = Terminal growth rate (base: 2.5%)
+  n   = Explicit forecast period (3 years)
+  
+DCF FVE: $100/share | Current: $69.37 | Upside: +44.1%
 ```
 
 ### Sensitivity Matrix
 
-The DCF sensitivity heatmap tests WACC (6.5%–9.5%) against terminal growth rate (2.0%–4.0%) across 25 scenarios, with the base case highlighted.
+The DCF sensitivity heatmap tests WACC (6.5%–9.5%) against terminal growth rate (1.5%–3.5%) across 25 scenarios, with the base case highlighted.
 
 ### Altman Z-Score (Financial Distress)
 
@@ -208,32 +237,45 @@ The DCF sensitivity heatmap tests WACC (6.5%–9.5%) against terminal growth rat
 Z = 1.2×X₁ + 1.4×X₂ + 3.3×X₃ + 0.6×X₄ + 1.0×X₅
 
 Where:
-  X₁ = Working Capital / Total Assets
-  X₂ = Retained Earnings / Total Assets
-  X₃ = EBIT / Total Assets
-  X₄ = Market Cap / Total Liabilities
-  X₅ = Revenue / Total Assets
+  X₁ = Working Capital / Total Assets     = 620 / 18,450 = 0.034
+  X₂ = Retained Earnings / Total Assets   = 2,180 / 18,450 = 0.118
+  X₃ = EBIT / Total Assets                = 1,014 / 18,450 = 0.055
+  X₄ = Market Cap / Total Liabilities     = Mkt Cap / 14,850
+  X₅ = Revenue / Total Assets             = 7,477 / 18,450 = 0.405
   
-SGI Z-Score: 2.10 (Gray Zone: 1.81–2.99)
 Interpretation: Elevated leverage from Mattress Firm acquisition.
-               Pre-acquisition Z-Score was 2.8 (Safe Zone).
+               Post-acquisition total assets: $18,450M, total equity: $3,600M.
+               Pre-acquisition Z-Score was in Safe Zone (>2.99).
 ```
 
 ### Piotroski F-Score (Financial Strength)
 
-9-point scoring system across profitability (4 tests), leverage/liquidity (3 tests), and operating efficiency (2 tests). Each criterion scores 0 or 1. SGI scores are computed from the latest quarterly financials.
+9-point scoring system across profitability (4 tests), leverage/liquidity (3 tests), and operating efficiency (2 tests). Each criterion scores 0 or 1.
 
-### DuPont Decomposition (ROE Analysis)
+**SGI F-Score: 7/9 (Strong)**
+
+### DuPont 5-Factor Decomposition (ROE Analysis)
 
 ```
-ROE = Net Margin × Asset Turnover × Equity Multiplier
-    = (Net Income/Revenue) × (Revenue/Assets) × (Assets/Equity)
+ROE = Tax Burden × Interest Burden × Operating Margin × Asset Turnover × Equity Multiplier
+    = (NI/EBT) × (EBT/EBIT) × (EBIT/Rev) × (Rev/Assets) × (Assets/Equity)
+    = 0.750 × 0.505 × 0.136 × 0.405 × 5.125
+    = ~10.7%
+
+Where (FY2025):
+  Total Assets  = $18,450M
+  Equity        = $3,600M
+  Asset Turnover = 7,477 / 18,450 = 0.405
+  Equity Multiplier = 18,450 / 3,600 = 5.125
 ```
 
 ### Enterprise Value Calculation
 
 ```
 EV = Market Cap + Total Debt - Cash & Equivalents
+   Net Debt = $8,130M (Total Debt - Cash)
+   Net Leverage: 7.81x Net Debt/EBITDA (FY2025)
+   Credit Facility Covenant: 3.2x (stepping down as debt repays)
 PEG Ratio = (P/E) / EPS Growth Rate
 ```
 
@@ -242,8 +284,8 @@ PEG Ratio = (P/E) / EPS Growth Rate
 The ML simulator uses a multi-factor regression combining:
 - Revenue growth rate sensitivity
 - EBITDA margin trajectory
-- Synergy realization pace
-- Interest rate environment
+- Synergy realization pace ($80M realized, $145M remaining)
+- Interest rate environment (Fed Funds 4.35%)
 - Industry growth assumptions
 - Comparable company multiples (P/E, EV/EBITDA)
 
@@ -266,18 +308,21 @@ Financial Lexicon (40+ terms):
 
 ```
 RSI-14 = 100 - [100 / (1 + RS)]
-  Where RS = Average Gain (14 periods) / Average Loss (14 periods)
+  Where RS = Avg Gain (14 periods) / Avg Loss (14 periods)
+  Wilder's smoothing method
 
 Annualized Volatility = Monthly Std Dev × √12
+  Using sample variance (Bessel-corrected: n-1 denominator)
 
-Moving Averages: Simple arithmetic mean of closing prices over 6M, 12M, 24M windows
+Moving Averages: MA50, MA200 (simple arithmetic mean)
+Support / Resistance: identified via rolling min/max over trailing windows
 ```
 
 ### EPS Anomaly Detection
 
 ```
 Z-Score = (Observed EPS - Mean EPS) / Std Dev(EPS)
-Anomaly threshold: |Z| > 1.5 (flagged), |Z| > 2.0 (significant)
+  Anomaly threshold: |Z| > 1.5 (flagged), |Z| > 2.0 (significant)
 
 Q3 2025 adj EPS $0.95 flagged at Z = +2.01 (only anomaly in 10-quarter series)
 ```
@@ -288,7 +333,7 @@ Q3 2025 adj EPS $0.95 flagged at Z = +2.01 (only anomaly in 10-quarter series)
 - Revenue growth: Normal distribution (μ=6.4%, σ=3%)
 - EBITDA margin: Normal distribution (μ=18.6%, σ=2%)
 - WACC: Uniform distribution (7.0%–9.5%)
-- Terminal growth: Uniform distribution (2.0%–4.0%)
+- Terminal growth: Uniform distribution (1.5%–3.5%)
 
 Output: probability distribution of intrinsic value with percentile ranges.
 
@@ -345,117 +390,104 @@ The dashboard uses a progressive fallback strategy to ensure data is always disp
 
 All export buttons are located in the **top navigation bar** of the dashboard:
 
-| Button | Icon | Output File | Format |
-|--------|------|-------------|--------|
-| **Export PDF** | ⬇ | `SGI_Investment_Research_Report.pdf` | A4 portrait, 17 pages |
-| **Export Slides** | 📑 | `SGI_Investment_Slides_March2026.pdf` | 16:9 landscape, 17 slides |
-| **Excel Data** | 📥 | `SGI_Financial_Data_2026.xlsx` | 13-tab workbook |
+| Button | Label | Output File | Format |
+|--------|-------|-------------|--------|
+| **Report** | ⬇ Report | `SGI_Investment_Research_YYYYMMDDHHMM.pdf` | A4 portrait, 39 pages |
+| **Slides** | 📑 Slides | `SGI_Investment_Slides_YYYYMMDDHHMM.pdf` | 16:9 landscape, 37 slides |
+| **Excel** | 📥 Excel | `SGI_Financial_Data_YYYYMMDDHHMM.xlsx` | 35-tab workbook |
 
-Additionally, each section has an **"Export Section"** button that captures that section as a standalone PDF screenshot.
+Filenames include a timestamp (`YYYYMMDDHHMM`) at the moment of download to prevent overwrites.
 
-### PDF Research Report — Detailed Guide
+### PDF Research Report (39 pages)
 
-Click **"Export PDF"** in the top bar. A 17-page institutional-quality research report generates programmatically via jsPDF (no server required):
+Click **"Report"** in the top bar. A 39-page institutional-quality report generates via jsPDF using a Bloomberg/Goldman Sachs-inspired design system (navy `#08183A`, steel `#1A5276`, crimson `#B91C1C`, emerald `#15803D`, amber `#A16207`):
 
-| Page | Section | What's Included |
-|------|---------|-----------------|
-| 1 | **Cover** | Company name, ticker, price target ($100), current price ($69.37), upside (+44%), LONG recommendation badge, analyst consensus summary |
-| 2 | **Executive Summary** | 6 KPI boxes (Market Cap, Fwd P/E, EPS, FCF Yield, Div Yield, Rating), investment rationale narrative, 3 investment pillars with descriptions |
-| 3 | **Company Overview** | Business description, key facts table (CEO, HQ, employees, revenue, D2C mix, store count), brand portfolio table (Tempur-Pedic, Sealy, Stearns & Foster, Mattress Firm) |
-| 4 | **Industry Analysis** | TAM sizing ($37.7B), market share data, industry growth drivers, competitive dynamics narrative |
-| 5 | **Financial Performance** | 5-year income statement table (FY2021–FY2025 + FY2026E–2028E), revenue/EBITDA/EPS trends with YoY growth rates |
-| 6 | **Key Ratios** | Profitability ratios (gross/EBITDA/net margins), return metrics (ROE, ROA, ROIC), leverage ratios (D/E, Net Debt/EBITDA, interest coverage) |
-| 7 | **Segment Analysis** | Revenue by segment (North America, Mattress Firm, International), operating income margins by segment, geographic mix |
-| 8 | **Balance Sheet & Leverage** | Balance sheet summary, debt maturity narrative, FCF generation trend, deleveraging trajectory |
-| 9 | **Valuation Summary** | 6-method valuation table (DCF, Forward P/E, EV/EBITDA, SOTP, Analyst Consensus, Monte Carlo) with bear/base/bull ranges |
-| 10 | **Catalysts** | 5 catalyst descriptions with timeline and EPS impact estimates |
-| 11 | **Risks & Mitigants** | 5 key risks with probability, impact, and specific mitigant for each |
-| 12 | **Peer Comparison** | SGI vs SNBR, PRPL, LZB, LEG across 10 metrics |
-| 13 | **Analyst Consensus** | Individual analyst ratings table (firm, analyst, action, rating, price target), consensus distribution |
-| 14 | **Quantitative Risk Metrics** | Altman Z-Score breakdown, Piotroski F-Score, DuPont decomposition components |
-| 15 | **Deep Research: Sentiment & ML** | NLP sentiment table (Q1–Q4 color-coded), key findings bullets, 4 ML KPI boxes |
-| 16 | **Deep Research: Technical & Consensus** | Technical indicators table, analyst consensus KPIs, forward estimates table, leverage trajectory, correlation matrix |
-| 17 | **Disclaimer & References** | Disclaimer paragraph, 10 APA 7th edition references with URLs |
+The report covers: Cover · Executive Summary · Company Overview · Industry Analysis · Financial Performance · Key Ratios · Segment Analysis · Balance Sheet & Leverage · Valuation Summary · Catalysts · Risks & Mitigants · Peer Comparison · Trading Comps · Analyst Consensus · Quantitative Risk Metrics (Altman Z, Piotroski 7/9, DuPont) · Deep Research: Sentiment & ML · Deep Research: Technical & Consensus · ESG Profile · Institutional Ownership · Management Team · Analyst Notes · Price vs FVE · Rating History · Long-Term History · Dividend History · Forward Valuation · Synergy Tracker · Industry Position · Regulatory History · Advanced Valuation · Macro Dashboard · References
 
 **Design details:**
-- White background with teal accent bars
-- Navy header text, gray body text
+- Navy `#08183A` running header + teal `#00B4D8` accent line on every page
+- KPI cards with color-coded top bars by metric type
 - Alternating row shading on all tables
-- Color-coded values (green for positive, red for negative)
-- Footer on every page: "SGI | Research Report" with page number
+- Color-coded values (emerald for positive, crimson for negative)
+- Auto page-break via `checkY()` — no content ever clips below the footer
 
-### PDF Slide Deck — Detailed Guide
+### PDF Slide Deck (37 slides)
 
-Click **"Export Slides"** in the top bar. A 17-slide landscape presentation generates:
+Click **"📑 Slides"** in the top bar. A 37-slide landscape presentation:
 
-| Slide | Title | Content |
-|-------|-------|---------|
-| 1 | Title Slide | Company name, ticker, LONG badge, price target boxes, date |
-| 2 | Executive Summary | 6 KPI grid, 4 key investment bullets |
-| 3 | Company Overview | Key facts, brand portfolio with descriptions |
-| 4 | Industry Analysis | TAM metrics, market dynamics bullets |
-| 5 | Investment Rationale | 3 numbered pillars with bullet point evidence |
-| 6 | Financial Performance | 5-year financial summary table |
-| 7 | Segment Analysis | Segment revenue/OI table, key metrics |
-| 8 | Balance Sheet & Leverage | Leverage metrics, debt paydown narrative |
-| 9 | Valuation Summary | 6-method valuation range table |
-| 10 | DCF Model | Assumptions table, implied price, key sensitivities |
-| 11 | Catalysts | 5 catalyst descriptions with impact estimates |
-| 12 | Risks & Mitigants | 5 risk descriptions with severity and mitigants |
-| 13 | Peer Comparison | Competitive positioning table |
-| 14 | Analyst Consensus | Rating breakdown, price target range, recent actions |
-| 15 | **Deep Research: Sentiment** | NLP metrics table, key insight bullets, topic frequency |
-| 16 | **Deep Research: ML Signals** | 6 KPI grid, forward estimates, key takeaways |
-| 17 | Final Recommendation | LONG badge, price target, upside, 6 key metrics, 4 summary bullets |
+Slides: Title · Executive Summary · Company Overview · Industry Analysis · Investment Rationale · Financial Performance · Segment Analysis · Balance Sheet & Leverage · Valuation Summary · DCF Model · Catalysts · Risks & Mitigants · Peer Comparison · Trading Comps · Analyst Consensus · Deep Research: Sentiment · Deep Research: ML Signals · ESG Profile · Institutional Ownership · Management Team · Quant Risk Analytics · Advanced Valuation · Monte Carlo Simulation · ML Prediction · Macro Dashboard · Technical Analysis · DCF Analysis · Modeling Lab Preview · Regulatory & FTC · Regulatory History · Analyst Notes Archive · Price vs FVE + Rating History · 10-Year History + Dividends · Synergy Tracker + Industry Position · Regulatory History + FTC · Advanced Valuation Models · Forward Valuation Summary
 
 **Design details:**
 - Navy header bar with teal accent line on every slide
 - White body background
-- Consistent footer: "SGI | Research Report" with slide count
-- Bullet points with teal/green accent markers
+- Consistent footer: section name + slide `n / 37`
+- Bullet points with teal/emerald accent markers
 
-### Excel Workbook — Detailed Guide
+### Excel Workbook (35 tabs)
 
-Click **"Excel Data"** in the top bar. A 13-tab workbook downloads:
+Click **"📥 Excel"** in the top bar. A 35-tab XLSX workbook generated via ExcelJS 4.4 with full cell-level color coding:
 
-| Tab | Rows | Columns | Key Data Points |
-|-----|------|---------|-----------------|
-| **Income Statement** | 8 | 16 | FY2021–FY2028E: Revenue, COGS, Gross Profit, Gross Margin, SGA, D&A, Op Income, EBITDA, Interest, Pre-Tax, Tax, Net Income, EPS, Shares |
-| **Balance Sheet** | 5 | 11 | FY2021–FY2025: Cash, Current Assets, Goodwill, Intangibles, Total Assets, Current Liabilities, LT Debt, Total Debt, Total Liabilities, Equity, Net Debt |
-| **Cash Flow** | 5 | 7 | FY2021–FY2025: OCF, CapEx, FCF, Buybacks, Dividends, D&A |
-| **Quarterly** | 10 | 12 | Q3 2023–Q4 2025: Revenue, Gross Profit, Op Income, Net Income, EPS, EBITDA, Adj EBITDA, Adj EPS, FCF, Gross Margin, Op Margin |
-| **Ratios** | 11 | 6 | FY2021–FY2025: Gross/EBITDA/Net Margins, ROE, ROA, ROIC, D/E, Net Debt/EBITDA, Current Ratio, Interest Coverage, FCF Conversion |
-| **Segments** | 4 | 4 | Revenue and Operating Income by segment (North America, Mattress Firm, International) |
-| **Estimates** | 3 | 6 | FY2026E–FY2028E: Revenue, EBITDA, Net Income, EPS, FCF |
-| **Peer Comparison** | 5 | 11 | SGI vs 4 peers: Market Cap, P/E, EV/EBITDA, Gross Margin, Net Margin, Rev Growth, D/E, FCF Yield, Div Yield, ROE |
-| **Valuation** | 6 | 4 | 6 methods × Low/Base/High: DCF, Forward P/E, EV/EBITDA, SOTP, Analyst Consensus, Monte Carlo |
-| **References** | 15 | 3 | Citation number, APA 7th edition text, URL |
-| **Sentiment Analysis** | 4 | 10 | Q1–Q4 2025: Overall Polarity, Domain Sentiment, CEO/CFO Sentiment, Confidence Index, Subjectivity, Positive/Negative/Forward Term Counts |
-| **ML Analysis** | 5 sections | varies | Revenue structural break data, EPS z-scores, technical indicators (RSI, volatility, MAs), 6×6 correlation matrix, leverage trajectory model |
-| **Topic Frequency** | 20+ | 6 | 20 keyword clusters across Q1–Q4 2025 by theme (Strategic, Macro, Growth, Financial Structure, Marketing, Technology) with trend descriptions |
+| Tab | Content |
+|-----|---------|
+| Income Statement | FY2021–FY2028E: Revenue, COGS, GP, EBITDA, Net Income, EPS, Shares |
+| Balance Sheet | FY2021–FY2025: Assets, Liabilities, Equity, Net Debt ($8,130M) |
+| Cash Flow | FY2021–FY2025: OCF, CapEx, FCF, Buybacks, Dividends, D&A ($320M) |
+| Quarterly | Q3 2023–Q4 2025: Revenue, EPS (reported/adj), EBITDA, FCF, margins |
+| Ratios | FY2021–FY2025: Margins, ROE, ROIC, Net Debt/EBITDA (7.81x), ICR (2.07x) |
+| Segments | Revenue and OI by segment (North America, Mattress Firm, International) |
+| Estimates | FY2026E–FY2028E consensus Revenue, EBITDA, Net Income, EPS, FCF |
+| Peer Comparison | SGI vs SNBR, PRPL, LZB, LEG across 10 metrics |
+| Valuation | 6 methods × Low/Base/High: DCF ($100), P/E, EV/EBITDA, SOTP, MC |
+| Sentiment Analysis | Q1–Q4 2025: TextBlob polarity, domain sentiment, CEO/CFO sentiment |
+| ML Analysis | Revenue structural breaks, EPS z-scores, technicals, correlation matrix |
+| Topic Frequency | 20+ keyword clusters across Q1–Q4 2025 with trend descriptions |
+| Chart - Revenue & EBITDA | Revenue and EBITDA bar chart data |
+| Chart - EPS Trend | EPS reported/adj trend data |
+| Chart - Cash Flow | FCF and OCF trend data |
+| Chart - Valuation | Multi-method valuation range data |
+| Chart - Topics | Topic frequency trend data |
+| Technical Analysis | MA50, MA200, RSI-14, support/resistance signal table (17 rows) |
+| Macro Dashboard | 10 macro indicators + Fed Funds, housing, CPI, GDP, consumer confidence |
+| References | 50 citations with category, APA 7th edition text, and clickable URLs |
+| DCF Analysis | 5-year DCF model with WACC/TGR sensitivity heatmap |
+| Trading Comps | Full public comps with EV/EBITDA, P/E, EV/Sales, FCF yield |
+| Operating KPIs | Store count, D2C mix, ASP, unit volumes, market share |
+| ESG Profile | Environmental, Social, Governance scores and key metrics |
+| Institutional Ownership | Top 20 holders with shares, % ownership, change |
+| Synergy Tracker | $225M synergy target — $80M realized, $145M remaining with milestones |
+| Dividend History | Annual DPS history ($0.76→$1.08), yield, payout ratio |
+| Forward Valuation | Consensus FY2026E–FY2028E estimates by metric |
+| Management Team | Executive bios, compensation, tenure |
+| Rating History | Investment rating and price target evolution |
+| 10-Year History | Revenue, EBITDA, EPS, P/E, EV/EBITDA 10-year history |
+| Industry Position | Market share, TAM, competitive positioning |
+| Catalysts & Risks | 5 catalysts + 5 risks with probability/impact scores |
+| Investment Case | Three investment pillars with supporting metrics |
+| Analyst Notes | Individual analyst coverage actions |
 
 **Formatting applied:**
 - Column widths auto-sized for all tabs
-- Number formats: `#,##0.0` for financials, `0.0%` for margins, `#,##0.00` for EPS, `0.0000` for sentiment scores
-- Section headers within ML Analysis tab for clarity
-- Methodology notes appended below data in Sentiment and Topic Frequency tabs
+- Number formats: `#,##0.0` for financials, `0.0%` for margins, `#,##0.00` for EPS
+- Color-coded themes per tab (navy/gold/teal/blue/amber/purple/gray)
+- Heatmap correlation matrix (green = high positive, red = high negative)
+- Positive values in green, negative values in red throughout
 
 ---
 
 ## 🧲 Interactive Modeling Lab
 
-Four fully interactive simulation modules with real-time computation. Navigate to **Section 16** or click "Modeling Lab" in the sidebar.
+Four fully interactive simulation modules with real-time computation. Navigate to **Section 19 (Modeling Lab)** in the sidebar.
 
 ### 1. DCF Model Builder
 
-Adjust 6 parameters with sliders — results update instantly:
+Adjust parameters with sliders — results update instantly:
 
 | Parameter | Range | Default | Sensitivity |
 |-----------|-------|---------|-------------|
 | Revenue Growth | 0%–15% | 6.4% | High — drives top-line FCF |
 | EBITDA Margin | 12%–25% | 18.6% | High — drives profitability |
 | WACC | 6%–12% | 8.5% | Very High — discount rate |
-| Terminal Growth | 1%–5% | 3.0% | High — terminal value |
+| Terminal Growth | 1%–5% | 2.5% | High — terminal value |
 | Tax Rate | 20%–30% | 25% | Medium |
 | CapEx/Revenue | 1%–4% | 2.2% | Medium |
 
@@ -497,13 +529,13 @@ Model hypothetical bolt-on acquisitions:
 | Current FCF | Starting free cash flow base |
 | Forecast Period | Number of explicit years |
 
-**Output:** Implied revenue growth rate the market is pricing in, compared to management guidance and consensus estimates. Highlights the gap between market expectations and fundamental projections.
+**Output:** Implied revenue growth rate the market is pricing in, compared to management guidance and consensus estimates.
 
 ---
 
 ## 🧠 Deep Research & ML Insights
 
-### NLP Sentiment Analysis (Section 15A)
+### NLP Sentiment Analysis (Section 17A)
 - **4 quarters** of earnings call transcripts (Q1–Q4 FY2025) analyzed
 - TextBlob polarity scoring + domain-adapted financial lexicon (40+ terms)
 - CEO vs CFO sentiment divergence tracking across all 4 calls
@@ -511,26 +543,35 @@ Model hypothetical bolt-on acquisitions:
 - Prepared remarks vs analyst Q&A sentiment comparison
 - Interactive heatmap table with color-coded values
 
-### ML Financial Analysis (Section 15B)
+### ML Financial Analysis (Section 17B)
 - Revenue structural break detection: pre-acquisition avg $1,230M/qtr vs post-acquisition $1,869M/qtr (+52%)
 - Adjusted EPS anomaly detection with z-score bands (±1σ and ±2σ)
 - Multi-line margin trajectory: gross, operating, and adjusted EBITDA margins over 10 quarters
-- Leverage deleveraging trajectory chart with 2.0–3.0x target range band
+- Leverage deleveraging trajectory chart with 3.2x credit facility covenant band
 
-### Technical Indicators (Section 15C)
-- 39-month price chart with 6M, 12M, and 24M moving average overlays
-- RSI-14 gauge display with overbought/oversold zones
-- Annualized volatility metric and price-vs-MA comparison table
+### Technical Indicators (Section 9)
+- 1-year price chart with MA50 and MA200 overlays
+- Support and resistance levels
+- RSI-14 oscillator with overbought/oversold zones
+- Volume bars and signal summary table (8 rows, color-coded BULLISH/BEARISH/CAUTION)
+- Annualized volatility (sample variance, Bessel-corrected)
 
-### Consensus & Valuation (Section 15D)
+### Consensus & Valuation (Section 17D)
 - Analyst price target football field chart ($83–$115 range, avg $99.67)
 - Strong Buy consensus (83.3% bullish, 16.7% neutral, 0% bearish)
 - Forward estimates table: FY2026E–FY2028E (Revenue, EPS, EBITDA, FCF)
 - Implied CAGR KPI grid (Revenue 5.9%, EPS 37.9%, FCF 21.1%)
 
-### Correlation Matrix (Section 15E)
+### Correlation Matrix (Section 17E)
 - Interactive 6×6 heatmap: Revenue, Gross Profit, Op Income, EBITDA, FCF, Adj EBITDA
 - Color-coded Pearson coefficients (green ≥0.9, teal ≥0.6, neutral <0.6)
+
+### Macro Dashboard (Section 33)
+- 6 macro KPI cards with trend annotations
+- Fed Funds rate: 4.35% (corrected from SOFR 5.30%)
+- 10-Yr Treasury time-series chart (2022–2026)
+- Housing Starts bar chart
+- Macro → Valuation impact table (rates, housing, CPI, confidence, GDP)
 
 ---
 
@@ -594,13 +635,13 @@ Raw Transcript
 | Charts | [Chart.js](https://www.chartjs.org/) | 4.4.0 | jsdelivr |
 | PDF Export | [jsPDF](https://github.com/parallax/jsPDF) | 2.5.1 | cdnjs |
 | Screenshots | [html2canvas](https://html2canvas.hertzen.com/) | 1.4.1 | cdnjs |
-| Excel Export | [SheetJS](https://sheetjs.com/) | 0.18.5 | jsdelivr |
+| Excel Export | [ExcelJS](https://github.com/exceljs/exceljs) | 4.4.0 | jsdelivr |
 | Math Rendering | [MathJax](https://www.mathjax.org/) | 3.x | jsdelivr |
 | Fonts | [Google Fonts](https://fonts.google.com/) | Inter, JetBrains Mono | Google |
 | Hosting | [AWS Amplify](https://aws.amazon.com/amplify/) | — | — |
 | CI/CD | [GitHub Actions](https://github.com/features/actions) | v4 | — |
 
-All libraries are loaded from CDN — **zero npm dependencies, zero build step**.
+**Note:** Excel export uses **ExcelJS 4.4.0** (not SheetJS) for full cell-level color formatting support. All libraries are loaded from CDN — **zero npm dependencies, zero build step**.
 
 ---
 
@@ -671,7 +712,7 @@ The dashboard defaults to **light theme** (`data-theme="light"` on the HTML elem
 ## 📖 Usage Guide
 
 ### Navigation
-- Use the **sidebar** (left panel) to jump to any of the 17 sections
+- Use the **sidebar** (left panel) to jump to any of the 34 sections
 - Sections are **lazy-loaded** — charts render only when scrolled into view for performance
 - On mobile, tap the **hamburger menu** (☰) to open the sidebar
 - Active section is highlighted in the sidebar as you scroll
@@ -679,23 +720,23 @@ The dashboard defaults to **light theme** (`data-theme="light"` on the HTML elem
 ### Exporting — Step by Step
 
 **To export the PDF report:**
-1. Click **"Export PDF"** (teal button) in the top navigation bar
-2. Wait 2–3 seconds for generation (button shows "Generating...")
-3. A 17-page PDF downloads automatically as `SGI_Investment_Research_Report.pdf`
-4. The report uses a white background with teal accents — optimized for printing
+1. Click **"Report"** (teal button) in the top navigation bar
+2. Wait 3–5 seconds for generation (button shows "Generating...")
+3. A 39-page PDF downloads as `SGI_Investment_Research_YYYYMMDDHHMM.pdf`
+4. The report uses a Bloomberg/GS-style design — optimized for print and screen
 
 **To export the slide deck:**
-1. Click **"Export Slides"** (gold button) in the top navigation bar
-2. Wait 2–3 seconds for generation
-3. A 17-slide landscape PDF downloads as `SGI_Investment_Slides_March2026.pdf`
+1. Click **"📑 Slides"** (gold button) in the top navigation bar
+2. Wait 3–5 seconds for generation
+3. A 37-slide landscape PDF downloads as `SGI_Investment_Slides_YYYYMMDDHHMM.pdf`
 4. Slides use navy headers with white body — ready for projection or screen sharing
 
 **To export the Excel workbook:**
-1. Click **"Excel Data"** (green button) in the top navigation bar
-2. An XLSX file downloads instantly as `SGI_Financial_Data_2026.xlsx`
+1. Click **"📥 Excel"** (green button) in the top navigation bar
+2. An XLSX file downloads as `SGI_Financial_Data_YYYYMMDDHHMM.xlsx`
 3. Open in Excel, Google Sheets, or LibreOffice Calc
-4. 13 tabs with formatted column widths and number formatting
-5. Sentiment Analysis, ML Analysis, and Topic Frequency tabs contain the Deep Research data
+4. 35 color-coded tabs with full cell formatting
+5. Charts are embedded as data tabs with series ready for re-plotting
 
 **To export a single section:**
 1. Navigate to any section
@@ -704,7 +745,7 @@ The dashboard defaults to **light theme** (`data-theme="light"` on the HTML elem
 
 ### Interactive Models — Step by Step
 
-1. Click **"Modeling Lab"** (Section 16) in the sidebar
+1. Click **"Modeling Lab"** (Section 19) in the sidebar
 2. Choose a module tab: **DCF**, **Leverage**, **M&A**, or **Reverse DCF**
 3. Drag any slider to adjust an assumption
 4. Results recalculate instantly in the output panel
@@ -722,20 +763,21 @@ The dashboard defaults to **light theme** (`data-theme="light"` on the HTML elem
 
 ```
 somnigroup/
-├── index.html              # The entire application (single file, ~436 KB)
-│                            # Contains: HTML structure, CSS styles, JavaScript logic,
-│                            # chart configurations, export functions, live data engine,
-│                            # interactive models, NLP/ML data, and all static content
-├── amplify.yml             # AWS Amplify build configuration
-│                            # Pre-build: injects AV_API_KEY via sed replacement
+├── index.html                          # The entire application (~1,041 KB)
+│                                        # Contains: HTML structure, CSS styles, JavaScript logic,
+│                                        # 79 Chart.js visualizations, 3 export engines (PDF/Slides/Excel),
+│                                        # 5-tier live data engine, interactive modeling lab (29 sliders),
+│                                        # NLP/ML analysis, 34 analytical sections, static content
+├── amplify.yml                         # AWS Amplify build configuration
+│                                        # Pre-build: injects AV_API_KEY via sed replacement
+├── SGI_Full_Technical_Documentation.pdf # 140-page quantitative technical reference
+│                                        # Covers all 32 analytical methods with math equations,
+│                                        # Python code implementations, and corrected data values
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml      # GitHub Actions CI/CD pipeline
-│                            # Triggers on push to main, injects API key, uploads artifact
-├── backend.py              # Optional Python Flask backend
-│                            # Endpoints: /api/quote, /api/history, /api/peers
-│                            # Uses yfinance for real-time data
-└── README.md               # This documentation file
+│       └── deploy.yml                  # GitHub Actions CI/CD pipeline
+│                                        # Triggers on push to main, injects API key, uploads artifact
+└── README.md                           # This documentation file
 ```
 
 ### Why Single File?
@@ -746,14 +788,14 @@ The entire dashboard is a single `index.html` by design:
 - **Offline capable** — works without internet (Tier 5 static data fallback)
 - **Portable** — email it, put it on a USB drive, host it anywhere
 - **Auditable** — view source, every line of code is transparent
-- **No CORS issues** — all CDN libraries are loaded from established CDNs with permissive headers
+- **No CORS issues** — all CDN libraries loaded from established CDNs with permissive headers
 
 ---
 
 <div align="center">
 
 **Built with data from SEC filings, earnings transcripts, and institutional financial databases.**
-**All citations in APA 7th edition format.**
+**All citations in APA 7th edition format. 50 references across 7 categories.**
 
 [![Live Dashboard](https://img.shields.io/badge/View_Live_Dashboard-00d4aa?style=for-the-badge&logo=googlechrome&logoColor=white)](https://main.d2bz9s024v2yld.amplifyapp.com/)
 
