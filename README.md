@@ -52,7 +52,7 @@ The dashboard combines institutional-quality financial analysis with machine lea
 | **Charts** | 79 interactive Chart.js visualizations |
 | **PDF Report** | 39-page A4 portrait research report |
 | **Slide Deck** | 37-slide landscape presentation |
-| **Excel Export** | 35-tab formatted workbook (color-coded via ExcelJS) |
+| **Excel Export** | 39-tab formatted workbook (color-coded via ExcelJS) |
 | **Interactive Models** | 4 live simulation modules with 29 sliders |
 | **File Size** | ~1,041 KB (single HTML file) |
 | **Build Dependencies** | None (zero-build architecture) |
@@ -79,7 +79,7 @@ The dashboard combines institutional-quality financial analysis with machine lea
 ### 📥 Three Export Formats
 - **PDF Report** — 39-page A4 programmatic report via jsPDF (Bloomberg/GS-style, navy/teal/emerald color system)
 - **PDF Slides** — 37-slide landscape presentation via jsPDF (navy headers, white body)
-- **Excel Workbook** — 35-tab XLSX with full color-coding, cell formatting, and embedded charts via ExcelJS
+- **Excel Workbook** — 39-tab XLSX with full color-coding, cell formatting, and embedded charts via ExcelJS
 
 ### 🎨 Design & UX
 - **Light/Dark theme** toggle (light default)
@@ -394,7 +394,7 @@ All export buttons are located in the **top navigation bar** of the dashboard:
 |--------|-------|-------------|--------|
 | **Report** | ⬇ Report | `SGI_Investment_Research_YYYYMMDDHHMM.pdf` | A4 portrait, 39 pages |
 | **Slides** | 📑 Slides | `SGI_Investment_Slides_YYYYMMDDHHMM.pdf` | 16:9 landscape, 37 slides |
-| **Excel** | 📥 Excel | `SGI_Financial_Data_YYYYMMDDHHMM.xlsx` | 35-tab workbook |
+| **Excel** | 📥 Excel | `SGI_Financial_Data_YYYYMMDDHHMM.xlsx` | 39-tab workbook |
 
 Filenames include a timestamp (`YYYYMMDDHHMM`) at the moment of download to prevent overwrites.
 
@@ -402,7 +402,7 @@ Filenames include a timestamp (`YYYYMMDDHHMM`) at the moment of download to prev
 
 Click **"Report"** in the top bar. A 39-page institutional-quality report generates via jsPDF using a Bloomberg/Goldman Sachs-inspired design system (navy `#08183A`, steel `#1A5276`, crimson `#B91C1C`, emerald `#15803D`, amber `#A16207`):
 
-The report covers: Cover · Executive Summary · Company Overview · Industry Analysis · Financial Performance · Key Ratios · Segment Analysis · Balance Sheet & Leverage · Valuation Summary · Catalysts · Risks & Mitigants · Peer Comparison · Trading Comps · Analyst Consensus · Quantitative Risk Metrics (Altman Z, Piotroski 7/9, DuPont) · Deep Research: Sentiment & ML · Deep Research: Technical & Consensus · ESG Profile · Institutional Ownership · Management Team · Analyst Notes · Price vs FVE · Rating History · Long-Term History · Dividend History · Forward Valuation · Synergy Tracker · Industry Position · Regulatory History · Advanced Valuation · Macro Dashboard · References
+The report covers: Cover · Executive Summary · Company Overview · Industry Analysis · Financial Performance · Key Ratios · Segment Analysis · Balance Sheet & Leverage · Valuation Summary · Catalysts · Risks & Mitigants · Peer Comparison · Trading Comps · Analyst Consensus · Quantitative Risk Metrics (Altman Z, Piotroski 7/9, DuPont) · Deep Research: Sentiment & ML · Deep Research: Technical & Consensus · ESG Profile · Institutional Ownership · Management Team · Analyst Notes · Price vs FVE · Rating History · Long-Term History · Dividend History · Forward Valuation · Synergy Tracker · Industry Position · Regulatory History · **Modeling Lab** · Signal Aggregation & Rating Derivation · Advanced Valuation · Macro Dashboard · References
 
 **Design details:**
 - Navy `#08183A` running header + teal `#00B4D8` accent line on every page
@@ -423,9 +423,9 @@ Slides: Title · Executive Summary · Company Overview · Industry Analysis · I
 - Consistent footer: section name + slide `n / 37`
 - Bullet points with teal/emerald accent markers
 
-### Excel Workbook (35 tabs)
+### Excel Workbook (39 tabs)
 
-Click **"📥 Excel"** in the top bar. A 35-tab XLSX workbook generated via ExcelJS 4.4 with full cell-level color coding:
+Click **"📥 Excel"** in the top bar. A 39-tab XLSX workbook generated via ExcelJS 4.4 with full cell-level color coding:
 
 | Tab | Content |
 |-----|---------|
@@ -464,6 +464,10 @@ Click **"📥 Excel"** in the top bar. A 35-tab XLSX workbook generated via Exce
 | Catalysts & Risks | 5 catalysts + 5 risks with probability/impact scores |
 | Investment Case | Three investment pillars with supporting metrics |
 | Analyst Notes | Individual analyst coverage actions |
+| Modeling Lab | 4 modules: DCF assumptions, leverage simulator, M&A synergy model, base-case outputs (FVE $100, upside +44.1%) |
+| Regulatory Filings | 10 historical SEC filings (10-K, 10-Q, 8-K, DEF 14A, S-3) + 5 upcoming filing obligations with EDGAR links |
+| Price vs FVE | 7-row P/FVE history FY2021–Mar 2026 with color-coded status (Overvalued / Fairly Valued / Undervalued) |
+| Regulatory History | FTC/consent decree timeline (Jun 2022–Mar 2026): investigation → lawsuit → consent decree → acquisition close → compliance |
 
 **Formatting applied:**
 - Column widths auto-sized for all tabs
@@ -735,7 +739,7 @@ The dashboard defaults to **light theme** (`data-theme="light"` on the HTML elem
 1. Click **"📥 Excel"** (green button) in the top navigation bar
 2. An XLSX file downloads as `SGI_Financial_Data_YYYYMMDDHHMM.xlsx`
 3. Open in Excel, Google Sheets, or LibreOffice Calc
-4. 35 color-coded tabs with full cell formatting
+4. 39 color-coded tabs with full cell formatting
 5. Charts are embedded as data tabs with series ready for re-plotting
 
 **To export a single section:**
@@ -771,7 +775,7 @@ somnigroup/
 ├── amplify.yml                         # AWS Amplify build configuration
 │                                        # Pre-build: injects AV_API_KEY via sed replacement
 ├── SGI_Full_Technical_Documentation.pdf # 140-page quantitative technical reference
-│                                        # Covers all 32 analytical methods with math equations,
+│                                        # Covers all 34 analytical methods with math equations,
 │                                        # Python code implementations, and corrected data values
 ├── .github/
 │   └── workflows/
