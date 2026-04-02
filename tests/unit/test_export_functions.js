@@ -209,6 +209,50 @@ module.exports = {
       },
     },
     {
+      name: 'pdf_no_bare_array_color_args',
+      desc: 'All setTextColor/setFillColor/setDrawColor calls pass spread arrays, never bare array constants',
+      fn: () => {
+        const html = getHTML();
+        const pdfStart   = html.indexOf('async function exportPDF');
+        const pdfEnd     = html.indexOf('\nfunction exportSlides', pdfStart);
+        assert(pdfStart !== -1, 'exportPDF not found');
+        const body = html.slice(pdfStart, pdfEnd);
+        const lines = body.split('\n');
+
+        // Color constants defined as RGB arrays in exportPDF
+        const arrayConsts = [
+          'C_INK','C_MUTED','C_STEEL','C_WHITE','C_AMBER','C_NAVY',
+          'C_TEAL','C_GREEN','C_RED','C_BGALT','C_BG','C_GOLD',
+          'C_CRIMSON','C_EMERALD','msDarkGray','msRed','msGreen',
+          'msOrange','msSteelBlue','white'
+        ];
+
+        const bad = [];
+        lines.forEach((line, i) => {
+          for (const fn of ['setTextColor','setFillColor','setDrawColor']) {
+            if (!line.includes(fn)) continue;
+            // Extract argument string
+            const m = line.match(new RegExp(`${fn}\\((.+?)\\);`));
+            if (!m) continue;
+            const arg = m[1];
+            for (const name of arrayConsts) {
+              if (!arg.includes(name)) continue;
+              const hasSpread = arg.includes(`...${name}`) || arg.includes(`...(`);
+              const hasIndex  = arg.includes(`${name}[`);
+              if (!hasSpread && !hasIndex) {
+                bad.push(`L${i+1}: ${fn}(${arg.slice(0,60)})`);
+              }
+            }
+          }
+        });
+
+        // Deduplicate
+        const unique = [...new Set(bad)];
+        assert(unique.length === 0,
+          `setTextColor/setFillColor called with bare array (missing spread): ${unique.join(' | ')}`);
+      },
+    },
+    {
       name: 'slides_timestamp_filename',
       desc: 'Slide deck filename uses getTimestamp()',
       fn: () => assert(

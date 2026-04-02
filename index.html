@@ -6967,7 +6967,7 @@ async function exportPDF() {
     ];
     tocItems.forEach((item, idx) => {
       if (ly > H - 30) return;
-      doc.setTextColor(idx % 2 === 0 ? C_INK : C_MUTED);
+      doc.setTextColor(...(idx % 2 === 0 ? C_INK : C_MUTED));
       doc.setFontSize(6);
       doc.setFont('helvetica', idx < 1 ? 'bold' : 'normal');
       doc.text(item, lx + 2, ly);
