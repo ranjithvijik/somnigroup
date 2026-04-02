@@ -10311,15 +10311,15 @@ async function exportPDF() {
     // Module 2: Leverage & Debt Paydown
     doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...C_STEEL);
     doc.text('Module 2: Leverage & Debt Paydown', 10, p36y); p36y += 5;
-    const levHeaders = ['Parameter', 'Base Case Value', 'Description'];
-    const levXs = [10, 85, 115];
-    p36y += msTableRow(levHeaders, levXs, p36y, 7, true, false);
-    const levData = [
+    const mlLevHeaders = ['Parameter', 'Base Case Value', 'Description'];
+    const mlLevXs = [10, 85, 115];
+    p36y += msTableRow(mlLevHeaders, mlLevXs, p36y, 7, true, false);
+    const mlLevData = [
       ['Annual FCF Growth', '12%', 'FCF compounding rate used for debt schedule'],
       ['Buyback Yield', '15%', 'Annual share repurchase as % of free cash flow'],
       ['Interest Rate (Debt)', '5.5%', 'Weighted average coupon on outstanding debt'],
     ];
-    levData.forEach((r, idx) => { p36y += msTableRow(r, levXs, p36y, 6.5, false, idx % 2 === 0); });
+    mlLevData.forEach((r, idx) => { p36y += msTableRow(r, mlLevXs, p36y, 6.5, false, idx % 2 === 0); });
     p36y += 6;
 
     // Module 3: M&A Synergy Model
