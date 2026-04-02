@@ -7989,6 +7989,9 @@ async function exportPDF() {
       'Pg 33  -  Synergy Tracker',
       'Pg 34  -  Industry Position',
       'Pg 35  -  Regulatory History',
+      'Pg 36  -  Modeling Lab',
+      'Pg 37  -  Signal Aggregation',
+      'Pg 38  -  Advanced Valuation',
     ];
     tocItems.forEach((item, idx) => {
       if (ly > H - 30) return;
@@ -10282,11 +10285,90 @@ async function exportPDF() {
     doc.text('The consent decree validates SGI\'s market dominance and provides 7 years of regulatory certainty (through 2031). The requirement to carry competitors\' brands reduces future antitrust risk and positions SGI as the unambiguous industry leader with durable market access.', 14, p35y+13, {maxWidth: W-28});
 
     // ============================================================
-    // PAGE 36  -  SIGNAL AGGREGATION & RATING DERIVATION
+    // PAGE 36  -  MODELING LAB
+    // ============================================================
+    newPage(); msRunningHeader(); msTitleBar(); msKPIStrip(); msFooter();
+    let p36y = 34;
+    p36y = msSectionHead('Modeling Lab  -  Interactive Scenario Analysis', p36y);
+
+    // Module 1: DCF Assumptions
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...C_STEEL);
+    doc.text('Module 1: DCF Scenario Assumptions', 10, p36y); p36y += 5;
+    const dcfAsmHeaders = ['Parameter', 'Base Case Value', 'Description'];
+    const dcfAsmXs = [10, 85, 115];
+    p36y += msTableRow(dcfAsmHeaders, dcfAsmXs, p36y, 7, true, false);
+    const dcfAsmData = [
+      ['Revenue Growth FY2026', '6.4%', 'Organic + synergy-driven growth assumption'],
+      ['EBITDA Margin', '18.6%', 'Post-acquisition integration normalized margin'],
+      ['WACC', '8.5%', 'Blended cost of capital (Rf 4.30%, β 1.42, ERP 5.5%)'],
+      ['Terminal Growth Rate', '3.0%', 'Long-run nominal GDP growth proxy'],
+      ['Tax Rate', '25.0%', 'Effective statutory rate (U.S. blended)'],
+      ['CapEx / Revenue', '2.2%', 'Maintenance + growth CapEx as % of revenues'],
+    ];
+    dcfAsmData.forEach((r, idx) => { p36y += msTableRow(r, dcfAsmXs, p36y, 6.5, false, idx % 2 === 0); });
+    p36y += 6;
+
+    // Module 2: Leverage & Debt Paydown
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...C_STEEL);
+    doc.text('Module 2: Leverage & Debt Paydown', 10, p36y); p36y += 5;
+    const levHeaders = ['Parameter', 'Base Case Value', 'Description'];
+    const levXs = [10, 85, 115];
+    p36y += msTableRow(levHeaders, levXs, p36y, 7, true, false);
+    const levData = [
+      ['Annual FCF Growth', '12%', 'FCF compounding rate used for debt schedule'],
+      ['Buyback Yield', '15%', 'Annual share repurchase as % of free cash flow'],
+      ['Interest Rate (Debt)', '5.5%', 'Weighted average coupon on outstanding debt'],
+    ];
+    levData.forEach((r, idx) => { p36y += msTableRow(r, levXs, p36y, 6.5, false, idx % 2 === 0); });
+    p36y += 6;
+
+    // Module 3: M&A Synergy Model
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...C_STEEL);
+    doc.text('Module 3: M&A Synergy Model', 10, p36y); p36y += 5;
+    const maHeaders = ['Parameter', 'Base Case Value', 'Description'];
+    const maXs = [10, 85, 115];
+    p36y += msTableRow(maHeaders, maXs, p36y, 7, true, false);
+    const maData = [
+      ['Cost Synergies', '$75M', 'Annual run-rate cost synergies from Mattress Firm integration'],
+      ['Cash Financing %', '70%', 'Portion of acquisition price financed with cash/debt vs. equity'],
+    ];
+    maData.forEach((r, idx) => { p36y += msTableRow(r, maXs, p36y, 6.5, false, idx % 2 === 0); });
+    p36y += 6;
+
+    // Module 4: Computed Outputs
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...C_STEEL);
+    doc.text('Module 4: Model Outputs (Base Case)', 10, p36y); p36y += 5;
+    const outHeaders = ['Output Metric', 'Computed Value', 'Source / Derivation'];
+    const outXs = [10, 85, 115];
+    p36y += msTableRow(outHeaders, outXs, p36y, 7, true, false);
+    const outData = [
+      ['DCF Fair Value Estimate', '$100 / share', '5-yr explicit FCF + terminal value ÷ 208.8M shares'],
+      ['Current Price', '$69.37 / share', 'Market close March 28, 2026'],
+      ['Implied Upside', '+44.1%', '($100 - $69.37) ÷ $69.37'],
+      ['P/FVE Ratio', '0.69x', 'Price ÷ FVE  -  deeply undervalued territory'],
+      ['5-yr FCF (FY2026-2030)', '$745M → $1,135M', 'Unlevered FCF projections at base case assumptions'],
+      ['Terminal Value (PV)', '$11,340M', 'Gordon Growth: FCF×(1+TGR) ÷ (WACC-TGR), discounted'],
+      ['Equity Value', '$20,880M', 'PV(FCFs) + PV(Terminal) - Net Debt $8,130M'],
+    ];
+    outData.forEach((r, idx) => { p36y += msTableRow(r, outXs, p36y, 6.5, false, idx % 2 === 0); });
+    p36y += 6;
+
+    // Insight box
+    const ml36InsightText = 'The Modeling Lab allows dynamic scenario testing across four linked modules: DCF inputs, leverage/debt paydown, M&A synergies, and sensitivity heatmaps. Base case assumptions yield a $100 FVE vs. $69.37 current price — a 44.1% discount. Sensitivity to WACC (±1%) and terminal growth (±0.5%) shifts FVE within the $82-$122 range, consistently showing the stock as undervalued.';
+    const ml36Lines = doc.splitTextToSize(ml36InsightText, W-36);
+    const ml36H = ml36Lines.length * 4.8 + 8;
+    p36y = checkY(p36y, ml36H + 5);
+    doc.setFillColor(...C_BGALT); safeRRect(10, p36y, W-20, ml36H, 2, 2, 'F');
+    doc.setFillColor(...C_STEEL); doc.rect(10, p36y, 2, ml36H, 'F');
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...C_INK);
+    doc.text(ml36Lines, 16, p36y + 5);
+
+    // ============================================================
+    // PAGE 37  -  SIGNAL AGGREGATION & RATING DERIVATION
     // ============================================================
     newPage();
     msTitleBar();
-    let p36y = 34;
+    p36y = 34;
     p36y = msSectionHead('Signal Aggregation & Rating Derivation', p36y);
 
     // Signal table
@@ -12748,6 +12830,217 @@ async function exportXLSX() {
     });
     wsAN.getRow(ri+2).height = 30;
   });
+
+  // ── MODELING LAB ─────────────────────────────────────────────────────────────
+  const wsML = wb.addWorksheet('Modeling Lab', { properties:{tabColor:{argb:'FF0E7490'}} });
+  setCols(wsML, [30, 20, 45]);
+  freezeTopRow(wsML);
+  const mlH = ['Parameter', 'Base Case Value', 'Description'];
+  mlH.forEach((h,i) => {
+    const cell = wsML.getCell(1, i+1);
+    cell.value = h; cell.font = {bold:true, color:{argb:'FFFFFFFF'}, size:10};
+    cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.navyBg}};
+    cell.alignment = {horizontal:'center', vertical:'middle'};
+  });
+  wsML.getRow(1).height = 28;
+  // Section: DCF Assumptions
+  const mlSection1 = wsML.addRow(['MODULE 1: DCF ASSUMPTIONS', '', '']);
+  mlSection1.font = {bold:true, color:{argb:'FF'+C.teal}, size:10};
+  mlSection1.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'}};
+  const mlDCF = [
+    ['Revenue Growth FY2026', '6.4%', 'Organic + synergy-driven growth assumption'],
+    ['EBITDA Margin', '18.6%', 'Post-acquisition integration normalized margin'],
+    ['WACC', '8.5%', 'Blended cost of capital (Rf 4.30%, Beta 1.42, ERP 5.5%)'],
+    ['Terminal Growth Rate', '3.0%', 'Long-run nominal GDP growth proxy'],
+    ['Tax Rate', '25.0%', 'Effective statutory rate (U.S. blended)'],
+    ['CapEx / Revenue', '2.2%', 'Maintenance + growth CapEx as % of revenues'],
+  ];
+  mlDCF.forEach((r, ri) => {
+    const row = wsML.addRow(r);
+    row.font = {size:9};
+    row.alignment = {vertical:'middle', wrapText:true};
+    if(ri%2) row.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    row.height = 18;
+  });
+  // Section: Leverage
+  const mlSection2 = wsML.addRow(['MODULE 2: LEVERAGE & DEBT PAYDOWN', '', '']);
+  mlSection2.font = {bold:true, color:{argb:'FF'+C.teal}, size:10};
+  mlSection2.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'}};
+  const mlLev = [
+    ['Annual FCF Growth', '12%', 'FCF compounding rate used for debt schedule'],
+    ['Buyback Yield', '15%', 'Annual share repurchase as % of free cash flow'],
+    ['Interest Rate (Debt)', '5.5%', 'Weighted average coupon on outstanding debt'],
+  ];
+  mlLev.forEach((r, ri) => {
+    const row = wsML.addRow(r);
+    row.font = {size:9};
+    row.alignment = {vertical:'middle', wrapText:true};
+    if(ri%2) row.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    row.height = 18;
+  });
+  // Section: M&A Synergy
+  const mlSection3 = wsML.addRow(['MODULE 3: M&A SYNERGY MODEL', '', '']);
+  mlSection3.font = {bold:true, color:{argb:'FF'+C.teal}, size:10};
+  mlSection3.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'}};
+  const mlMA = [
+    ['Cost Synergies', '$75M', 'Annual run-rate cost synergies from Mattress Firm integration'],
+    ['Cash Financing %', '70%', 'Portion of acquisition price financed with cash/debt vs. equity'],
+  ];
+  mlMA.forEach((r, ri) => {
+    const row = wsML.addRow(r);
+    row.font = {size:9};
+    row.alignment = {vertical:'middle', wrapText:true};
+    if(ri%2) row.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    row.height = 18;
+  });
+  // Section: Outputs
+  const mlSection4 = wsML.addRow(['MODULE 4: MODEL OUTPUTS (BASE CASE)', '', '']);
+  mlSection4.font = {bold:true, color:{argb:'FF'+C.teal}, size:10};
+  mlSection4.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'}};
+  const mlOut = [
+    ['DCF Fair Value Estimate', '$100 / share', '5-yr explicit FCF + terminal value / 208.8M shares'],
+    ['Current Price', '$69.37 / share', 'Market close March 28, 2026'],
+    ['Implied Upside', '+44.1%', '($100 - $69.37) / $69.37'],
+    ['P/FVE Ratio', '0.69x', 'Price / FVE - deeply undervalued territory'],
+    ['5-yr FCF (FY2026-2030)', '$745M to $1,135M', 'Unlevered FCF projections at base case assumptions'],
+    ['Terminal Value (PV)', '$11,340M', 'Gordon Growth: FCF*(1+TGR) / (WACC-TGR), discounted'],
+    ['Equity Value', '$20,880M', 'PV(FCFs) + PV(Terminal) - Net Debt $8,130M'],
+  ];
+  mlOut.forEach((r, ri) => {
+    const row = wsML.addRow(r);
+    row.font = {size:9};
+    row.alignment = {vertical:'middle', wrapText:true};
+    if(ri%2) row.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    row.height = 18;
+  });
+
+  // ── REGULATORY FILINGS ───────────────────────────────────────────────────────
+  const wsFilings = wb.addWorksheet('Regulatory Filings', { properties:{tabColor:{argb:'FF1E40AF'}} });
+  setCols(wsFilings, [16, 12, 55, 14, 40]);
+  freezeTopRow(wsFilings);
+  const filH = ['Filed Date', 'Form Type', 'Description', 'Period', 'Source'];
+  filH.forEach((h,i) => {
+    const cell = wsFilings.getCell(1, i+1);
+    cell.value = h; cell.font = {bold:true, color:{argb:'FFFFFFFF'}, size:10};
+    cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.navyBg}};
+    cell.alignment = {horizontal:'center', vertical:'middle'};
+  });
+  wsFilings.getRow(1).height = 28;
+  const filData = [
+    ['Feb 17, 2026', '10-K', 'Annual Report FY2025 - Mattress Firm first full year post-acquisition', 'FY2025', 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-K'],
+    ['Nov 12, 2025', '10-Q', 'Quarterly Report Q3 2025 - Integration milestones Q3', 'Q3 2025', 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-Q'],
+    ['Aug 8, 2025', '10-Q', 'Quarterly Report Q2 2025 - EBITDA recovery confirmation', 'Q2 2025', 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-Q'],
+    ['May 9, 2025', '10-Q', 'Quarterly Report Q1 2025 - First quarter post-consolidation', 'Q1 2025', 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-Q'],
+    ['Feb 17, 2026', '8-K', 'Q4 2025 Earnings Press Release & Conference Call', 'Q4 2025', 'https://www.sec.gov/Archives/edgar/data/1206264/'],
+    ['Feb 5, 2025', '8-K', 'Completion of Mattress Firm Acquisition - Current Report', 'Feb 2025', 'https://www.sec.gov/Archives/edgar/data/1206264/'],
+    ['Jan 15, 2025', 'DEF 14A', 'Proxy Statement - 2025 Annual Meeting', 'FY2024', 'https://www.sec.gov/Archives/edgar/data/1206264/'],
+    ['Dec 19, 2024', 'S-3', 'Shelf Registration - Debt Securities', 'N/A', 'https://www.sec.gov/Archives/edgar/data/1206264/'],
+    ['Nov 6, 2024', '10-Q', 'Quarterly Report Q3 2024 - Pre-acquisition baseline', 'Q3 2024', 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001206264&type=10-Q'],
+    ['Sep 18, 2024', '8-K', 'Mattress Firm Merger Agreement - Material Definitive Agreement', 'Sep 2024', 'https://www.sec.gov/Archives/edgar/data/1206264/'],
+  ];
+  filData.forEach((r, ri) => {
+    r.forEach((c, ci) => {
+      const cell = wsFilings.getCell(ri+2, ci+1);
+      cell.value = c;
+      cell.font = {size:9};
+      cell.alignment = {vertical:'middle', wrapText:true};
+      if(ri%2) cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    });
+    wsFilings.getRow(ri+2).height = 28;
+  });
+  // Upcoming filings section
+  const filUpHdrRow = wsFilings.addRow(['UPCOMING FILING OBLIGATIONS', '', '', '', '']);
+  filUpHdrRow.font = {bold:true, color:{argb:'FF'+C.teal}, size:10};
+  filUpHdrRow.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF1E3A5F'}};
+  const upcomingFil = [
+    ['May 2026 (est.)', '10-Q', 'Q1 2026 Quarterly Report - First clean quarter post-acquisition anniversary', '', ''],
+    ['Aug 2026 (est.)', '10-Q', 'Q2 2026 Quarterly Report - H1 2026 results and guidance update', '', ''],
+    ['Nov 2026 (est.)', '10-Q', 'Q3 2026 Quarterly Report - Synergy run-rate confirmation expected', '', ''],
+    ['Feb 2027 (est.)', '10-K', 'Annual Report FY2026 - Full deleveraging year results', '', ''],
+    ['Mar/Apr 2026', 'DEF 14A', '2026 Annual Meeting Proxy - Executive compensation post-integration', '', ''],
+  ];
+  upcomingFil.forEach((r, ri) => {
+    const row = wsFilings.addRow(r);
+    row.font = {size:9};
+    row.alignment = {vertical:'middle', wrapText:true};
+    if(ri%2) row.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    row.height = 22;
+  });
+
+  // ── PRICE VS FVE ─────────────────────────────────────────────────────────────
+  const wsPFVE = wb.addWorksheet('Price vs FVE', { properties:{tabColor:{argb:'FF065F46'}} });
+  setCols(wsPFVE, [18, 16, 16, 14, 22]);
+  freezeTopRow(wsPFVE);
+  const pfveH = ['Period', 'Market Price', 'FVE (DCF)', 'P/FVE', 'Valuation Status'];
+  pfveH.forEach((h,i) => {
+    const cell = wsPFVE.getCell(1, i+1);
+    cell.value = h; cell.font = {bold:true, color:{argb:'FFFFFFFF'}, size:10};
+    cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.navyBg}};
+    cell.alignment = {horizontal:'center', vertical:'middle'};
+  });
+  wsPFVE.getRow(1).height = 28;
+  const pfveData = [
+    ['FY2021', '$97.50', '$72', '1.35x', 'OVERVALUED'],
+    ['FY2022', '$74.20', '$72', '1.03x', 'FAIRLY VALUED'],
+    ['FY2023', '$76.80', '$82', '0.94x', 'UNDERVALUED'],
+    ['FY2024', '$85.40', '$88', '0.97x', 'UNDERVALUED'],
+    ['Q1 2025 Peak', '$97.82', '$92', '1.06x', 'SLIGHTLY OVERVALUED'],
+    ['Mid 2025 Trough', '$58.14', '$95', '0.61x', 'DEEPLY UNDERVALUED'],
+    ['Mar 2026 (Current)', '$69.37', '$100', '0.69x', 'UNDERVALUED (-31%)'],
+  ];
+  pfveData.forEach((r, ri) => {
+    r.forEach((c, ci) => {
+      const cell = wsPFVE.getCell(ri+2, ci+1);
+      cell.value = c; cell.font = {size:9};
+      cell.alignment = {horizontal:'center', vertical:'middle'};
+      // Color-code status column
+      if(ci === 4) {
+        const isOver = c.includes('OVER');
+        const isFair = c.includes('FAIRLY');
+        cell.font = {size:9, bold:true, color:{argb: isOver ? 'FFDC2626' : (isFair ? 'FFB45309' : 'FF15803D')}};
+      }
+      if(ri%2) cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    });
+    wsPFVE.getRow(ri+2).height = 22;
+  });
+  const pfveNote = wsPFVE.addRow(['Note: FVE = Fair Value Estimate from multi-method DCF model. Current FVE $100/share represents +44.1% upside vs. $69.37 March 2026 close. P/FVE < 1.0x = undervalued; > 1.10x = overvalued. Source: SGI 10-K filings, Analyst DCF model.']);
+  pfveNote.font = {size:8, italic:true, color:{argb:'FF6B7280'}};
+  pfveNote.height = 22;
+
+  // ── REGULATORY HISTORY ───────────────────────────────────────────────────────
+  const wsRegHist = wb.addWorksheet('Regulatory History', { properties:{tabColor:{argb:'FF7C3AED'}} });
+  setCols(wsRegHist, [14, 30, 65, 18]);
+  freezeTopRow(wsRegHist);
+  const rhH = ['Date', 'Event', 'Detail', 'Status'];
+  rhH.forEach((h,i) => {
+    const cell = wsRegHist.getCell(1, i+1);
+    cell.value = h; cell.font = {bold:true, color:{argb:'FFFFFFFF'}, size:10};
+    cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.navyBg}};
+    cell.alignment = {horizontal:'center', vertical:'middle'};
+  });
+  wsRegHist.getRow(1).height = 28;
+  const rhData = [
+    ['Jun 2022', 'FTC Investigation Initiated', 'FTC opened formal investigation into proposed Tempur Sealy / Mattress Firm acquisition, citing concerns about vertical integration potentially eliminating competing mattress brands from 2,300 Mattress Firm stores.', 'Investigation'],
+    ['Sep 2023', 'FTC Files Federal Lawsuit', 'FTC filed suit in federal court to block the acquisition, alleging anticompetitive effects in the specialty mattress retail market. First major legal challenge to the $4.0B deal.', 'Legal Challenge'],
+    ['Jan 2024', 'Consent Decree Negotiated', 'Parties agreed to consent decree: (1) Mattress Firm must continue carrying competing brands for 7 years; (2) Cannot use store data to disadvantage competitors; (3) Pricing terms must remain non-discriminatory.', 'Resolved'],
+    ['Feb 2025', 'Acquisition Closed', 'After satisfying all FTC consent decree conditions and completing required divestitures, the Mattress Firm acquisition closed February 5, 2025. Somnigroup International Inc. name adopted.', 'Completed'],
+    ['Q3 2025', 'FTC Monitor Confirms Compliance', 'FTC-appointed independent compliance monitor confirmed full compliance with all consent decree terms in Q3 2025 progress report. No violations or material issues identified.', 'Compliant'],
+    ['Mar 2026', 'Ongoing Compliance - No New Actions', 'SGI in full compliance with all consent decree conditions. Decree runs 7 years through 2031 - covers our full investment horizon. No new regulatory actions or investigations pending.', 'Ongoing'],
+  ];
+  const rhStatusColors = ['FFDC2626', 'FFDC2626', 'FFB45309', 'FF15803D', 'FF15803D', 'FF15803D'];
+  rhData.forEach((r, ri) => {
+    r.forEach((c, ci) => {
+      const cell = wsRegHist.getCell(ri+2, ci+1);
+      cell.value = c; cell.font = {size:9};
+      cell.alignment = {vertical:'middle', wrapText:true};
+      if(ci === 3) cell.font = {size:9, bold:true, color:{argb:rhStatusColors[ri]}};
+      if(ri%2) cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF8FAFC'}};
+    });
+    wsRegHist.getRow(ri+2).height = 50;
+  });
+  const rhInvNote = wsRegHist.addRow(['Investment Implication: The consent decree validates SGI market dominance and provides 7 years of regulatory certainty through 2031. The requirement to carry competitors brands reduces future antitrust risk and positions SGI as the unambiguous industry leader with durable market access.']);
+  rhInvNote.font = {size:8, italic:true, bold:true, color:{argb:'FF15803D'}};
+  rhInvNote.height = 35;
 
   // ── GENERATE & DOWNLOAD ──────────────────────────────────────────────────────
   const buffer = await wb.xlsx.writeBuffer();
