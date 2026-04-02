@@ -6,8 +6,8 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Tests | **170** |
-| Passed      | ✅ 170 |
+| Total Tests | **171** |
+| Passed      | ✅ 171 |
 | Failed      | ✅ 0 |
 | Pass Rate   | 100.0% `██████████████████████████████` |
 | Duration    | ⏱️ 0.05s |
@@ -17,7 +17,7 @@
 
 | Module | Description | Tests | Passed | Failed | Status |
 |--------|-------------|-------|--------|--------|--------|
-| `tests/unit/test_html_structure.js` | Structural integrity of index.html (tags, CDNs, UI elements) | 16 | 16 | 0 | ✅ |
+| `tests/unit/test_html_structure.js` | Structural integrity of index.html (tags, CDNs, UI elements) | 17 | 17 | 0 | ✅ |
 | `tests/unit/test_section_coverage.js` | All 34 sections present in HTML, PDF export, and Excel export (39 sheets) | 82 | 82 | 0 | ✅ |
 | `tests/unit/test_financial_values.js` | Canonical financial data correctness and stale value removal | 38 | 38 | 0 | ✅ |
 | `tests/unit/test_export_functions.js` | PDF, Slides, and Excel export function integrity | 22 | 22 | 0 | ✅ |
@@ -26,7 +26,7 @@
 ## 📋 Detailed Test Results
 
 ### HTML Structure
-**File:** `tests/unit/test_html_structure.js` &nbsp;|&nbsp; **Status:** ✅ PASSED &nbsp;|&nbsp; **16/16 tests passing**
+**File:** `tests/unit/test_html_structure.js` &nbsp;|&nbsp; **Status:** ✅ PASSED &nbsp;|&nbsp; **17/17 tests passing**
 
 <details>
 <summary>Show all tests</summary>
@@ -49,6 +49,7 @@
 | `doctype_present` | <!DOCTYPE html> declaration present | ✅ PASSED |
 | `charset_utf8` | UTF-8 charset meta tag present | ✅ PASSED |
 | `intersectionobserver_lazy` | IntersectionObserver used for lazy chart rendering | ✅ PASSED |
+| `no_duplicate_const_in_export_pdf` | Newly added Modeling Lab vars use unique names (no levHeaders/levXs/levData conflict) | ✅ PASSED |
 
 </details>
 

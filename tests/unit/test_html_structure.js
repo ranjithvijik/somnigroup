@@ -145,5 +145,29 @@ module.exports = {
       desc: 'IntersectionObserver used for lazy chart rendering',
       fn: () => assert(contains('IntersectionObserver'), 'IntersectionObserver missing'),
     },
+    {
+      name: 'no_duplicate_const_in_export_pdf',
+      desc: 'Newly added Modeling Lab vars use unique names (no levHeaders/levXs/levData conflict)',
+      fn: () => {
+        const html = getHTML();
+        const pdfStart = html.indexOf('async function exportPDF');
+        const mlStart  = html.indexOf('// PAGE 36  -  MODELING LAB', pdfStart);
+        const mlEnd    = html.indexOf('// PAGE 37', mlStart);
+        assert(pdfStart !== -1, 'exportPDF not found');
+        assert(mlStart  !== -1, 'Modeling Lab block not found');
+        // Names that existed before the ML block and must NOT be redeclared inside it
+        const beforeML = html.slice(pdfStart, mlStart);
+        const mlBlock  = html.slice(mlStart, mlEnd > mlStart ? mlEnd : mlStart + 5000);
+        const beforeNames = new Set(
+          Array.from(beforeML.matchAll(/\b(?:const|let)\s+(\w+)\s*[=[]/g)).map(m => m[1])
+        );
+        const mlDecls = Array.from(mlBlock.matchAll(/\b(const|let)\s+(\w+)\s*[=[]/g)).map(m => m[2]);
+        // Whitelist single-letter loop vars that are always block-scoped
+        const singleLetter = /^[a-z]$/;
+        const conflicts = mlDecls.filter(name => !singleLetter.test(name) && beforeNames.has(name));
+        assert(conflicts.length === 0,
+          `Modeling Lab block reuses outer-scope names: ${[...new Set(conflicts)].join(', ')}`);
+      },
+    },
   ],
 };
