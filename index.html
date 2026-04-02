@@ -1321,7 +1321,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
           <tbody>
             <tr><td>Revenue Growth (2026–2028)</td><td>3.5%</td><td>5.5%</td><td>8.0%</td></tr>
             <tr><td>EBITDA Margin (Terminal)</td><td>15.0%</td><td>18.0%</td><td>21.0%</td></tr>
-            <tr><td>WACC</td><td>9.5%</td><td>7.95%</td><td>7.0%</td></tr>
+            <tr><td>WACC</td><td>9.5%</td><td>8.0%</td><td>7.0%</td></tr>
             <tr><td>Terminal Growth Rate</td><td>1.5%</td><td>2.5%</td><td>3.5%</td></tr>
             <tr><td>Tax Rate</td><td>23%</td><td>21%</td><td>20%</td></tr>
             <tr><td>Synergies Realized</td><td>$150M</td><td>$225M</td><td>$270M</td></tr>
@@ -3785,7 +3785,7 @@ a{color:var(--teal);text-decoration:none;}a:hover{text-decoration:underline;}
       </div>
       <div>
         <div class="card-title" style="margin-bottom:12px;">Net Debt/EBITDA vs EPS Path</div>
-        <div class="chart-wrap h-260"><canvas id="leverageChart"></canvas></div>
+        <div class="chart-wrap h-260"><canvas id="leverageChartLab"></canvas></div>
       </div>
     </div>
     <div style="margin-top:16px;overflow-x:auto;">
@@ -5492,7 +5492,7 @@ const noGrid = { display: false };
 // ===== DATA =====
 const D = {
   years: ['2021','2022','2023','2024','2025','2026E','2027E','2028E'],
-  revenue: [4930.8, 4921.2, 4925.4, 4930.9, 7476.5, 7952, 8369, 8881],
+  revenue: [4930.8, 4921.2, 4927.0, 4814.0, 7476.5, 7952, 8369, 8881],
   ebitda: [1003.5, 807.3, 739.3, 804.2, 1040.5, 1478, 1673, 1886],
   adjEbitda: [null, null, 877.3, 923.8, 1306.0, 1450, null, null],
   netIncome: [624.5, 455.7, 368.1, 384.3, 384.1, 711, 881, 1055],
@@ -5504,7 +5504,7 @@ const D = {
   netMargin: [12.7, 9.3, 7.5, 7.8, 5.1, 8.9, 10.5, 11.9],
   ebitdaMargin: [20.4, 16.4, 15.0, 16.3, 13.9, 18.6, 20.0, 21.2],
   netDebt: [2559.5, 3299.9, 3191.4, 4351.4, 8130.0, null, null, null],
-  leverage: [null, null, null, 3.5, 3.2, 2.5, 2.0, 1.7],
+  leverage: [null, null, null, 5.41, 7.81, 5.9, 4.4, 3.2],
   opCF: [723.1, 378.8, 570.3, 666.5, 800.1, null, null, null],
   capex: [123.3, 306.5, 185.4, 97.3, 166.9, 250, null, null],
   quarters: ['Q1 24','Q2 24','Q3 24','Q4 24','Q1 25','Q2 25','Q3 25','Q4 25'],
@@ -5700,10 +5700,10 @@ function initRevenueWaterfall() {
   if (!ctx) return;
   // Waterfall: FY2024 base -> MF acq -> organic -> FX -> FY2025
   const labels = ['FY2024\nBase', '+Mattress\nFirm', '+Organic\nGrowth', '+FX &\nOther', 'FY2025\nTotal'];
-  const values = [4930.9, 2400, 145.6, 0, 7476.5];
+  const values = [4814.0, 2517.5, 146.0, 0, 7477.5];
   const colors = [rgba('#00b4d8',0.8), rgba('#00d084',0.8), rgba('#ffd700',0.8), rgba('#6070a0',0.6), rgba('#00b4d8',0.9)];
   const isFloat = [false, true, true, true, false];
-  const floatBase = [0, 4930.9, 7330.9, 7476.5, 0];
+  const floatBase = [0, 4814.0, 7331.5, 7477.5, 0];
 
   new Chart(ctx, {
     type: 'bar',
@@ -5943,7 +5943,7 @@ function initLeverageChart() {
         {
           type: 'line',
           label: 'Net Debt/EBITDA (x)',
-          data: [2.55, 4.09, 3.64, 4.72, 3.2, 2.5, 2.0],
+          data: [2.55, 4.09, 4.32, 5.41, 7.81, 5.9, 4.4],
           borderColor: C.teal, fill: false, tension: 0.4,
           pointRadius: 5, pointBackgroundColor: C.teal,
           borderWidth: 2.5, yAxisID: 'y2', order: 1
@@ -6331,7 +6331,7 @@ function renderFootballField() {
 function renderHeatmap() {
   const container = document.getElementById('heatmapContainer');
   if (!container) return;
-  const waccs = [6.5, 7.0, 7.5, 7.95, 8.5, 9.0, 9.5];
+  const waccs = [6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5];
   const tgrs = [1.5, 2.0, 2.5, 3.0, 3.5];
 
   // Read from interactive DCF sliders if available
@@ -6340,6 +6340,8 @@ function renderHeatmap() {
 
   // Simplified DCF: TV = FCF_2028 * (1+g) / (WACC - g), discount back 3 yrs
   function dcfPrice(wacc, tgr) {
+      const w = wacc/100, g = tgr/100;
+      if (w <= g) return null;
     const fcf2026 = 745, fcf2027 = 915, fcf2028 = 1124;
     const w = wacc / 100, g = tgr / 100;
     const pv1 = fcf2026 / Math.pow(1+w, 1);
@@ -6348,7 +6350,7 @@ function renderHeatmap() {
     const tv = (fcf2028 * (1+g) / (w - g)) / Math.pow(1+w, 3);
     const ev = pv1 + pv2 + pv3 + tv;
     const equity = ev - 7500; // est net debt FY2026E
-    return equity / 214; // shares outstanding
+    return equity / 208.8; // correct shares outstanding // shares outstanding
   }
 
   const prices = waccs.map(w => tgrs.map(g => dcfPrice(w, g)));
@@ -6356,6 +6358,7 @@ function renderHeatmap() {
   const minP = Math.min(...allVals), maxP = Math.max(...allVals);
 
   function getColor(price) {
+      if (maxP === minP) return { bg: 'rgba(0,180,216,0.5)', txt: '#f0f4ff' };
     const norm = (price - minP) / (maxP - minP);
     if (norm > 0.7) return { bg: 'rgba(0,208,132,0.7)', txt: '#001a0a' };
     if (norm > 0.5) return { bg: 'rgba(0,208,132,0.35)', txt: '#f0f4ff' };
@@ -6377,7 +6380,7 @@ function renderHeatmap() {
   }
 
   const rows = waccs.map((w, wi) => {
-    const isBase = Math.abs(w - 7.95) < 0.1;
+    const isBase = Math.abs(w - 8.0) < 0.1;
     const isLiveWacc = closestWaccIdx === wi;
     return `<div style="display:flex;gap:3px;margin-bottom:3px;">
       <div style="width:60px;font-size:10px;text-align:center;padding:6px 2px;color:${isBase ? '#00b4d8' : (isLiveWacc ? '#ffd700' : '#a0adc8')};font-weight:${isBase || isLiveWacc ? '700' : '400'};">${w}%${isBase ? ' ◄' : ''}${isLiveWacc && !isBase ? ' ◄' : ''}</div>
@@ -6517,7 +6520,7 @@ const noGrid = { display: false };
 // ===== DATA =====
 const D = {
   years: ['2021','2022','2023','2024','2025','2026E','2027E','2028E'],
-  revenue: [4930.8, 4921.2, 4925.4, 4930.9, 7476.5, 7952, 8369, 8881],
+  revenue: [4930.8, 4921.2, 4927.0, 4814.0, 7476.5, 7952, 8369, 8881],
   ebitda: [1003.5, 807.3, 739.3, 804.2, 1040.5, 1478, 1673, 1886],
   adjEbitda: [null, null, 877.3, 923.8, 1306.0, 1450, null, null],
   netIncome: [624.5, 455.7, 368.1, 384.3, 384.1, 711, 881, 1055],
@@ -6529,7 +6532,7 @@ const D = {
   netMargin: [12.7, 9.3, 7.5, 7.8, 5.1, 8.9, 10.5, 11.9],
   ebitdaMargin: [20.4, 16.4, 15.0, 16.3, 13.9, 18.6, 20.0, 21.2],
   netDebt: [2559.5, 3299.9, 3191.4, 4351.4, 8130.0, null, null, null],
-  leverage: [null, null, null, 3.5, 3.2, 2.5, 2.0, 1.7],
+  leverage: [null, null, null, 5.41, 7.81, 5.9, 4.4, 3.2],
   opCF: [723.1, 378.8, 570.3, 666.5, 800.1, null, null, null],
   capex: [123.3, 306.5, 185.4, 97.3, 166.9, 250, null, null],
   quarters: ['Q1 24','Q2 24','Q3 24','Q4 24','Q1 25','Q2 25','Q3 25','Q4 25'],
@@ -6725,10 +6728,10 @@ function initRevenueWaterfall() {
   if (!ctx) return;
   // Waterfall: FY2024 base -> MF acq -> organic -> FX -> FY2025
   const labels = ['FY2024\nBase', '+Mattress\nFirm', '+Organic\nGrowth', '+FX &\nOther', 'FY2025\nTotal'];
-  const values = [4930.9, 2400, 145.6, 0, 7476.5];
+  const values = [4814.0, 2517.5, 146.0, 0, 7477.5];
   const colors = [rgba('#00b4d8',0.8), rgba('#00d084',0.8), rgba('#ffd700',0.8), rgba('#6070a0',0.6), rgba('#00b4d8',0.9)];
   const isFloat = [false, true, true, true, false];
-  const floatBase = [0, 4930.9, 7330.9, 7476.5, 0];
+  const floatBase = [0, 4814.0, 7331.5, 7477.5, 0];
 
   new Chart(ctx, {
     type: 'bar',
@@ -6968,7 +6971,7 @@ function initLeverageChart() {
         {
           type: 'line',
           label: 'Net Debt/EBITDA (x)',
-          data: [2.55, 4.09, 3.64, 4.72, 3.2, 2.5, 2.0],
+          data: [2.55, 4.09, 4.32, 5.41, 7.81, 5.9, 4.4],
           borderColor: C.teal, fill: false, tension: 0.4,
           pointRadius: 5, pointBackgroundColor: C.teal,
           borderWidth: 2.5, yAxisID: 'y2', order: 1
@@ -7356,7 +7359,7 @@ function renderFootballField() {
 function renderHeatmap() {
   const container = document.getElementById('heatmapContainer');
   if (!container) return;
-  const waccs = [6.5, 7.0, 7.5, 7.95, 8.5, 9.0, 9.5];
+  const waccs = [6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5];
   const tgrs = [1.5, 2.0, 2.5, 3.0, 3.5];
 
   // Read from interactive DCF sliders if available
@@ -7373,7 +7376,7 @@ function renderHeatmap() {
     const tv = (fcf2028 * (1+g) / (w - g)) / Math.pow(1+w, 3);
     const ev = pv1 + pv2 + pv3 + tv;
     const equity = ev - 7500; // est net debt FY2026E
-    return equity / 214; // shares outstanding
+    return equity / 208.8; // correct shares outstanding // shares outstanding
   }
 
   const prices = waccs.map(w => tgrs.map(g => dcfPrice(w, g)));
@@ -7402,7 +7405,7 @@ function renderHeatmap() {
   }
 
   const rows = waccs.map((w, wi) => {
-    const isBase = Math.abs(w - 7.95) < 0.1;
+    const isBase = Math.abs(w - 8.0) < 0.1;
     const isLiveWacc = closestWaccIdx === wi;
     return `<div style="display:flex;gap:3px;margin-bottom:3px;">
       <div style="width:60px;font-size:10px;text-align:center;padding:6px 2px;color:${isBase ? '#00b4d8' : (isLiveWacc ? '#ffd700' : '#a0adc8')};font-weight:${isBase || isLiveWacc ? '700' : '400'};">${w}%${isBase ? ' ◄' : ''}${isLiveWacc && !isBase ? ' ◄' : ''}</div>
@@ -8391,7 +8394,7 @@ async function exportPDF() {
       { risk: '1. LEVERAGE RISK  -  Net Debt/EBITDA 7.8x', mag: 'HIGH', magColor: msRed, body: 'SGI carries $8.13B of net debt post-acquisition, representing 7.8x FY2025 adj. EBITDA. While management has guided to 6x by year-end 2026 (implying $600-700M of debt paydown), any EBITDA shortfall increases leverage risk materially. Covenant test: Net Debt/EBITDA must remain below 8.5x under credit facility terms. A 15% EBITDA miss in FY2026 would push leverage to 8.2x  -  uncomfortably close to covenant. This remains the #1 bear case risk factor. Impact: +/-$15-25/share at various leverage outcomes.' },
       { risk: '2. INTEGRATION EXECUTION RISK', mag: 'MEDIUM', magColor: msOrange, body: 'Integrating 2,300 Mattress Firm stores across all IT, HR, supply chain, and brand management systems within 24 months is highly complex. While Q4 2025 results demonstrate integration is ahead of schedule, execution risk persists. Key watch items: (a) Mattress Firm employee retention  -  attrition >20% could degrade customer service quality; (b) IT systems cutover scheduled for Q3 2026; (c) Potential brand conflicts between Tempur-Pedic premium positioning and Mattress Firm\'s value-oriented retail environment. Impact: +/-$8-12/share.' },
       { risk: '3. HOUSING MARKET SENSITIVITY', mag: 'MEDIUM', magColor: msOrange, body: 'Mattress purchases correlate strongly (r=0.82) with housing starts. Current starts at 1.38M annualized are approximately 8% below the long-run historical average of 1.5M. If housing weakens further to 1.2M (recession scenario), SGI could see $200-250M of incremental revenue headwind vs. base case. However, pent-up demand dynamics partially offset this risk  -  2022-2025 represented the weakest extended housing period since 2011, suggesting a catch-up cycle is probable within 2-3 years. Impact: +/-$10-18/share.' },
-      { risk: '4. INTEREST RATE SENSITIVITY', mag: 'MEDIUM', magColor: msOrange, body: 'SGI\'s $8.6B total debt includes $3.2B of floating-rate term loans. Each 50bps increase in SOFR increases annual interest expense by approximately $16M pre-tax, or ~$0.06/share. At current SOFR of 5.30%, interest expense is running at $620M annually. The Fed\'s trajectory toward cuts (market pricing 75bps in 2026) is therefore a meaningful tailwind  -  75bps of cuts would reduce interest expense by ~$24M and add ~$0.09/share to EPS. Impact: +/-$4-8/share.' },
+      { risk: '4. INTEREST RATE SENSITIVITY', mag: 'MEDIUM', magColor: msOrange, body: 'SGI\'s $8.6B total debt includes $3.2B of floating-rate term loans. Each 50bps increase in SOFR increases annual interest expense by approximately $16M pre-tax, or ~$0.06/share. At current Fed Funds rate of 4.35%, interest expense is ~$502M annually. The Fed\'s trajectory toward cuts (market pricing 75bps in 2026) is therefore a meaningful tailwind  -  75bps of cuts would reduce interest expense by ~$24M and add ~$0.09/share to EPS. Impact: +/-$4-8/share.' },
       { risk: '5. CONSUMER SPENDING RISK', mag: 'LOW-MED', magColor: msGray, body: 'Mattresses are a discretionary, high-consideration purchase that consumers defer in periods of uncertainty. Consumer confidence at 98.3 (below the 110 long-run average) signals ongoing caution. However, Tempur-Pedic\'s premium positioning provides some insulation  -  premium mattress buyers (HHI >$150K) are less sensitive to economic cycles. The Mattress Firm segment has greater exposure, but has maintained >5% quarterly same-store sales growth since Q2 2025. Impact: +/-$5-10/share in a recession scenario.' },
     ];
     risks.forEach(r => {
@@ -8522,7 +8525,7 @@ async function exportPDF() {
       { title: 'Integration Execution Complexity', body: 'Merging two large organizations (>22,000 employees) in 24 months has high execution risk. IT cutover in Q3 2026 is a key risk event. Customer experience disruption could hurt NPS scores.' },
       { title: 'Housing Market Structural Headwind', body: 'Housing starts may remain depressed at 1.3-1.4M for 2+ years given affordability constraints. This directly pressures the Mattress Firm segment  -  a key revenue driver for the LONG thesis.' },
       { title: 'Competitive Response', body: 'Sleep Number is investing heavily in technology (smart beds). Amazon/Walmart private label mattresses gained 8% share in 2024. Casper bankruptcy and repositioning may attract private equity backing.' },
-      { title: 'Interest Expense Burden', body: '$620M annual interest expense consumes 63% of FY2025 adj. EBITDA. Delayed Fed cuts or rate increases would materially impair EPS trajectory. Every 25bps = ~$8M interest expense.' },
+      { title: 'Interest Expense Burden', body: '$502M annual interest expense consumes 50% of FY2025 adj. EBITDA. Delayed Fed cuts or rate increases would materially impair EPS trajectory. Every 25bps = ~$8M interest expense.' },
     ];
 
     let bullY = p8y, bearY = p8y;
@@ -8583,7 +8586,7 @@ async function exportPDF() {
       ['Op Income ($M)', '912.3', '680.6', '607.2', '634.2', '985.4', '1,189.0', '1,364.0', '1,553.0'],
       ['EBITDA ($M)', '1,003.5', '807.3', '739.3', '804.2', '1,040.5', '1,478.0', '1,673.0', '1,883.0'],
       ['EBITDA Margin %', '20.3%', '16.4%', '15.0%', '16.3%', '13.9%', '18.6%', '20.0%', '21.2%'],
-      ['Interest Expense ($M)', '(134.5)', '(194.2)', '(208.0)', '(270.9)', '(620.0)', '(590.0)', '(540.0)', '(480.0)'],
+      ['Interest Expense ($M)', '(134.5)', '(194.2)', '(208.0)', '(270.9)', '(502.0)', '(590.0)', '(540.0)', '(480.0)'],
       ['Pre-Tax Income ($M)', '777.8', '486.4', '399.2', '363.3', '365.4', '599.0', '824.0', '1,073.0'],
       ['Tax ($M)', '153.3', '30.7', '31.1', '(21.0)', '(18.7)', '150.0', '206.0', '268.0'],
       ['Net Income ($M)', '624.5', '455.7', '368.1', '384.3', '384.1', '711.0', '881.0', '1,055.0'],
@@ -8638,7 +8641,7 @@ async function exportPDF() {
       ['Goodwill ($M)', '1,842.5', '1,842.5', '1,842.5', '1,842.5', '5,420.0', '5,420.0'],
       ['Intangible Assets ($M)', '842.3', '762.4', '682.5', '612.6', '3,240.0', '2,990.0'],
       ['PP&E, Net ($M)', '584.2', '582.1', '582.4', '631.8', '1,240.0', '1,250.0'],
-      ['Total Assets ($M)', '5,212.8', '4,880.2', '4,740.1', '4,880.2', '13,600.0', '13,800.0'],
+      ['Total Assets ($M)', '5,212.8', '4,880.2', '4,740.1', '4,880.2', '18,450.0', '19,200.0'],
     ];
     bsAssets.forEach((row, idx) => {
       msTableRow(row, bsXs, p10y, 6, false, idx % 2 === 0);
@@ -8661,7 +8664,7 @@ async function exportPDF() {
       ['Total Debt ($M)', '2,940.8', '2,808.4', '3,004.0', '3,450.8', '8,780.0', '8,250.0'],
       ['Net Debt ($M)', '2,356.6', '2,409.1', '2,644.8', '3,037.0', '8,130.0', '7,550.0'],
       ['Total Liabilities ($M)', '4,242.2', '4,020.1', '4,110.4', '4,448.6', '11,840.0', '11,500.0'],
-      ['Shareholders Equity ($M)', '970.6', '860.1', '629.7', '431.6', '1,760.0', '2,300.0'],
+      ['Shareholders Equity ($M)', '970.6', '860.1', '629.7', '431.6', '3,600.0', '4,200.0'],
     ];
     bsLiab.forEach((row, idx) => {
       msTableRow(row, bsXs, p10y, 6, false, idx % 2 === 0);
@@ -8987,9 +8990,9 @@ async function exportPDF() {
     doc.rect(10, p15y, W - 20, 22, 'F');
     const dcfAssumptions = [
       ['Risk-Free Rate (10-Yr Treasury)', '4.35%'],
-      ['Equity Risk Premium', '5.2%'],
-      ['Beta (36-mo. vs S&P 500)', '1.48'],
-      ['Cost of Equity (CAPM)', '12.0%'],
+      ['Equity Risk Premium', '5.5%'],
+      ['Beta (36-mo. vs S&P 500)', '1.42'],
+      ['Cost of Equity (CAPM)', '12.49%'],
       ['Pre-Tax Cost of Debt', '7.2%'],
       ['Tax Rate', '25%'],
       ['After-Tax Cost of Debt', '5.4%'],
@@ -9091,10 +9094,10 @@ async function exportPDF() {
     p16y += 5;
 
     const fcfBuildData = [
-      ['D&A ($M)', '$265', '$290', '$310', '$330', '$345', '$355'],
+      ['D&A ($M)', '$320', '$290', '$310', '$330', '$345', '$355'],
       ['EBIT ($M)', '$776', '$1,189', '$1,364', '$1,553', '$1,699', '$1,847'],
       ['NOPAT = EBIT x (1-25%)', '$582', '$892', '$1,023', '$1,165', '$1,274', '$1,385'],
-      ['+ D&A ($M)', '$265', '$290', '$310', '$330', '$345', '$355'],
+      ['+ D&A ($M)', '$320', '$290', '$310', '$330', '$345', '$355'],
       ['- CapEx ($M)', '($156)', '($175)', '($180)', '($185)', '($190)', '($195)'],
       ['- Change in Working Capital', '', '($40)', '($35)', '($30)', '($25)', '($20)'],
       ['Unlevered FCF ($M)', '', '$967', '$1,118', '$1,280', '$1,404', '$1,525'],
@@ -9179,7 +9182,7 @@ async function exportPDF() {
     p17y = msSectionHead('Technical Analysis Summary', p17y);
 
     // Simple price bar representation using rectangles
-    p17y = msBody('SGI has traded in a $52-$99 range over the past 52 weeks. Current price at $69.37 represents a -30% discount from the 52-week high of $99.12 (May 2025) and a +34% premium above the 52-week low of $51.84 (Jan 2025). The stock bottomed following the Mattress Firm acquisition announcement and has recovered +34% from lows as integration proof points emerged in Q2-Q4 2025 earnings.', 10, p17y, W - 20);
+    p17y = msBody('SGI has traded in a $52-$99 range over the past 52 weeks. Current price at $69.37 represents a -30% discount from the 52-week high of ~$92 (Jan 2026) and a +34% premium above the 52-week low of $51.84 (Jan 2025). The stock bottomed following the Mattress Firm acquisition announcement and has recovered +34% from lows as integration proof points emerged in Q2-Q4 2025 earnings.', 10, p17y, W - 20);
     p17y += 8;
 
     // Simple bar chart for price levels using rectangles
@@ -9390,7 +9393,7 @@ async function exportPDF() {
       {
         num: '1', title: 'Synergy Realization Catalyst ($145M+)',
         timeline: 'H1 2026  -  6-9 months',
-        body: '$145M in synergies already realized (vs. $120M model). $200M full run-rate expected by Q3 2026 as Mattress Firm IT integration completes. This alone adds $9.60/share to intrinsic value at a conservative 10x EBITDA multiple  -  or $14.40/share at 15x. Management has quantified four synergy buckets: (1) supply chain consolidation $45M, (2) SG&A overlap $55M, (3) procurement leverage $30M, and (4) digital/D2C uplift $15M. We are tracking all four as a catalyst for a potential guidance raise in Q2 2026 earnings.',
+        body: '$80M in synergies realized — $145M remaining (vs. $120M model). $200M full run-rate expected by Q3 2026 as Mattress Firm IT integration completes. This alone adds $9.60/share to intrinsic value at a conservative 10x EBITDA multiple  -  or $14.40/share at 15x. Management has quantified four synergy buckets: (1) supply chain consolidation $45M, (2) SG&A overlap $55M, (3) procurement leverage $30M, and (4) digital/D2C uplift $15M. We are tracking all four as a catalyst for a potential guidance raise in Q2 2026 earnings.',
         probability: '75%',
       },
       {
@@ -9601,7 +9604,7 @@ async function exportPDF() {
     const qrmData = [
       ['Altman Z-Score', '1.84', 'CAUTION', 'Between 1.81 (distress) and 2.99 (safe)', '>2.99 = Safe zone'],
       ['Piotroski F-Score', '7/9', 'STRONG', 'High F-Score signals financial quality', '8-9 = Strong'],
-      ['Beta (36-mo vs S&P)', '1.48', 'HIGH VOL', 'Above-market sensitivity', '1.0 = Market neutral'],
+      ['Beta (36-mo vs S&P)', '1.42', 'HIGH VOL', 'Above-market sensitivity', '1.0 = Market neutral'],
       ['Sharpe Ratio (12-mo)', '0.84', 'ACCEPTABLE', 'Returns relative to volatility', '>1.0 = Good'],
       ['VaR (95%, 1-day)', '-3.8%', 'ELEVATED', 'Max 1-day loss at 95% confidence', '-2% = Typical large-cap'],
       ['DuPont ROE', '21.8%', 'MODERATE', 'NM x AT x Leverage = 5.1% x 0.28 x 15.2', 'Peer avg: 15-20%'],
@@ -10438,7 +10441,7 @@ async function exportXLSX() {
     ['FY2022',4921.2,2871.6,2049.6,0.416,940.0,126.7,680.6,807.3,194.2,486.4,30.7,455.7,2.53,180.2],
     ['FY2023',4925.4,2796.7,2128.7,0.432,1012.5,132.1,607.2,739.3,208.0,399.2,31.1,368.1,2.08,177.0],
     ['FY2024',4930.9,2750.8,2180.1,0.442,1017.8,170.0,634.2,804.2,270.9,363.3,-21.0,384.3,2.16,177.8],
-    ['FY2025',7476.5,4160.6,3315.9,0.444,1800.0,320.0,985.4,1040.5,620.0,365.4,-18.7,384.1,1.84,208.8],
+    ['FY2025',7476.5,4160.6,3315.9,0.444,1800.0,320.0,985.4,1040.5,502.0,502.4,-18.7,384.1,1.84,208.8],
     ['FY2026E',7952.0,'','',0.450,'','','',1478.0,'','','',711.0,4.82,''],
     ['FY2027E',8369.0,'','','','','','',1673.0,'','','',881.0,5.82,''],
     ['FY2028E',8881.0,'','','','','','',1886.0,'','','',1055.0,7.08,''],
@@ -11950,13 +11953,13 @@ async function exportXLSX() {
   const waccInputs = [
     ['Risk-Free Rate (10-Yr Treasury)','4.35%'],
     ['Equity Risk Premium','5.2%'],
-    ['Beta (36-mo monthly regression vs S&P 500)','1.48'],
+    ['Beta (36-mo monthly regression vs S&P 500)','1.42'],
     ['Cost of Equity (CAPM: Rf + ERP x Beta)','12.0%'],
     ['Pre-Tax Cost of Debt','7.2%'],
     ['Tax Rate','25.0%'],
     ['After-Tax Cost of Debt','5.4%'],
     ['Equity Weight (Market value)','37%'],
-    ['Debt Weight','63%'],
+    ['Debt Weight','60%'],
     ['WACC','8.0%'],
   ];
   waccInputs.forEach(([k,v],i)=>{
@@ -12653,14 +12656,14 @@ function calcMLPrices(revGrowth, ebitdaMargin, synergy, industryGrowth, interest
 function updateMLResults() {
   const _el = id => document.getElementById(id);
   if (!_el('mlPricePrediction')) return;
-  const revGrowth = parseFloat(document.getElementById('sl-revGrowth').value);
-  const ebitdaMargin = parseFloat(document.getElementById('sl-ebitdaMargin').value);
-  const synergy = parseFloat(document.getElementById('sl-synergy').value);
-  const industryGrowth = parseFloat(document.getElementById('sl-industryGrowth').value);
-  const interestRate = parseFloat(document.getElementById('sl-interestRate').value);
-  const peMultiple = parseFloat(document.getElementById('sl-peMultiple').value);
-  const beta = parseFloat(document.getElementById('sl-beta').value);
-  const leverage = parseFloat(document.getElementById('sl-leverage').value);
+  const revGrowth = parseFloat(document.getElementById('sl-revGrowth')?.value ?? '6.4');
+  const ebitdaMargin = parseFloat(document.getElementById('sl-ebitdaMargin')?.value ?? '18.6');
+  const synergy = parseFloat(document.getElementById('sl-synergy')?.value ?? '145');
+  const industryGrowth = parseFloat(document.getElementById('sl-industryGrowth')?.value ?? '3.2');
+  const interestRate = parseFloat(document.getElementById('sl-interestRate')?.value ?? '6.25');
+  const peMultiple = parseFloat(document.getElementById('sl-peMultiple')?.value ?? '18');
+  const beta = parseFloat(document.getElementById('sl-beta')?.value ?? '1.42');
+  const leverage = parseFloat(document.getElementById('sl-leverage')?.value ?? '7.81');
 
   // Update labels
   document.getElementById('lbl-revGrowth').textContent = revGrowth.toFixed(1) + '%';
@@ -14300,7 +14303,7 @@ function exportSlides() {
     dly+=20;
   });
 
-  insightBox(166,dly+2,W-174,'FCF of $745M in FY2026E covers $620M interest + leaves $125M for debt paydown. Peak leverage reflects acquisition cost, not business quality.',gold);
+  insightBox(166,dly+2,W-174,'FCF of $745M in FY2026E covers $502M interest + leaves $243M for debt paydown. Peak leverage reflects acquisition cost, not business quality.',gold);
   premiumFooter(8,23);
 
   // ══════════════════════════════════════════════════════════════
@@ -14385,7 +14388,7 @@ function exportSlides() {
   const s10hdrs=['Assumption','Value','Notes'];
   dataRow(s10hdrs,s10xs,36,8,{header:true});
   const s10rows=[
-    ['WACC','8.5%','E/V=0.65, D/V=0.35, Re=9.5%, Rd=6.2%'],
+    ['WACC','7.80%','E/V=0.65, D/V=0.35, Re=9.5%, Rd=6.2%*(1-t); Correct: 0.65*9.5%+0.35*6.2%*0.75'],
     ['Terminal Growth Rate','3.0%','Long-run nominal GDP growth'],
     ['Tax Rate','25%','Normalized effective rate'],
     ['CapEx / Revenue','1.8%','Maintenance + growth capex'],
@@ -14812,7 +14815,7 @@ function exportSlides() {
     {lbl:'DuPont ROE',        val:'5.8%', sub:'Depressed (acquisition)',    clr:red},
     {lbl:'Beta',              val:'1.0',  sub:'Market-aligned',             clr:navy},
     {lbl:'Sharpe Ratio',      val:'0.45', sub:'Acceptable',                 clr:teal},
-    {lbl:'VaR (95%)',         val:'-12.3%',sub:'Moderate risk',             clr:gold},
+    {lbl:'VaR (95%)',         val:'-16.6%',sub:'Moderate risk',             clr:gold},
   ];
   const s18kw=(W-16-20)/3, s18kh=32;
   s18kpis.forEach((k,i)=>{
@@ -15227,7 +15230,7 @@ function exportSlides() {
   const s25wacc = [
     ['Risk-Free Rate (10-Yr Tsy)','4.35%'],
     ['Equity Risk Premium','5.2%'],
-    ['Beta','1.48'],
+    ['Beta','1.42'],
     ['Cost of Equity','12.0%'],
     ['After-Tax Cost of Debt','5.4%'],
     ['Equity/Debt Weights','37% / 63%'],
@@ -15811,7 +15814,7 @@ async function fetchYahooHistory(symbol, range, interval) {
 async function fetchYahooPeers(symbols) {
   var results = {};
   await Promise.allSettled(symbols.map(function(sym) {
-    return fetchYahooQuote(sym).then(function(q) { if (q) results[sym] = q; }).catch(function(){});
+    return fetchYahooQuote(sym).then(function(q) { if (q) results[sym] = q; }).catch(function(e){ console.warn('[Peers] fetch failed:', e && e.message); });
   }));
   return results;
 }
@@ -16206,10 +16209,8 @@ function propagateLivePrice(price) {
   var fwdPE = price / 4.82; // FY2026E consensus EPS
   var pegRatio = fwdPE / 24; // 24% EPS CAGR
   var fcfYield = (633 / (price * 210)) * 100; // $633M FCF / (price * 210M shares)
-  var evEbitda = ((price * 210 + 8130) / 1040.5); // (mktcap + net debt) / EBITDA
+  var evEbitda = ((price * 208.8 + 8130) / 1040.5)  // shares corrected 210→208.8M; // (mktcap + net debt) / EBITDA
   var mktCapB = (price * 210) / 1000; // in $B
-
-  console.log('[Propagate] Price=$' + price.toFixed(2) + ' FwdPE=' + fwdPE.toFixed(1) + 'x Upside=' + upside.toFixed(1) + '%');
 
   // --- Update all data-live-price elements ---
   document.querySelectorAll('[data-live-price]').forEach(function(el) {
@@ -16256,7 +16257,7 @@ function propagateLivePrice(price) {
     window.ML_BASE_PRICE = price;
     // Trigger recalculation if simulator is active
     if (typeof updateMLPredictions === 'function') {
-      try { updateMLPredictions(); } catch(e) {}
+      try { updateMLPredictions(); } catch(e) { console.warn('[LiveData] updateMLPredictions failed:', e); }
     }
   }
 
@@ -17377,8 +17378,8 @@ function updateWACC() {
   const dsp  = (document.getElementById('dsp-slider')?.value || 280) / 10000;
   const beta = 1.42;
   const tax  = 0.25;
-  const we   = 0.45; // equity weight
-  const wd   = 0.55; // debt weight
+  const we   = 0.61; // market-value equity weight (MktCap $14.6B / Total Capital $23.8B)
+  const wd   = 0.39; // market-value debt weight
 
   const coe  = rfr + beta * erp;
   const cod  = (rfr + dsp) * (1 - tax);
@@ -18160,7 +18161,7 @@ function renderDCFSensitivity() {
         let pvSum = 0;
         baseFCFs.forEach((f, i) => { pvSum += f / Math.pow(1+w, i+1); });
         // TV
-        const tv = baseFCFs[4] * (1+g) / (w - g);
+        const tv = (w > g) ? baseFCFs[4] * (1+g) / (w - g) : 0;
         const pvTV = tv / Math.pow(1+w, 5);
         const ev = pvSum + pvTV;
         const price = (ev - netDebt) / shares;
@@ -18193,7 +18194,7 @@ function renderDCFSensitivity() {
           pvSum += ufcf / Math.pow(1+wacc, i+1);
           if (i===4) prevFCF = ufcf;
         }
-        const tv = (Math.abs(wacc - tgr) < 0.001) ? prevFCF * 20 : prevFCF*(1+tgr)/(wacc-tgr);
+        const tv = (Math.abs(wacc - tgr) < 0.001) ? prevFCF * 20 : (wacc>tgr?prevFCF*(1+tgr)/(wacc-tgr):0);
         const pvTV = tv / Math.pow(1+wacc,5);
         const price = (pvSum + pvTV - netDebt)/shares;
         const cls = price >= 100 ? 'sens-green' : price >= 70 ? 'sens-teal' : price >= 50 ? 'sens-amber' : 'sens-red';
