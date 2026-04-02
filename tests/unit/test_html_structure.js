@@ -146,6 +146,57 @@ module.exports = {
       fn: () => assert(contains('IntersectionObserver'), 'IntersectionObserver missing'),
     },
     {
+      name: 'no_cross_script_block_duplicates',
+      desc: 'No duplicate top-level const/let names across <script> blocks (causes SyntaxError in Chrome)',
+      fn: () => {
+        const html = getHTML();
+
+        // Collect all inline <script>…</script> blocks
+        const scriptBlocks = [];
+        let pos = 0;
+        while (true) {
+          const start = html.indexOf('<script>', pos);
+          if (start === -1) break;
+          const end = html.indexOf('</script>', start);
+          if (end === -1) break;
+          scriptBlocks.push(html.slice(start + 8, end));
+          pos = end + 1;
+        }
+        assert(scriptBlocks.length >= 1, 'No <script> blocks found');
+
+        // Extract top-level (depth-0) const/let declarations from each block
+        function topLevelConsts(body) {
+          const names = [];
+          let depth = 0;
+          for (const line of body.split('\n')) {
+            const s = line.trim();
+            depth += (s.match(/\{/g) || []).length - (s.match(/\}/g) || []).length;
+            if (depth <= 0) {
+              const m = s.match(/^(const|let)\s+(\w+)\s*[=[{]/);
+              if (m) names.push(m[2]);
+            }
+            if (depth < 0) depth = 0;
+          }
+          return names;
+        }
+
+        const seen = new Map(); // name -> block index
+        const dupes = [];
+        scriptBlocks.forEach((body, idx) => {
+          for (const name of topLevelConsts(body)) {
+            if (seen.has(name)) {
+              dupes.push(`'${name}' (blocks ${seen.get(name)+1} & ${idx+1})`);
+            } else {
+              seen.set(name, idx);
+            }
+          }
+        });
+        const unique = [...new Set(dupes)];
+        assert(unique.length === 0,
+          `Cross-<script>-block duplicate const/let (breaks all charts): ${unique.join(', ')}`);
+      },
+    },
+    {
       name: 'no_duplicate_const_in_export_pdf',
       desc: 'Newly added Modeling Lab vars use unique names (no levHeaders/levXs/levData conflict)',
       fn: () => {
