@@ -6340,10 +6340,9 @@ function renderHeatmap() {
 
   // Simplified DCF: TV = FCF_2028 * (1+g) / (WACC - g), discount back 3 yrs
   function dcfPrice(wacc, tgr) {
-      const w = wacc/100, g = tgr/100;
-      if (w <= g) return null;
-    const fcf2026 = 745, fcf2027 = 915, fcf2028 = 1124;
     const w = wacc / 100, g = tgr / 100;
+    if (w <= g) return null;
+    const fcf2026 = 745, fcf2027 = 915, fcf2028 = 1124;
     const pv1 = fcf2026 / Math.pow(1+w, 1);
     const pv2 = fcf2027 / Math.pow(1+w, 2);
     const pv3 = fcf2028 / Math.pow(1+w, 3);
@@ -13011,15 +13010,15 @@ async function exportXLSX() {
   const wsRegHist = wb.addWorksheet('Regulatory History', { properties:{tabColor:{argb:'FF7C3AED'}} });
   setCols(wsRegHist, [14, 30, 65, 18]);
   freezeTopRow(wsRegHist);
-  const rhH = ['Date', 'Event', 'Detail', 'Status'];
-  rhH.forEach((h,i) => {
+  const regHistH = ['Date', 'Event', 'Detail', 'Status'];
+  regHistH.forEach((h,i) => {
     const cell = wsRegHist.getCell(1, i+1);
     cell.value = h; cell.font = {bold:true, color:{argb:'FFFFFFFF'}, size:10};
     cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FF'+C.navyBg}};
     cell.alignment = {horizontal:'center', vertical:'middle'};
   });
   wsRegHist.getRow(1).height = 28;
-  const rhData = [
+  const regHistData = [
     ['Jun 2022', 'FTC Investigation Initiated', 'FTC opened formal investigation into proposed Tempur Sealy / Mattress Firm acquisition, citing concerns about vertical integration potentially eliminating competing mattress brands from 2,300 Mattress Firm stores.', 'Investigation'],
     ['Sep 2023', 'FTC Files Federal Lawsuit', 'FTC filed suit in federal court to block the acquisition, alleging anticompetitive effects in the specialty mattress retail market. First major legal challenge to the $4.0B deal.', 'Legal Challenge'],
     ['Jan 2024', 'Consent Decree Negotiated', 'Parties agreed to consent decree: (1) Mattress Firm must continue carrying competing brands for 7 years; (2) Cannot use store data to disadvantage competitors; (3) Pricing terms must remain non-discriminatory.', 'Resolved'],
@@ -13028,7 +13027,7 @@ async function exportXLSX() {
     ['Mar 2026', 'Ongoing Compliance - No New Actions', 'SGI in full compliance with all consent decree conditions. Decree runs 7 years through 2031 - covers our full investment horizon. No new regulatory actions or investigations pending.', 'Ongoing'],
   ];
   const rhStatusColors = ['FFDC2626', 'FFDC2626', 'FFB45309', 'FF15803D', 'FF15803D', 'FF15803D'];
-  rhData.forEach((r, ri) => {
+  regHistData.forEach((r, ri) => {
     r.forEach((c, ci) => {
       const cell = wsRegHist.getCell(ri+2, ci+1);
       cell.value = c; cell.font = {size:9};
