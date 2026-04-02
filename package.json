@@ -1,0 +1,23 @@
+{
+  "name": "somnigroup-qa",
+  "version": "1.0.0",
+  "description": "QA test suite for Somnigroup International Investment Dashboard",
+  "private": true,
+  "scripts": {
+    "test":     "node run_tests.js",
+    "test:fast": "node run_tests.js --fast",
+    "test:html": "node run_tests.js --module html_structure",
+    "test:data": "node run_tests.js --module data_integrity",
+    "test:exports": "node run_tests.js --module export_functions",
+    "test:sections": "node run_tests.js --module section_coverage",
+    "test:financials": "node run_tests.js --module financial_values",
+    "test:links": "node run_tests.js --module live_data",
+    "qa":       "node run_tests.js --out QA-REPORT.md"
+  },
+  "devDependencies": {
+    "node-html-parser": "^6.1.13"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
