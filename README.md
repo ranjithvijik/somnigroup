@@ -683,12 +683,12 @@ make t-sections            # section coverage only
 
 ### CI — GitHub Actions
 
-Every push to `main` and every pull request runs the full suite across **Node.js 18, 20, and 22** in parallel. On a passing push to `main`, `QA-REPORT.md` is automatically committed back to the repo.
+Every push to `main` and every pull request runs the full suite across **Node.js 22 and 24** in parallel. On a passing push to `main`, `QA-REPORT.md` is automatically committed back to the repo.
 
 ```
 .github/workflows/qa.yml
-  └─ test (Node 18 / 20 / 22)     ← runs on every push + PR
-  └─ commit-report (Node 20)      ← auto-commits QA-REPORT.md on main
+  └─ test (Node 22 / 24)          ← runs on every push + PR
+  └─ commit-report (Node 24)      ← auto-commits QA-REPORT.md on main
 ```
 
 ### Regression Guards
