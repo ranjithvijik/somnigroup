@@ -7,6 +7,9 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -89,4 +92,4 @@ jobs:
           file_pattern: "QA-REPORT.md"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
-        continue-on-error: true   # no-op when QA-REPORT.md is already up to date
+        continue-on-error: true
